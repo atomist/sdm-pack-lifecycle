@@ -62,7 +62,7 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
         super("statuses");
     }
 
-    public configure(configuration: LifecycleConfiguration) {
+    public configure(configuration: LifecycleConfiguration): void {
         this.showOnPush = configuration.configuration["show-statuses-on-push"] || true;
         this.emojiStyle = configuration.configuration["emoji-style"] || "default";
     }
@@ -94,7 +94,7 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
 
         // Now each one
         const lines = statuses.sort((s1, s2) => s1.context.localeCompare(s2.context)).map(s => {
-            if (s.targetUrl != undefined && s.targetUrl.length > 0) {
+            if (!!s.targetUrl && s.targetUrl.length > 0) {
                 return `${this.emoji(s.state)} ${s.description} \u00B7 ${url(s.targetUrl, s.context)}`;
             } else {
                 return `${this.emoji(s.state)} ${s.description} \u00B7 ${s.context}`;
@@ -176,7 +176,7 @@ export class StatusesCardNodeRenderer extends AbstractIdentifiableContribution
             }
 
             let text;
-            if (s.targetUrl != undefined && s.targetUrl.length > 0) {
+            if (!!s.targetUrl && s.targetUrl.length > 0) {
                 text = `${s.description} \u00B7 ${url(s.targetUrl, s.context)}`;
             } else {
                 text = `${s.description} \u00B7 ${s.context}`;
@@ -210,7 +210,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
         super("goals");
     }
 
-    public configure(configuration: LifecycleConfiguration) {
+    public configure(configuration: LifecycleConfiguration): void {
         this.emojiStyle = configuration.configuration["emoji-style"] || "default";
         this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
@@ -305,7 +305,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                         details += ` \u00B7 approved by @${s.approval.userId}`;
                     }
                 }
-                if (s.url != undefined && s.url.length > 0) {
+                if (!!s.url && s.url.length > 0) {
                     return `${this.emoji(s.state)} ${url(s.url, s.description)}${details}`;
                 } else {
                     return `${this.emoji(s.state)} ${s.description}${details}`;
@@ -587,7 +587,7 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
             const ts = lastGoals.map(g => g.ts);
             const gsid = lastGoals[0].goalSetId;
             const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
-            const min = _.get((push.goalSets || []).find(gs => gs.goalSetId === gsid), "ts", 0);
+            const min = _.get((push.goalSets || []).find(gss => gss.goalSetId === gsid), "ts", 0);
             const max = _.max(ts);
             const dur = max - min;
 
