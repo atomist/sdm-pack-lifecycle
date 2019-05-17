@@ -37,7 +37,7 @@ export function reviewToReviewLifecycle(contributions: Contributions)
         description: "Send a review lifecycle message on Review events",
         tags: ["lifecycle", "review"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("reviewToReview"),
+        subscription: GraphQL.subscription("reviewToReviewLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.ReviewToReviewLifecycle.Subscription>(
                 e,

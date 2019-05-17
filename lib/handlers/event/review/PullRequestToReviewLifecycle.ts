@@ -37,7 +37,7 @@ export function pullRequestToReviewLifecycle(contributions: Contributions)
         description: "Send a review lifecycle message on PullRequest events",
         tags: ["lifecycle", "review", "pr"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("pullRequestToReview"),
+        subscription: GraphQL.subscription("pullRequestToReviewLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.PullRequestToReviewLifecycle.Subscription>(
                 e,
