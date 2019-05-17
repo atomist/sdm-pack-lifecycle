@@ -15,7 +15,7 @@ This page details all runtime OSS dependencies of `@atomist/sdm-pack-lifecycle`.
 |[BSD-3-Clause](#bsd-3-clause)|1|
 |[BSD](#bsd)|1|
 |[ISC](#isc)|2|
-|[MIT](#mit)|19|
+|[MIT](#mit)|21|
 |[WTFPL](#wtfpl)|1|
 
 #### Apache-2.0
@@ -60,12 +60,14 @@ MIT License - [http://www.opensource.org/licenses/MIT](http://www.opensource.org
 |------|---------|-----------|------------|
 |`@octokit/rest`|`14.0.9`|Gregor Martynus|[https://github.com/octokit/rest.js](https://github.com/octokit/rest.js)|
 |`@types/base64-js`|`1.2.5`|Peter Safranek|[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
+|`@types/deepmerge`|`2.2.0`||[https://github.com/KyleAMathews/deepmerge](https://github.com/KyleAMathews/deepmerge)|
 |`@types/murmurhash3js`|`3.0.2`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`@types/toposort`|`2.0.1`||[https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)|
 |`argparse`|`1.0.10`||[https://github.com/nodeca/argparse](https://github.com/nodeca/argparse)|
 |`base64-js`|`1.3.0`|T. Jameson Little|[https://github.com/beatgammit/base64-js](https://github.com/beatgammit/base64-js)|
 |`days`|`1.1.1`|Jon Schlinkert|[https://github.com/jonschlinkert/days](https://github.com/jonschlinkert/days)|
 |`debug`|`3.2.6`|TJ Holowaychuk|[https://github.com/visionmedia/debug](https://github.com/visionmedia/debug)|
+|`deepmerge`|`3.2.0`|Nick Fisher|[https://github.com/TehShrike/deepmerge](https://github.com/TehShrike/deepmerge)|
 |`is-array-buffer`|`1.0.1`|Chen Fengyuan|[https://github.com/fengyuanchen/is-array-buffer](https://github.com/fengyuanchen/is-array-buffer)|
 |`is-stream`|`1.1.0`|Sindre Sorhus|[https://github.com/sindresorhus/is-stream](https://github.com/sindresorhus/is-stream)|
 |`js-yaml`|`3.13.1`|Vladimir Zapparov|[https://github.com/nodeca/js-yaml](https://github.com/nodeca/js-yaml)|
