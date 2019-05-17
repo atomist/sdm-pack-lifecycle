@@ -267,7 +267,10 @@ function orderNodes(push: graphql.PushToPushLifecycle.Push): any[] {
     // Add Goals nodes
     const goalSets: GoalSet[] = [];
     _.forEach(_.groupBy(push.goals, "goalSetId"),
-        v => goalSets.push({ goals: v, goalSetId: v[0].goalSetId, ts: _.min(v.map(g => g.ts)) }));
+        (v, k) => {
+            const gs = (push.goalSets || []).find(g => g.goalSetId === k);
+            goalSets.push({ goals: v, goalSetId: k, ts: !!gs ? gs.ts : _.min(v.map(g => g.ts)) });
+        });
     nodes.push(...goalSets.sort((g1, g2) => g2.ts - g1.ts));
     return nodes;
 }

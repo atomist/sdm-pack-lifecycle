@@ -47,9 +47,9 @@ export function sdmGoalToPushLifecycle(contributions: Contributions)
                 params,
                 ctx,
                 () => new PushLifecycleHandler(
-                    e => [e.data.SdmGoal[0].push],
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.SdmGoal[0].push.repo.org.team.chatTeams")),
+                    ev => [ev.data.SdmGoal[0].push],
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.SdmGoal[0].push.repo.org.team.chatTeams")),
                     contributions,
                 ),
             );
@@ -74,7 +74,7 @@ export function sdmGoalToPushCardLifecycle(contributions: Contributions)
                 params,
                 ctx,
                 () => new PushCardLifecycleHandler(
-                    e => [e.data.SdmGoal[0].push],
+                    ev => [ev.data.SdmGoal[0].push],
                     contributions,
                 ),
             );
