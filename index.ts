@@ -15,3 +15,4 @@
  */
 
 export * from "./lib/lifecycleSupport";
+export * from "./lib/lifecycle/Lifecycle";
