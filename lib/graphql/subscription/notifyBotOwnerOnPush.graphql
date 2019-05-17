@@ -1,0 +1,18 @@
+subscription notifyBotOwnerOnPush {
+  Push {
+    id
+    repo {
+      org {
+        team {
+          chatTeams {
+            id
+            preferences {
+              name
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+}

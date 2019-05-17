@@ -1,0 +1,5 @@
+mutation createSlackChannel($teamId: String!, $name: String!) {
+  createSlackChannel(chatTeamId: $teamId, name: $name) {
+    id
+  }
+}

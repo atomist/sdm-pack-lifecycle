@@ -1,0 +1,8 @@
+subscription deletedBranchToPullRequestLifecycle {
+  DeletedBranch {
+    id
+    pullRequests(first: 1) {
+      ...PullRequestFields
+    }
+  }
+}

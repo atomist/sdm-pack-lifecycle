@@ -1,0 +1,5 @@
+query pushById($id: ID!) {
+  Push(id: $id) {
+    ...PushFields
+  }
+}

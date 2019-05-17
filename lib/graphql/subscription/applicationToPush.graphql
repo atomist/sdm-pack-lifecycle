@@ -1,0 +1,12 @@
+subscription applicationToPushLifecycle {
+  Application {
+    _id
+    commits {
+      pushes {
+        ...PushFields
+      }
+      timestamp
+    }
+    timestamp
+  }
+}

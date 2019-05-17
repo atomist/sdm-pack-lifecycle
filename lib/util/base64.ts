@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2018 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,4 +14,18 @@
  * limitations under the License.
  */
 
-export * from "./lib/lifecycleSupport";
+import * as base64 from "base64-js";
+
+export function encode(str: string): string {
+    const arr: number[] = [];
+    for (let i = 0; i < str.length; i++) {
+        arr.push(str.charCodeAt(i));
+    }
+    const coded = base64.fromByteArray(arr as any);
+    return coded;
+}
+
+export function decode(coded: string): string {
+    const decoded = base64.toByteArray(coded);
+    return String.fromCharCode.apply(null, decoded as any);
+}

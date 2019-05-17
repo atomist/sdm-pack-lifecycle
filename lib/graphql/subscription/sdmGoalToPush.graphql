@@ -1,0 +1,14 @@
+subscription sdmGoalToPushLifecycle {
+  SdmGoal {
+    sha
+    branch
+    repo {
+      name
+      owner
+      providerId
+    }
+    push {
+      ...PushFields
+    }
+  }
+}

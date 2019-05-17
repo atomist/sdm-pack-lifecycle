@@ -1,0 +1,5 @@
+subscription branchToBranchLifecycle {
+  Branch {
+    ...BranchFields
+  }
+}

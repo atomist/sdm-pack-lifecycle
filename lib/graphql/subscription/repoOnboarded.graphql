@@ -1,0 +1,22 @@
+subscription repoOnboarded {
+  RepoOnboarded {
+    repo {
+      owner
+      name
+      org {
+        provider {
+          url
+          apiUrl
+          gitUrl
+          providerId
+          providerType
+          private
+        }
+        team {
+          id
+        }
+      }
+      defaultBranch
+    }
+  }
+}

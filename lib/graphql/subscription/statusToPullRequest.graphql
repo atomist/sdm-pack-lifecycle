@@ -1,0 +1,10 @@
+subscription statusToPullRequestLifecycle {
+  Status {
+    _id
+    commit {
+      pullRequests(first: 1) {
+        ...PullRequestFields
+      }
+    }
+  }
+}

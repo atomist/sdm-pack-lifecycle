@@ -1,0 +1,13 @@
+subscription commentToIssueLifecycle {
+  Comment(commentType: issue) {
+    _id
+    by {
+      login
+    }
+    body
+    issue {
+      ...IssueFields
+    }
+    timestamp
+  }
+}

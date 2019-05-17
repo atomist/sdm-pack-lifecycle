@@ -1,38 +1,55 @@
 {
-  "name": "@atomist-seeds/sdm-pack-lifecycle",
+  "name": "@atomist/sdm-pack-lifecycle",
   "version": "0.1.0",
-  "description": "my new project",
+  "description": "Extension pack adding lifecycle support to an SDM",
   "author": {
-    "name": "Christian Dupuis",
-    "email": "cd@atomist.com"
+    "name": "Atomist",
+    "email": "support@atomist.com",
+    "url": "https://atomist.com/"
   },
   "license": "Apache-2.0",
-  "homepage": "https://github.com/atomist-seeds/sdm-pack-lifecycle#readme",
+  "homepage": "https://github.com/atomist/sdm-pack-lifecycle#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/atomist-seeds/sdm-pack-lifecycle.git"
+    "url": "https://github.com/atomist/sdm-pack-lifecycle.git"
   },
   "bugs": {
-    "url": "https://github.com/atomist-seeds/sdm-pack-lifecycle/issues"
+    "url": "https://github.com/atomist/sdm-pack-lifecycle/issues"
   },
   "keywords": [
     "atomist",
     "automation",
     "pack",
-    "sdm"
+    "sdm",
+    "lifecycle"
   ],
   "main": "./index.js",
   "types": "./index.d.ts",
-  "dependencies": {},
+  "dependencies": {
+    "@octokit/rest": "^14.0.9",
+    "@types/base64-js": "^1.2.5",
+    "@types/murmurhash3js": "^3.0.2",
+    "@types/toposort": "^2.0.1",
+    "base64-js": "^1.2.1",
+    "format-date": "^1.0.0",
+    "js-yaml": "^3.10.0",
+    "lodash": "^4.17.4",
+    "moment": "^2.22.0",
+    "moment-duration-format": "^2.2.2",
+    "murmurhash3js": "^3.0.1",
+    "semver": "^5.5.1",
+    "toposort": "^2.0.2"
+  },
   "peerDependencies": {
     "@atomist/automation-client": "*",
     "@atomist/sdm": "*",
     "@atomist/sdm-core": "*"
   },
   "devDependencies": {
-    "@atomist/automation-client": "^1.4.0",
-    "@atomist/sdm": "^1.4.1",
-    "@atomist/sdm-core": "^1.4.0",
+    "@atomist/automation-client": "1.5.0-master.20190515195848",
+    "@atomist/sdm": "1.5.0-master.20190516103533",
+    "@atomist/sdm-core": "1.5.0-master.20190516183309",
+    "@atomist/slack-messages": "1.1.1-master.20190217194316",
     "@types/mocha": "^5.2.6",
     "@types/power-assert": "^1.5.0",
     "espower-typescript": "^9.0.2",

@@ -1,0 +1,57 @@
+query cardEvents($key: [String]!) {
+  Card(key: $key) {
+    events {
+      icon
+      text
+      ts
+      actions {
+        text
+        type
+        registration
+        command
+        parameters {
+          name
+          value
+        }
+        parameterName
+        parameterOptions {
+          name
+          value
+        }
+        parameterOptionGroups {
+          name
+          options {
+            name
+            value
+          }
+        }
+        role
+      }
+      actionGroups {
+        actions {
+          text
+          type
+          registration
+          command
+          parameters {
+            name
+            value
+          }
+          parameterName
+          parameterOptions {
+            name
+            value
+          }
+          parameterOptionGroups {
+            name
+            options {
+              name
+              value
+            }
+          }
+          role
+        }
+      }
+    }
+  }
+}

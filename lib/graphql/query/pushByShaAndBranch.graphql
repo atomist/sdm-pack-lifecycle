@@ -1,0 +1,7 @@
+query pushByShaAndBranch($sha: String!, $branch: String!) {
+  Commit(sha: $sha) {
+    pushes(branch: $branch) @required {
+      ...PushFields
+    }
+  }
+}

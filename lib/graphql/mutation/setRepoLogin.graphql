@@ -1,0 +1,18 @@
+mutation setRepoLogin(
+  $owner: String!
+  $repo: String!
+  $login: String!
+  $providerId: String!
+) {
+  setRepoLogin(
+    owner: $owner
+    repo: $repo
+    login: $login
+    providerId: $providerId
+  ) {
+    owner
+    repo
+    providerId
+    login
+  }
+}

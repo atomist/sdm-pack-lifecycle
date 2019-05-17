@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2018 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import {
-    ExtensionPack,
-    metadata,
-} from "@atomist/sdm";
+import { BuildStatus } from "../../../../typings/types";
 
-export const SeedSupport: ExtensionPack = {
-    ...metadata(),
-    configure: sdm => {
-        return sdm;
-    },
-};
+export interface WorkflowStage {
+    name: string;
+    status?: WorkflowStageCompletedStatus;
+}
+
+export interface WorkflowStageCompletedStatus {
+    state: BuildStatus;
+    totalDuration: number;
+    longestJobDuration: number;
+}

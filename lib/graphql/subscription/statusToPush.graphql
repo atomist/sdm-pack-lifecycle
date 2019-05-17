@@ -1,0 +1,15 @@
+subscription statusToPushLifecycle {
+  Status {
+    _id
+    context
+    description
+    targetUrl
+    state
+    commit {
+      pushes {
+        ...PushFields
+      }
+      timestamp
+    }
+  }
+}

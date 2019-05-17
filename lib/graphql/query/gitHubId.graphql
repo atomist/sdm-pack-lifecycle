@@ -1,0 +1,19 @@
+query gitHubId($gitHubIds: [String]!) {
+  GitHubId(logins: $gitHubIds) {
+    login
+    person {
+      chatId {
+        screenName
+        preferences {
+          name
+          value
+        }
+        id
+        chatTeam {
+          id
+          name
+        }
+      }
+    }
+  }
+}

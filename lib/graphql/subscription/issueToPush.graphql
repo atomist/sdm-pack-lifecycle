@@ -1,0 +1,12 @@
+subscription issueToPushLifecycle {
+  Issue {
+    _id
+    resolvingCommits {
+      pushes {
+        ...PushFields
+      }
+      timestamp
+    }
+    timestamp
+  }
+}
