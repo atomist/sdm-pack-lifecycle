@@ -45,11 +45,11 @@ export class BranchLifecycle<R> extends LifecycleHandler<R> {
     protected prepareLifecycle(event: EventFired<R>): Lifecycle[] {
         const [branches, repo, deleted] = this.extractNodes(event);
 
-        if (branches !== undefined) {
+        if (!!branches) {
             return branches.map(branch => {
                 const nodes = [];
 
-                if (repo !== undefined) {
+                if (!!repo) {
                     nodes.push(repo);
                 }
 

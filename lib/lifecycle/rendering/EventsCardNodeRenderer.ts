@@ -110,7 +110,7 @@ export class EventsCardNodeRenderer extends AbstractIdentifiableContribution
         }
 
         let text;
-        if (status.targetUrl !== undefined && status.targetUrl.length > 0) {
+        if (!!status.targetUrl && status.targetUrl.length > 0) {
             text = `${url(status.targetUrl, status.description)}`;
         } else {
             text = `${status.description}`;

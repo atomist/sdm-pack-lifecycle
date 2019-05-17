@@ -132,7 +132,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
         if (node.baseBranchName) {
             const pr = node as graphql.PullRequestToPullRequestLifecycle.PullRequest;
             return pr.state === "open"
-                && pr.commits !== undefined && pr.commits.length > 0;
+                && !!pr.commits && pr.commits.length > 0;
         } else {
             return false;
         }

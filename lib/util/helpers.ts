@@ -228,16 +228,16 @@ export function labelUrl(repo: any, label: string): string {
 }
 
 export function isGitHubCom(repo: any): boolean {
-    return repo.org !== undefined &&
-        repo.org.provider !== undefined &&
-        repo.org.provider.providerType !== undefined &&
+    return !!repo.org &&
+        !!repo.org.provider &&
+        !!repo.org.provider.providerType &&
         repo.org.provider.providerType === "github_com";
 }
 
 export function isGitHub(repo: any): boolean {
-    return repo.org !== undefined &&
-        repo.org.provider !== undefined &&
-        repo.org.provider.providerType !== undefined &&
+    return !!repo.org &&
+        !!repo.org.provider &&
+        !!repo.org.provider.providerType &&
         (repo.org.provider.providerType === "github_com" || repo.org.provider.providerType === "ghe");
 }
 
@@ -250,23 +250,23 @@ export function isGitlab(repo: any): boolean {
 }
 
 export function isBitBucketCloud(repo: any): boolean {
-    return repo.org !== undefined &&
-        repo.org.provider !== undefined &&
-        repo.org.provider.providerType !== undefined &&
+    return !!repo.org &&
+        !!repo.org.provider &&
+        !!repo.org.provider.providerType &&
         repo.org.provider.providerType === "bitbucket_cloud";
 }
 
 export function isGitlabEnterprise(repo: any): boolean {
-    return repo.org !== undefined &&
-        repo.org.provider !== undefined &&
-        repo.org.provider.providerType !== undefined &&
+    return !!repo.org &&
+        !!repo.org.provider &&
+        !!repo.org.provider.providerType &&
         repo.org.provider.providerType === "gitlab";
 }
 
 export function isBitBucketOnPrem(repo: any): boolean {
-    return repo.org !== undefined &&
-        repo.org.provider !== undefined &&
-        repo.org.provider.providerType !== undefined &&
+    return !!repo.org &&
+        !!repo.org.provider &&
+        !!repo.org.provider.providerType &&
         repo.org.provider.providerType === "bitbucket";
 }
 
@@ -685,7 +685,7 @@ export function replaceChatIdWithGitHubId(b: string = "", teamId: string, ctx: H
         return Promise.resolve(body);
     }
     const matches = getChatIds(body);
-    if (matches !== undefined) {
+    if (!!matches) {
         return Promise.all(matches.map(m => {
             return ctx.graphClient.query<graphql.ChatId.Query, graphql.ChatId.Variables>({
                 name: "chatId",
@@ -730,7 +730,7 @@ export function getChatIds(str: string): string[] {
 }
 
 export function repoAndChannelFooter(repo: any): string {
-    const channels = (repo.channels !== undefined && repo.channels.length > 0 ? " \u00B7 " + repo.channels.map((c: any) =>
+    const channels = (!!repo.channels && repo.channels.length > 0 ? " \u00B7 " + repo.channels.map((c: any) =>
         slack.channel(c.channelId, c.name)).join(" ") : "");
     return `${slack.url(repoUrl(repo), repoSlug(repo))}${channels}`;
 }
@@ -742,7 +742,7 @@ export function repoAndChannelFooter(repo: any): string {
  * @returns {boolean}
  */
 export function isAssigner(assignable: any, assigneeLogin: string): boolean {
-    return assignable.lastAssignedBy !== undefined ? assignable.lastAssignedBy.login === assigneeLogin : false;
+    return !!assignable.lastAssignedBy ? assignable.lastAssignedBy.login === assigneeLogin : false;
 }
 
 export function isDmDisabled(chatId: ChatId, type?: string): boolean {
@@ -763,10 +763,10 @@ export function isDmDisabled(chatId: ChatId, type?: string): boolean {
 export function repoAndlabelsAndAssigneesFooter(repo: any, labels: any, assignees: any[]): string {
 
     let footer = slack.url(repoUrl(repo), `${repo.owner}/${repo.name}`);
-    if (labels !== undefined && labels.length > 0) {
+    if (!!labels && labels.length > 0) {
         footer += " \u00B7 " + labels.map((l: any) => l.name).join(" \u00B7 ");
     }
-    if (assignees !== undefined && assignees.length > 0) {
+    if (!!assignees && assignees.length > 0) {
         footer += " \u00B7 " + assignees.map(a => a.login).join(" \u00B7 ");
     }
     return footer;

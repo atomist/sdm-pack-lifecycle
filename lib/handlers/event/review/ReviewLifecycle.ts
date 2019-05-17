@@ -57,7 +57,7 @@ export class ReviewLifecycleHandler<R> extends LifecycleHandler<R> {
                 }
 
                 // PullRequest lifecycle starts with, drum roll, a PullRequest
-                if (review !== undefined) {
+                if (!!review) {
                     nodes.push(review);
                 }
 

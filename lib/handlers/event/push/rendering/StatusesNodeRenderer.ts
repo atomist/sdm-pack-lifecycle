@@ -636,19 +636,19 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
 }
 
 function notAlreadyDisplayed(push: any, status: any): boolean {
-    if (status.context.includes("travis-ci") && push.builds !== undefined &&
+    if (status.context.includes("travis-ci") && !!push.builds &&
         push.builds.some((b: any) => b.provider === "travis")) {
         return false;
     }
-    if (status.context.includes("circleci") && push.builds !== undefined &&
+    if (status.context.includes("circleci") && !!push.builds &&
         push.builds.some((b: any) => b.provider === "circle")) {
         return false;
     }
-    if (status.context.includes("jenkins") && push.builds !== undefined &&
+    if (status.context.includes("jenkins") && !!push.builds &&
         push.builds.some((b: any) => b.provider === "jenkins")) {
         return false;
     }
-    if (status.context.includes("codeship") && push.builds !== undefined &&
+    if (status.context.includes("codeship") && !!push.builds &&
         push.builds.some((b: any) => b.provider.includes("codeship"))) {
         return false;
     }
