@@ -449,7 +449,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                     const channelPreferences = preferenceValue[channel];
                     contributions = contributions.filter((c: any) => {
                         const channelPreference = _.get(channelPreferences, `${name}.${c.id()}`);
-                        if (!!channelPreference) {
+                        if (channelPreference !== undefined) {
                             return channelPreference === true;
                         }
                         if (preferenceConfiguration && preferenceConfiguration[c.id()]) {
