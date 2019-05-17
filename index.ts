@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 export * from "./lib/lifecycleSupport";
 export * from "./lib/lifecycle/Lifecycle";
 
