@@ -17,5 +17,7 @@
 export * from "./lib/lifecycleSupport";
 export * from "./lib/lifecycle/Lifecycle";
 
+export * from "./lib/handlers/event/preferences";
+
 import * as graphql from "./lib/typings/types";
 export { graphql };
