@@ -14,5 +14,9 @@
  * limitations under the License.
  */
 
+
 export * from "./lib/lifecycleSupport";
 export * from "./lib/lifecycle/Lifecycle";
+
+import * as graphql from "./lib/typings/types";
+export { graphql };

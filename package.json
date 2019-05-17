@@ -45,7 +45,8 @@
   "peerDependencies": {
     "@atomist/automation-client": "*",
     "@atomist/sdm": "*",
-    "@atomist/sdm-core": "*"
+    "@atomist/sdm-core": "*",
+    "@atomist/slack-messages": "*"
   },
   "devDependencies": {
     "@atomist/automation-client": "1.5.0-master.20190515195848",
