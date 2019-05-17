@@ -47,9 +47,9 @@ export function statusToPushLifecycle(contributions: Contributions)
                 params,
                 ctx,
                 () => new PushLifecycleHandler(
-                    e => e.data.Status[0].commit.pushes,
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.Status[0].commit.pushes[0].repo.org.team.chatTeams")),
+                    ev => ev.data.Status[0].commit.pushes,
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.Status[0].commit.pushes[0].repo.org.team.chatTeams")),
                     contributions,
                 ),
             );
@@ -67,18 +67,18 @@ export function statusToPushCardLifecycle(contributions: Contributions)
         description: "Send a push lifecycle card on Status events",
         tags: ["lifecycle", "push", "status"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("buildToPushLifecycle"),
+        subscription: GraphQL.subscription("statusToPushLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.StatusToPushLifecycle.Subscription>(
                 e,
                 params,
                 ctx,
                 () => new PushCardLifecycleHandler(
-                    e => {// filter CI statuses as we don't want them to overwrite
+                    ev => {// filter CI statuses as we don't want them to overwrite
                         const cis = ["travis", "jenkins", "circle", "codeship"];
-                        const status = e.data.Status[0];
+                        const status = ev.data.Status[0];
                         if (!cis.some(ci => status.context.includes(ci))) {
-                            return e.data.Status[0].commit.pushes;
+                            return ev.data.Status[0].commit.pushes;
                         } else {
                             return [];
                         }
