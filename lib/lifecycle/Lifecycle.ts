@@ -119,7 +119,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
         const preferences = this.extractPreferences(event);
 
         // Bail out if something isn't correctly linked up
-        if (lifecycles === undefined || lifecycles.length === 0) {
+        if (!lifecycles || lifecycles.length === 0) {
             return Promise.resolve({ code: 0, message: "No lifecycle created" });
         }
 
@@ -230,7 +230,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                                  channels: { teamId: string, channels: string[] },
                                  ctx: HandlerContext): Promise<any> {
         let ts = this.normalizeTimestamp(lifecycle.timestamp);
-        if (ts === undefined) {
+        if (!ts) {
             ts = Date.now().toString();
         }
 
@@ -460,14 +460,14 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                     });
                 } else {
                     contributions = contributions.filter((c: any) =>
-                        preferenceConfiguration[c.id()] === undefined || preferenceConfiguration[c.id()].enabled);
+                        !preferenceConfiguration[c.id()] || preferenceConfiguration[c.id()].enabled);
                 }
             } catch (e) {
                 logger.error(`Failed to parse lifecycle configuration: '${preference.value}'`);
             }
         } else {
             contributions = contributions.filter((c: any) =>
-                preferenceConfiguration[c.id()] === undefined || preferenceConfiguration[c.id()].enabled);
+                !preferenceConfiguration[c.id()] || preferenceConfiguration[c.id()].enabled);
         }
 
         if (configuration) {

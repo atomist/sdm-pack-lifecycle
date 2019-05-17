@@ -215,7 +215,7 @@ export function reviewUrl(repo: any, pr: any, review: any): string {
 }
 
 export function issueUrl(repo: any, issue: any, comment?: any): string {
-    if (comment === undefined) {
+    if (!comment) {
         return `${htmlUrl(repo)}/${repoSlug(repo)}/issues/${issue.number}`;
     } else {
         return `${htmlUrl(repo)}/${repoSlug(repo)}/issues/${issue.number}#issuecomment-${comment.gitHubId}`;
