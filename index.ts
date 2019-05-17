@@ -15,9 +15,39 @@
  */
 
 export * from "./lib/lifecycleSupport";
-export * from "./lib/lifecycle/Lifecycle";
+export {
+    lifecycle,
+    LifecycleParametersDefinition,
+    LifecycleParameters,
+    LifecycleHandler,
+    ActionContributor,
+    RendererContext,
+    AbstractIdentifiableContribution,
+    CardActionContributor,
+    CardActionContributorWrapper,
+    CardNodeRenderer,
+    IdentifiableContribution,
+    NodeRenderer,
+    Channel,
+    ChatTeam,
+    Lifecycle,
+    LifecycleConfiguration,
+    SlackActionContributor,
+    SlackNodeRenderer,
+} from "./lib/lifecycle/Lifecycle";
 
 export * from "./lib/handlers/event/preferences";
+export * from "./lib/util/helpers";
+export * from "./lib/util/goals";
+
+export {
+    Domain,
+    GoalSet,
+} from "./lib/handlers/event/push/PushLifecycle";
+export {
+    isFullRenderingEnabled,
+} from "./lib/handlers/event/push/rendering/PushNodeRenderers";
 
 import * as graphql from "./lib/typings/types";
+
 export { graphql };
