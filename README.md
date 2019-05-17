@@ -1,8 +1,8 @@
 # @atomist/sdm-pack-lifecycle
 
 [![npm version](https://img.shields.io/npm/v/@atomist/sdm-pack-lifecycle.svg)](https://www.npmjs.com/package/@atomist/sdm-pack-lifecycle)
-
-An Atomist SDM extension pack to add lifecycle support into an SDM.
+[![atomist sdm goals](https://badge.atomist.com/T29E48P34/atomist/sdm-pack-lifecycle/0f0e2fa6-3377-4384-b70a-35bd62355d2f)](https://app.atomist.com/workspace/T29E48P34)
+git remote add origin git@github.com:atomist/sdm-pack-lifecycle.git.
 
 ## Getting started
 
