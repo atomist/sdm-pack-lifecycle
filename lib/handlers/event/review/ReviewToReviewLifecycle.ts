@@ -44,9 +44,9 @@ export function reviewToReviewLifecycle(contributions: Contributions)
                 params,
                 ctx,
                 () => new ReviewLifecycleHandler(
-                    e => [e.data.Review, _.get(e, "data.Review[0].timestamp")],
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.Review[0].pullRequest.repo.org.team.chatTeams")),
+                    ev => [ev.data.Review, _.get(ev, "data.Review[0].timestamp")],
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.Review[0].pullRequest.repo.org.team.chatTeams")),
                     contributions,
                 ),
             );

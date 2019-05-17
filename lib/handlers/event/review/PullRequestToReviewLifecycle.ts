@@ -44,12 +44,12 @@ export function pullRequestToReviewLifecycle(contributions: Contributions)
                 params,
                 ctx,
                 () => new ReviewLifecycleHandler(
-                    e => {
-                        const reviews = _.get(e, "data.PullRequest[0].reviews");
+                    ev => {
+                        const reviews = _.get(ev, "data.PullRequest[0].reviews");
                         return [reviews, new Date().getTime().toString()];
                     },
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.PullRequest[0].reviews[0].pullRequest.repo.org.team.chatTeams")),
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.PullRequest[0].reviews[0].pullRequest.repo.org.team.chatTeams")),
                     contributions,
                 ),
             );
