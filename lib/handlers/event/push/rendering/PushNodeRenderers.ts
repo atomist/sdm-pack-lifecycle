@@ -28,7 +28,6 @@ import {
     SlackMessage,
     url,
 } from "@atomist/slack-messages";
-import * as config from "config";
 import * as _ from "lodash";
 import {
     AbstractIdentifiableContribution,
@@ -58,7 +57,10 @@ import {
     truncateCommitMessage,
     userUrl,
 } from "../../../../util/helpers";
-import { LifecycleRendererPreferences } from "../../preferences";
+import {
+    LifecycleDefaultConfiguration,
+    LifecycleRendererPreferences,
+} from "../../preferences";
 import { Domain } from "../PushLifecycle";
 
 export const EMOJI_SCHEME: any = {
@@ -138,7 +140,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
 
     public emojiStyle: "default" | "atomist";
 
-    public fingerprints: any = config.get("fingerprints.data") || {};
+    public fingerprints: any = LifecycleDefaultConfiguration.fingerprints.data;
 
     constructor() {
         super("commit");

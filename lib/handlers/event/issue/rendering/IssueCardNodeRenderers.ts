@@ -34,6 +34,7 @@ import {
     RendererContext,
 } from "../../../../lifecycle/Lifecycle";
 import * as graphql from "../../../../typings/types";
+import * as github from "../../../../util/gitHubApi";
 import {
     avatarUrl,
     extractLinkedIssues,
@@ -44,7 +45,6 @@ import {
     truncateCommitMessage,
     userUrl,
 } from "../../../../util/helpers";
-import * as github from "../../../../util/gitHubApi";
 import { renderCommitMessage } from "../../push/rendering/PushCardNodeRenderers";
 
 export class IssueCardNodeRenderer extends AbstractIdentifiableContribution

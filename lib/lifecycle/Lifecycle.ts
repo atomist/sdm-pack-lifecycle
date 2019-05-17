@@ -47,11 +47,11 @@ import {
     Action,
     SlackMessage,
 } from "@atomist/slack-messages";
-import * as config from "config";
 import * as deepmerge from "deepmerge";
 import * as _ from "lodash";
 import {
     LifecycleActionPreferences,
+    LifecycleDefaultConfiguration,
     LifecyclePreferences,
     LifecycleRendererPreferences,
 } from "../handlers/event/preferences";
@@ -111,7 +111,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
 
     public credentials: ProjectOperationCredentials;
 
-    public defaultConfigurations: any = config.get("lifecycles") || {};
+    public defaultConfigurations: any = LifecycleDefaultConfiguration.lifecycles;
 
     public handle(event: EventFired<R>, ctx: HandlerContext): Promise<HandlerResult> {
         // Let the concrete handler configure the lifecycle message

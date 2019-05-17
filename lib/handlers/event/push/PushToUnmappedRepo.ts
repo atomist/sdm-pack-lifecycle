@@ -31,12 +31,12 @@ import * as slack from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";
 import { PushToUnmappedRepo } from "../../../typings/types";
+import { DefaultGitHubApiUrl } from "../../../util/gitHubApi";
 import {
     isDmDisabled,
     repoChannelName,
     repoSlackLink,
 } from "../../../util/helpers";
-import { DefaultGitHubApiUrl } from "../../../util/gitHubApi";
 import { SetUserPreference } from "../../command/preferences/SetUserPreference";
 import { CreateChannel } from "../../command/slack/CreateChannel";
 import {
