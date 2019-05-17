@@ -432,7 +432,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addCommand(adaptHandleCommand(UnlinkRepo));
 
             // Install contributed commands
-            (optsToUse.commands || []).forEach(sdm.addCommand);
+            (optsToUse.commands || []).filter(c => !!c).forEach(c => sdm.addCommand(c));
         },
     };
 }
