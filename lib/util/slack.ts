@@ -22,7 +22,10 @@
  * @return true if the channel is a public channel
  */
 export function isChannel(id: string): boolean {
-    return id.indexOf("C") === 0 || id.indexOf("G") === 0;
+    if (isSlack(id)) {
+        return id.indexOf("C") === 0 || id.indexOf("G") === 0;
+    }
+    return true;
 }
 
 /**
