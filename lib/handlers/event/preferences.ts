@@ -52,7 +52,7 @@ export const LifecyclePreferences: any = {
         id: "review",
         name: "Review Lifecycle",
         description: "Lifecycle messages for GitHub pull request reviews",
-        enabled: true,
+        enabled: false,
     },
 
 };
