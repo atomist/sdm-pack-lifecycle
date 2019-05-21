@@ -10,3 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   Empty SDM pack structure.
+
+### Changed
+
+-   Modify isChannel to always return true for any MSTeams channel id. [#4](https://github.com/atomist/sdm-pack-lifecycle/issues/4)
