@@ -48,6 +48,10 @@ describe("slack", () => {
             });
         });
 
+        it("should accept any MS Team channel ID", () => {
+            assert(isChannel("12:a347e001ebcd4f02ab3a086c1ddb0a03@thread.skype"));
+        });
+
     });
 
     describe("checkIsSlack", () => {

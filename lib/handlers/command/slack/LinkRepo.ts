@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Atomist, Inc.
+ * Copyright © 2019 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,7 +115,7 @@ export class LinkRepo implements HandleCommand {
             return ctx.messageClient.respond(err)
                 .then(() => Success, failure);
         }
-        if (isSlack(this.channelId) && !isChannel(this.channelId)) {
+        if (!isChannel(this.channelId)) {
             const err = "The Atomist Bot can only link repositories to public or private channels. " +
                 "Please try again in a public or private channel.";
             return ctx.messageClient.addressChannels(err, this.channelName)
