@@ -5,7 +5,164 @@
 
 ## Extending Lifecycle
 
-tba
+To extend lifecycle three different extension points are available:
+
+* `NodeRenderer` is concerned with rendering information as part of the lifecycle message
+* `ActionContributor` adds `Action` instances to a lifecycle message pointing to
+* `CommandHandlerRegistration` instances to add additional commands
+
+Implementations of the above can be registered wit the Lifecycle support by passing them
+as part of the `LifecycleOptions` to the `lifecycleSupport` extension pack.
+
+#### Modifying Lifecycle Message Content
+
+The following example shows a [`CommitMessageWarningPushNodeRenderer`](https://github.com/atomist/sdm-pack-lifecycle/blob/master/test/sample/renderer.ts)
+that adds an additional attachment to the push lifecycle to show violations against a commit message formatting policy:
+
+```typescript
+/**
+ * NodeRenderer implementation that verifies the format of a commit message and
+ * adds a Slack attachment showing all format warnings.
+ */
+export class CommitMessageWarningPushNodeRenderer extends AbstractIdentifiableContribution
+    implements SlackNodeRenderer<PushToPushLifecycle.Push> {
+
+    public static ID: string = "commit_message";
+
+    constructor() {
+        super(CommitMessageWarningPushNodeRenderer.ID);
+    }
+
+    public supports(node: PushToPushLifecycle.Push): boolean {
+        return !!node.after;
+    }
+
+    public async render(node: PushToPushLifecycle.Push,
+                        actions: Action[],
+                        msg: SlackMessage,
+                        rc: RendererContext): Promise<SlackMessage> {
+
+        if (await isDismissed(node, rc)) {
+            return msg;
+        }
+
+        const warnings: string[] = [];
+
+        const commitMsg = node.after.message;
+        const firstRow = commitMsg.split("\n")[0];
+
+        if (firstRow.charAt(0) !== firstRow.charAt(0).toUpperCase()) {
+            warnings.push(`Message doesn't start with an uppercase letter`);
+        }
+        if (firstRow.length > 50) {
+            warnings.push(`First row is longer than 50 characters`);
+        }
+
+        if (warnings.length > 0) {
+            const attachment: Attachment = {
+                author_icon: `https://images.atomist.com/rug/warning-yellow.png`,
+                author_name: "Commit Message Format",
+                text: `Commit message violates our format policy:\n\n${warnings.map(w => ` * ${w}`).join("\n")}`,
+                fallback: "Commit Message Format",
+                color: "#D7B958",
+                mrkdwn_in: ["text"],
+                actions,
+            };
+            msg.attachments.push(attachment);
+        }
+
+        return msg;
+    }
+
+}
+``` 
+
+The `supports` method gets called for each node of the lifecycle; e.g. the Push, all Commits and Tags etc in case of 
+push lifecycle. If `support` returns `true` the render method will be invoked with the supported node.
+
+The `render` method receives the `SlackMessage` that was created by previous `NodeRenderer` instances and can make any
+desired modifications to the message content. Additionally all contributed `Action` instances are passed into `render` 
+so that those can be placed into the message by the renderer.
+
+#### Adding Lifecycle Actions
+
+The following code block shows an example of an `ActionContributor` that adds a button for a dismiss action to the push
+lifecycle. The code is available in [`CommitMessageWarningPushActionContributor`](https://github.com/atomist/sdm-pack-lifecycle/blob/master/test/sample/action.ts).
+
+```typescript
+/**
+ * ActionContributor adding a button to dismiss the commit message warnings
+ */
+export class CommitMessageWarningPushActionContributor extends AbstractIdentifiableContribution
+    implements SlackActionContributor<PushToPushLifecycle.Push> {
+
+    constructor() {
+        super("dismiss_commit_message");
+    }
+
+    public supports(node: any, rc: RendererContext): boolean {
+        return !!node.after && rc.rendererId === CommitMessageWarningPushNodeRenderer.ID;
+    }
+
+    public async buttonsFor(node: PushToPushLifecycle.Push,
+                            rc: RendererContext): Promise<Action[]> {
+
+        if (!(await isDismissed(node, rc))) {
+            return [
+                actionableButton(
+                    { text: "Dismiss" },
+                    DismissCommitMessageWarningCommand,
+                    {
+                        owner: node.repo.owner,
+                        repo: node.repo.name,
+                    }),
+            ];
+        }
+
+        return [];
+    }
+
+    public async menusFor(node: PushToPushLifecycle.Push,
+                          rc: RendererContext): Promise<Action[]> {
+        return [];
+    }
+}
+```
+
+Similar to `NodeRenderer` instances, the `supports` method can be used to determine if a certain node is supported and
+if the action should be placed onto the content created by a particular `NodeRenderer`.
+
+The two methods `buttonsFor` and `menuFor` are then called to create Slack button or menu `Action`s respectively.
+
+#### Configuring Lifecycle Extensions
+
+`NodeRenderer` and `ActionContributor` instances need to be registered with `lifecycleSupport` as follows:
+
+```typescript
+    const lifecycleOptions: LifecycleOptions = deepmerge(DefaultLifecycleRenderingOptions, {
+        push: {
+            chat: {
+                renderers: [() => [
+                    new CommitMessageWarningPushNodeRenderer(),
+                ]],
+                actions: [() => [
+                    new CommitMessageWarningPushActionContributor(),
+                ]],
+            },
+        },
+        commands: [
+            DismissCommitMessageWarningCommand,
+        ],
+    });
+
+    sdm.addExtensionPacks(lifecycleSupport(lifecycleOptions));
+```
+`DefaultLifecycleRenderingOptions` is a pre-defined configuration that contains all out of the box renderers and action
+contributors that this pack contains. This serves as basis to add a new renderer and action contributor to the overall
+lfiecycle configuration. 
+
+In addition, this registers a `CommandHandlerRegistration` that implements the dismiss logic that is used to bind to a 
+button in the sample `CommitMessageWarningPushActionContributor`.
 
 ## Getting started
 
