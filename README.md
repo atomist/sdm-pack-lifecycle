@@ -3,6 +3,10 @@
 [![npm version](https://img.shields.io/npm/v/@atomist/sdm-pack-lifecycle.svg)](https://www.npmjs.com/package/@atomist/sdm-pack-lifecycle)
 [![atomist sdm goals](https://badge.atomist.com/T29E48P34/atomist/sdm-pack-lifecycle/0f0e2fa6-3377-4384-b70a-35bd62355d2f)](https://app.atomist.com/workspace/T29E48P34)
 
+## Extending Lifecycle
+
+tba
+
 ## Getting started
 
 See the [Developer Quick Start][atomist-quick] to jump straight to
