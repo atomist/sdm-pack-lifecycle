@@ -75,8 +75,8 @@ export class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
             const configuration: Lifecycle = {
                 name: LifecyclePreferences.push.id,
                 nodes,
-                renderers: this.contributors.renderers(push),
-                contributors: this.contributors.actions(push),
+                renderers: _.flatten((this.contributors.renderers || []).map(r => r(push))),
+                contributors: _.flatten((this.contributors.actions || []).map(a => a(push))),
                 id: `push_lifecycle/${push.repo.owner}/${push.repo.name}/${push.branch}/${push.after.sha}`,
                 timestamp: Date.now().toString(),
                 channels: [{
@@ -110,7 +110,7 @@ export class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
 export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
 
     constructor(private readonly extractNodes: (event: EventFired<R>) => PushToPushLifecycle.Push[],
-                private readonly _extractPreferences: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
+                private readonly ep: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
                 private readonly contributors: Contributions) {
         super();
     }
@@ -141,8 +141,8 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
             const configuration: Lifecycle = {
                 name: LifecyclePreferences.push.id,
                 nodes,
-                renderers: this.contributors.renderers(push),
-                contributors: this.contributors.actions(push),
+                renderers: _.flatten((this.contributors.renderers || []).map(r => r(push))),
+                contributors: _.flatten((this.contributors.actions || []).map(a => a(push))),
                 id: createId(push),
                 timestamp: mostCurrentGoal ? mostCurrentGoal.ts.toString() : Date.now().toString(),
                 channels,
@@ -221,7 +221,7 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
     }
 
     protected extractPreferences(event: EventFired<R>): { [teamId: string]: Preferences[] } {
-        return this._extractPreferences(event);
+        return this.ep(event);
     }
 
 }

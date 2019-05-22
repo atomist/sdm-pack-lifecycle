@@ -20,6 +20,7 @@ import {
     logger,
 } from "@atomist/automation-client";
 import { SlackMessage } from "@atomist/slack-messages";
+import * as _ from "lodash";
 import {
     CardMessage,
     newCardMessage,
@@ -59,16 +60,16 @@ export class IssueCardLifecycleHandler<R> extends LifecycleHandler<R> {
         const nodes: any[] = [];
         const [issue, repo, comment, timestamp] = this.extractNodes(event);
 
-        if (issue != undefined) {
+        if (!!issue) {
             nodes.push(issue);
         }
 
-        if (comment != undefined) {
+        if (!!comment) {
             nodes.push(comment);
         }
 
         // Verify that there is at least a issue and repo node
-        if (issue == undefined) {
+        if (!issue) {
             logger.debug(`Lifecycle event is missing issue and/or repo node`);
             return null;
         }
@@ -76,8 +77,8 @@ export class IssueCardLifecycleHandler<R> extends LifecycleHandler<R> {
         const configuration: Lifecycle = {
             name: LifecyclePreferences.issue.id,
             nodes,
-            renderers: this.contributors.renderers(repo),
-            contributors: this.contributors.actions(repo),
+            renderers: _.flatten((this.contributors.renderers || []).map(r => r(repo))),
+            contributors: _.flatten((this.contributors.actions || []).map(a => a(repo))),
             id: `issue_lifecycle/${repo.owner}/${repo.name}/${issue.number}`,
             timestamp,
             channels: [{
@@ -110,7 +111,7 @@ export class IssueCardLifecycleHandler<R> extends LifecycleHandler<R> {
 export class IssueLifecycleHandler<R> extends LifecycleHandler<R> {
 
     constructor(private readonly extractNodes: (event: EventFired<R>) => [graphql.IssueToIssueLifecycle.Issue, graphql.IssueFields.Repo, string],
-                private readonly _extractPreferences: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
+                private readonly ep: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
                 private readonly contributors: Contributions) {
         super();
     }
@@ -126,12 +127,12 @@ export class IssueLifecycleHandler<R> extends LifecycleHandler<R> {
         const nodes: any[] = [];
         const [issue, repo, timestamp] = this.extractNodes(event);
 
-        if (issue != undefined) {
+        if (!!issue) {
             nodes.push(issue);
         }
 
         // Verify that there is at least a issue and repo node
-        if (issue == undefined) {
+        if (!issue) {
             logger.debug(`Lifecycle event is missing issue and/or repo node`);
             return null;
         }
@@ -139,8 +140,8 @@ export class IssueLifecycleHandler<R> extends LifecycleHandler<R> {
         const configuration: Lifecycle = {
             name: LifecyclePreferences.issue.id,
             nodes,
-            renderers: this.contributors.renderers(repo),
-            contributors: this.contributors.actions(repo),
+            renderers: _.flatten((this.contributors.renderers || []).map(r => r(repo))),
+            contributors: _.flatten((this.contributors.actions || []).map(a => a(repo))),
             id: `issue_lifecycle/${repo.owner}/${repo.name}/${issue.number}`,
             timestamp,
             channels: repo.channels.map(c => ({ name: c.name, teamId: c.team.id })),
@@ -156,7 +157,7 @@ export class IssueLifecycleHandler<R> extends LifecycleHandler<R> {
     }
 
     protected extractPreferences(event: EventFired<R>): { [teamId: string]: Preferences[] } {
-        return this._extractPreferences(event);
+        return this.ep(event);
     }
 
 }

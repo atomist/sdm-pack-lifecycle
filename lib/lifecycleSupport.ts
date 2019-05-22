@@ -172,8 +172,8 @@ export type RendererFactory<T, M, A> = (event: T) => Array<NodeRenderer<any, M, 
 export type ActionFactory<T, A> = (event: T) => Array<ActionContributor<any, A>>;
 
 export interface Contributions<T = any, M = any, A = any> {
-    renderers?: RendererFactory<T, M, A>;
-    actions?: ActionFactory<T, A>;
+    renderers?: Array<RendererFactory<T, M, A>>;
+    actions?: Array<ActionFactory<T, A>>;
 }
 
 export interface LifecycleOptions {
@@ -204,14 +204,14 @@ export interface LifecycleOptions {
 export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
     branch: {
         chat: {
-            renderers: () => [
+            renderers: [() => [
                 new BranchNodeRenderer(),
-            ],
+            ]],
         },
     },
     comment: {
         chat: {
-            renderers: () => [
+            renderers: [() => [
                 new cr.IssueCommentNodeRenderer(),
                 new cr.PullRequestCommentNodeRenderer(),
                 new ReferencedIssuesNodeRenderer(),
@@ -223,52 +223,54 @@ export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
                     } else {
                         return false;
                     }
-                })],
+                })]],
         },
     },
     issue: {
         chat: {
-            renderers: () => [
+            renderers: [() => [
                 new ir.IssueNodeRenderer(),
                 new ir.MoreNodeRenderer(),
                 new ReferencedIssuesNodeRenderer(),
-                new AttachImagesNodeRenderer(node => node.state === "open")],
+                new AttachImagesNodeRenderer(node => node.state === "open"),
+            ]],
         },
         web: {
-            renderers: () => [
+            renderers: [() => [
                 new icr.IssueCardNodeRenderer(),
                 new icr.CommentCardNodeRenderer(),
                 new icr.CorrelationsCardNodeRenderer(),
                 new icr.ReferencedIssueCardNodeRenderer(),
-                new CollaboratorCardNodeRenderer(node => node.body != undefined),
-            ],
+                new CollaboratorCardNodeRenderer(node => !!node.body),
+            ]],
         },
     },
     pullRequest: {
         chat: {
-            renderers: () => [
+            renderers: [() => [
                 new prr.PullRequestNodeRenderer(),
                 new prr.CommitNodeRenderer(),
                 new prr.BuildNodeRenderer(),
                 new prr.StatusNodeRenderer(),
                 new prr.ReviewNodeRenderer(),
                 new ReferencedIssuesNodeRenderer(),
-                new AttachImagesNodeRenderer(node => node.state === "open")],
+                new AttachImagesNodeRenderer(node => node.state === "open"),
+            ]],
         },
         web: {
-            renderers: () => [
+            renderers: [() => [
                 new prc.PullRequestCardNodeRenderer(),
                 new prc.CommitCardNodeRenderer(),
                 new prc.BuildCardNodeRenderer(),
                 new prc.StatusCardNodeRenderer(),
                 new prc.ReviewCardNodeRenderer(),
-                new CollaboratorCardNodeRenderer(node => node.baseBranchName != undefined),
-            ],
+                new CollaboratorCardNodeRenderer(node => !!node.baseBranchName),
+            ]],
         },
     },
     push: {
         chat: {
-            renderers: () => [
+            renderers: [() => [
                 new pr.PushNodeRenderer(),
                 new pr.CommitNodeRenderer(),
                 new sr.GoalSetNodeRenderer(),
@@ -283,10 +285,11 @@ export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
                 new pr.K8PodNodeRenderer(),
                 new pr.BlackDuckFingerprintNodeRenderer(),
                 new pr.ExpandAttachmentsNodeRenderer(),
-                new pr.ExpandNodeRenderer()],
+                new pr.ExpandNodeRenderer(),
+            ]],
         },
         web: {
-            renderers: () => [
+            renderers: [() => [
                 new EventsCardNodeRenderer(node => !!node.after),
                 new pc.PushCardNodeRenderer(),
                 new pc.CommitCardNodeRenderer(),
@@ -299,14 +302,15 @@ export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
                 new pc.ApplicationCardNodeRenderer(),
                 new pc.K8PodCardNodeRenderer(),
                 new CollaboratorCardNodeRenderer(node => !!node.after),
-            ],
+            ]],
         },
     },
     review: {
         chat: {
-            renderers: () => [
+            renderers: [() => [
                 new rr.ReviewNodeRenderer(),
-                new rr.ReviewDetailNodeRenderer()],
+                new rr.ReviewDetailNodeRenderer(),
+            ]],
         },
     },
 };

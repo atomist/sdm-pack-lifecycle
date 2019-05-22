@@ -20,6 +20,7 @@ import {
     logger,
 } from "@atomist/automation-client";
 import { SlackMessage } from "@atomist/slack-messages";
+import * as _ from "lodash";
 import {
     CardMessage,
     newCardMessage,
@@ -59,17 +60,17 @@ export class PullRequestCardLifecycleHandler<R> extends LifecycleHandler<R> {
         const nodes = [];
         const [pullrequest, repo, timestamp, updateOnly] = this.extractNodes(event);
 
-        if (repo != undefined) {
+        if (!!repo) {
             nodes.push(repo);
         }
 
         // PullRequest lifecycle starts with, drum roll, a PullRequest
-        if (pullrequest != undefined) {
+        if (!!pullrequest) {
             nodes.push(pullrequest);
         }
 
         // Verify that there is at least a pullrequest and repo node
-        if (pullrequest == undefined || repo == undefined) {
+        if (!pullrequest || !repo) {
             logger.debug(`Lifecycle event is missing pullrequest and/or repo node`);
             return null;
         } else if (pullrequest.merged && !pullrequest.merger) {
@@ -80,8 +81,8 @@ export class PullRequestCardLifecycleHandler<R> extends LifecycleHandler<R> {
         const configuration: Lifecycle = {
             name: LifecyclePreferences.pull_request.id,
             nodes,
-            renderers: this.contributors.renderers(repo),
-            contributors: this.contributors.actions(repo),
+            renderers: _.flatten((this.contributors.renderers || []).map(r => r(repo))),
+            contributors: _.flatten((this.contributors.actions || []).map(a => a(repo))),
             id: `pullrequest_lifecycle/${repo.owner}/${repo.name}/${pullrequest.number}`,
             timestamp,
             // ttl: (1000 * 60 * 60 * 8).toString(),
@@ -112,7 +113,7 @@ export class PullRequestLifecycleHandler<R> extends LifecycleHandler<R> {
                     graphql.PullRequestFields.Repo,
                     string,
                     boolean],
-                private readonly _extractPreferences: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
+                private readonly ep: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
                 private readonly contributors: Contributions) {
         super();
     }
@@ -128,17 +129,17 @@ export class PullRequestLifecycleHandler<R> extends LifecycleHandler<R> {
         const nodes = [];
         const [pullrequest, repo, timestamp, updateOnly] = this.extractNodes(event);
 
-        if (repo != undefined) {
+        if (!!repo) {
             nodes.push(repo);
         }
 
         // PullRequest lifecycle starts with, drum roll, a PullRequest
-        if (pullrequest != undefined) {
+        if (!!pullrequest) {
             nodes.push(pullrequest);
         }
 
         // Verify that there is at least a pullrequest and repo node
-        if (pullrequest == undefined || repo == undefined) {
+        if (!pullrequest || !repo) {
             logger.debug(`Lifecycle event is missing pullrequest and/or repo node`);
             return null;
         } else if (pullrequest.merged && !pullrequest.merger) {
@@ -149,8 +150,8 @@ export class PullRequestLifecycleHandler<R> extends LifecycleHandler<R> {
         const configuration: Lifecycle = {
             name: LifecyclePreferences.pull_request.id,
             nodes,
-            renderers: this.contributors.renderers(repo),
-            contributors: this.contributors.actions(repo),
+            renderers: _.flatten((this.contributors.renderers || []).map(r => r(repo))),
+            contributors: _.flatten((this.contributors.actions || []).map(a => a(repo))),
             id: `pullrequest_lifecycle/${repo.owner}/${repo.name}/${pullrequest.number}`,
             timestamp,
             // ttl: (1000 * 60 * 60 * 8).toString(),
@@ -168,7 +169,7 @@ export class PullRequestLifecycleHandler<R> extends LifecycleHandler<R> {
     }
 
     protected extractPreferences(event: EventFired<R>): { [teamId: string]: Preferences[] } {
-        return this._extractPreferences(event);
+        return this.ep(event);
     }
 
 }

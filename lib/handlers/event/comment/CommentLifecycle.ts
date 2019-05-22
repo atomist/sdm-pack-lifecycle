@@ -19,6 +19,7 @@ import {
     logger,
 } from "@atomist/automation-client";
 import { SlackMessage } from "@atomist/slack-messages";
+import * as _ from "lodash";
 import {
     Lifecycle,
     LifecycleHandler,
@@ -35,7 +36,7 @@ export class CommentLifecycleHandler<R> extends LifecycleHandler<R> {
                     graphql.PullRequestToPullRequestCommentLifecycle.PullRequest,
                     graphql.IssueToIssueCommentLifecycle.Repo,
                     boolean],
-                private readonly _extractPreferences: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
+                private readonly ep: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
                 private readonly contributors: Contributions) {
         super();
     }
@@ -50,37 +51,37 @@ export class CommentLifecycleHandler<R> extends LifecycleHandler<R> {
     protected prepareLifecycle(event: EventFired<R>): Lifecycle[] {
         const [comments, issue, pullRequest, repo, updateOnly] = this.extractNodes(event);
 
-        if (comments != undefined) {
+        if (!!comments) {
             return comments.map(comment => {
                 const nodes = [];
 
-                if (repo != undefined) {
+                if (!!repo) {
                     nodes.push(repo);
                 }
 
-                if (issue != undefined) {
+                if (!!issue) {
                     nodes.push(issue);
                 }
 
-                if (pullRequest != undefined) {
+                if (!!pullRequest) {
                     nodes.push(pullRequest);
                 }
 
                 nodes.push(comment);
 
                 // Verify that there is at least a comment and repo node
-                if (comment == undefined || repo == undefined) {
+                if (!comment || !repo) {
                     logger.debug(`Lifecycle event is missing comment and/or repo node`);
                     return null;
                 }
 
-                const id = issue != undefined ? issue.number : pullRequest.number;
+                const id = !!issue ? issue.number : pullRequest.number;
 
                 const configuration: Lifecycle = {
                     name: LifecyclePreferences.comment.id,
                     nodes,
-                    renderers: this.contributors.renderers(repo),
-                    contributors: this.contributors.actions(repo),
+                    renderers: _.flatten((this.contributors.renderers || []).map(r => r(repo))),
+                    contributors: _.flatten((this.contributors.actions || []).map(a => a(repo))),
                     id: `comment_lifecycle/${repo.owner}/${repo.name}/${id}/${comment.gitHubId}`,
                     timestamp: Date.now().toString(),
                     post: updateOnly ? "update_only" : undefined,
@@ -103,6 +104,6 @@ export class CommentLifecycleHandler<R> extends LifecycleHandler<R> {
     }
 
     protected extractPreferences(event: EventFired<R>): { [teamId: string]: Preferences[] } {
-        return this._extractPreferences(event);
+        return this.ep(event);
     }
 }
