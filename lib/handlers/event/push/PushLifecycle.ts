@@ -15,10 +15,12 @@
  */
 
 import {
+    configurationValue,
     EventFired,
     HandlerContext,
     logger,
 } from "@atomist/automation-client";
+import { PreferenceStoreFactory } from "@atomist/sdm";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {
@@ -37,6 +39,7 @@ import {
     PushToPushLifecycle,
     SdmGoalFields,
 } from "../../../typings/types";
+import { subscribePreferenceKey } from "../../command/sdm/SubscribeToOwnGoalSets";
 import { LifecyclePreferences } from "../preferences";
 import { sortTagsByName } from "./rendering/PushNodeRenderers";
 
@@ -116,6 +119,15 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
     }
 
     protected async prepareMessage(lifecycle: Lifecycle, ctx: HandlerContext): Promise<SlackMessage> {
+        const push = lifecycle.extract("push") as PushToPushLifecycle.Push;
+        const login = _.get(push, "after.author.login");
+
+        if (!!login) {
+            const subscriptions = await configurationValue<PreferenceStoreFactory>("sdm.preferenceStoreFactory")(ctx)
+                .get<Channel[]>(subscribePreferenceKey(login), { defaultValue: [] });
+            lifecycle.channels.push(...subscriptions);
+        }
+
         return Promise.resolve({
             text: null,
             attachments: [],
