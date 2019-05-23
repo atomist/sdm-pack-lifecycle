@@ -30,7 +30,7 @@ import { ConfigureDirectMessageUserPreferences } from "./handlers/command/prefer
 import { ConfigureLifecyclePreferences } from "./handlers/command/preferences/ConfigureLifecyclePreferences";
 import { SetTeamPreference } from "./handlers/command/preferences/SetTeamPreference";
 import { SetUserPreference } from "./handlers/command/preferences/SetUserPreference";
-import { toggleOwnGoalSetsSubscription } from "./handlers/command/sdm/SubscribeToOwnGoalSets";
+import { toggleGoalSetsSubscription } from "./handlers/command/sdm/SubscribeToOwnGoalSets";
 import { UpdateSdmGoalDisplayState } from "./handlers/command/sdm/UpdateSdmGoalDisplayState";
 import { UpdateSdmGoalState } from "./handlers/command/sdm/UpdateSdmGoalState";
 import { AddBotToChannel } from "./handlers/command/slack/AddBotToChannel";
@@ -422,8 +422,8 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addCommand(adaptHandleCommand(UpdateSdmGoalState));
             sdm.addCommand(adaptHandleCommand(UpdateSdmGoalDisplayState));
             sdm.addCommand(cancelGoalSetsCommand(sdm));
-            sdm.addCommand(toggleOwnGoalSetsSubscription(sdm, true));
-            sdm.addCommand(toggleOwnGoalSetsSubscription(sdm, false));
+            sdm.addCommand(toggleGoalSetsSubscription(sdm, true));
+            sdm.addCommand(toggleGoalSetsSubscription(sdm, false));
 
             // Slack
             sdm.addCommand(adaptHandleCommand(AddBotToChannel));

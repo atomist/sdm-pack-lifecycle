@@ -22,32 +22,38 @@ import {
     slackSuccessMessage,
     SoftwareDeliveryMachine,
 } from "@atomist/sdm";
-import { channel } from "@atomist/slack-messages";
+import {
+    bold,
+    channel,
+} from "@atomist/slack-messages";
 import * as _ from "lodash";
 import { Channel } from "../../../lifecycle/Lifecycle";
 
 /**
- * Command to subscribe or unsubscribe from own goal sets
+ * Command to subscribe or unsubscribe from goal sets
  */
-export function toggleOwnGoalSetsSubscription(sdm: SoftwareDeliveryMachine,
-                                              subscribe: boolean)
-    : CommandHandlerRegistration<{ login: string, channelName: string, channelId: string, chatTeamId: string }> {
+export function toggleGoalSetsSubscription(sdm: SoftwareDeliveryMachine,
+                                           subscribe: boolean)
+    : CommandHandlerRegistration<{ userName: string, login: string, channelName: string, channelId: string, chatTeamId: string }> {
     return {
-        name: subscribe ? "SubscribeToOwnGoalSets" : "UnscribeFromOwnGoalSets",
+        name: subscribe ? "SubscribeToGoalSets" : "UnscribeFromGoalSets",
         tags: [],
-        intent: subscribe ? ["subscribe to own goal sets"] : ["unsubscribe from own goal sets"],
-        description: `${subscribe ? "Subscribe to" : "Unsubscribe from"} own goal sets`,
+        intent: subscribe ? ["subscribe to goal sets"] : ["unsubscribe from goal sets"],
+        description: `${subscribe ? "Subscribe to" : "Unsubscribe from"} goal sets`,
+        autoSubmit: true,
         parameters: {
+            userName: { description: `SCM login of the user you want to ${subscribe ? "subscribe to" : "unsubscribe from"}`, required: false },
             login: { uri: MappedParameters.GitHubUserLogin, declarationType: DeclarationType.Mapped },
             channelName: { uri: MappedParameters.SlackChannelName, declarationType: DeclarationType.Mapped },
             channelId: { uri: MappedParameters.SlackChannel, declarationType: DeclarationType.Mapped },
             chatTeamId: { uri: MappedParameters.SlackTeam, declarationType: DeclarationType.Mapped },
         },
         listener: async ci => {
+            const user = ci.parameters.userName || ci.parameters.login;
             if (subscribe) {
-                const subscriptions = await ci.preferences.get<Channel[]>(subscribePreferenceKey(ci.parameters.login), { defaultValue: [] });
+                const subscriptions = await ci.preferences.get<Channel[]>(subscribePreferenceKey(user), { defaultValue: [] });
                 await ci.preferences.put<Channel[]>(
-                    subscribePreferenceKey(ci.parameters.login),
+                    subscribePreferenceKey(user),
                     _.uniqBy([...subscriptions, {
                         name: ci.parameters.channelName,
                         teamId: ci.parameters.chatTeamId,
@@ -55,21 +61,21 @@ export function toggleOwnGoalSetsSubscription(sdm: SoftwareDeliveryMachine,
                 await ci.context.messageClient.respond(
                     slackSuccessMessage(
                         "Goal Set Subscription",
-                        `Successfully subscribed to own goal sets in ${channel(ci.parameters.channelId, ci.parameters.channelName)}`));
+                        `Successfully subscribed to goal sets of ${bold(user)} in ${channel(ci.parameters.channelId, ci.parameters.channelName)}`));
             } else {
-                const subscriptions = await ci.preferences.get<Channel[]>(subscribePreferenceKey(ci.parameters.login), { defaultValue: [] });
+                const subscriptions = await ci.preferences.get<Channel[]>(subscribePreferenceKey(user), { defaultValue: [] });
                 await ci.preferences.put<Channel[]>(
-                    subscribePreferenceKey(ci.parameters.login),
+                    subscribePreferenceKey(user),
                     subscriptions.filter(s => s.name !== ci.parameters.channelName && s.teamId === ci.parameters.chatTeamId));
                 await ci.context.messageClient.respond(
                     slackInfoMessage(
                         "Goal Set Subscription",
-                        `Successfully unsubscribed from own goal sets in ${channel(ci.parameters.channelId, ci.parameters.channelName)}`));
+                        `Successfully unsubscribed from goal sets of ${bold(user)} in ${channel(ci.parameters.channelId, ci.parameters.channelName)}`));
             }
         },
     };
 }
 
 export function subscribePreferenceKey(login: string): string {
-    return `@atomist/lifecycle.subscribed_to_own_goal_sets.${login}`;
+    return `@atomist/lifecycle.subscribed_to_goal_sets.${login}`;
 }
