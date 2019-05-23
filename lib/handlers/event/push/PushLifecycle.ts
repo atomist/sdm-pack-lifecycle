@@ -129,7 +129,7 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
         const pushes = this.extractNodes(event);
         const preferences = this.extractPreferences(event);
 
-        const lifecycles = [];
+        const lifecycles: Lifecycle[] = [];
         for (const push of  pushes.filter(p => p && p.after)) {
             const channels = this.filterChannels(push, preferences);
 
