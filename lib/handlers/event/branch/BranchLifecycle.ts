@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { EventFired } from "@atomist/automation-client";
+import {
+    EventFired,
+    HandlerContext,
+} from "@atomist/automation-client";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {
@@ -43,7 +46,7 @@ export class BranchLifecycle<R> extends LifecycleHandler<R> {
         });
     }
 
-    protected prepareLifecycle(event: EventFired<R>): Lifecycle[] {
+    protected async prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Promise<Lifecycle[]> {
         const [branches, repo, deleted] = this.extractNodes(event);
 
         if (!!branches) {

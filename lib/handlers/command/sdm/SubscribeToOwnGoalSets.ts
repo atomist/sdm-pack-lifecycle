@@ -26,6 +26,9 @@ import { channel } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import { Channel } from "../../../lifecycle/Lifecycle";
 
+/**
+ * Command to subscribe or unsubscribe from own goal sets
+ */
 export function toggleOwnGoalSetsSubscription(sdm: SoftwareDeliveryMachine,
                                               subscribe: boolean)
     : CommandHandlerRegistration<{ login: string, channelName: string, channelId: string, chatTeamId: string }> {

@@ -113,9 +113,9 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
 
     public defaultConfigurations: any = LifecycleDefaultConfiguration.lifecycles;
 
-    public handle(event: EventFired<R>, ctx: HandlerContext): Promise<HandlerResult> {
+    public async handle(event: EventFired<R>, ctx: HandlerContext): Promise<HandlerResult> {
         // Let the concrete handler configure the lifecycle message
-        const lifecycles = this.prepareLifecycle(event, ctx);
+        const lifecycles = await this.prepareLifecycle(event, ctx);
         const preferences = this.extractPreferences(event);
 
         // Bail out if something isn't correctly linked up
@@ -198,7 +198,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
      * Extension point to configure nodes and rendering of those nodes for a given path expression match.
      * @param event the cortex event the path expression matched
      */
-    protected abstract prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Lifecycle[];
+    protected abstract prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Promise<Lifecycle[]>;
 
     /**
      * Extension point to create an empty starting point for the lifecycle message.

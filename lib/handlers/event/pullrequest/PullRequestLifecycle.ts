@@ -56,7 +56,7 @@ export class PullRequestCardLifecycleHandler<R> extends LifecycleHandler<R> {
         return Promise.resolve(msg);
     }
 
-    protected prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Lifecycle[] {
+    protected async prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Promise<Lifecycle[]> {
         const nodes = [];
         const [pullrequest, repo, timestamp, updateOnly] = this.extractNodes(event);
 
@@ -125,7 +125,7 @@ export class PullRequestLifecycleHandler<R> extends LifecycleHandler<R> {
         });
     }
 
-    protected prepareLifecycle(event: EventFired<R>): Lifecycle[] {
+    protected async prepareLifecycle(event: EventFired<R>): Promise<Lifecycle[]> {
         const nodes = [];
         const [pullrequest, repo, timestamp, updateOnly] = this.extractNodes(event);
 

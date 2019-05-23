@@ -63,7 +63,7 @@ export class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
         return Promise.resolve(msg);
     }
 
-    protected prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Lifecycle[] {
+    protected async prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Promise<Lifecycle[]> {
         const pushes = this.extractNodes(event);
 
         return pushes.filter(p => p && p.after).map(push => {
@@ -119,27 +119,27 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
     }
 
     protected async prepareMessage(lifecycle: Lifecycle, ctx: HandlerContext): Promise<SlackMessage> {
-        const push = lifecycle.extract("push") as PushToPushLifecycle.Push;
-        const login = _.get(push, "after.author.login");
-
-        if (!!login) {
-            const subscriptions = await configurationValue<PreferenceStoreFactory>("sdm.preferenceStoreFactory")(ctx)
-                .get<Channel[]>(subscribePreferenceKey(login), { defaultValue: [] });
-            lifecycle.channels.push(...subscriptions);
-        }
-
         return Promise.resolve({
             text: null,
             attachments: [],
         });
     }
 
-    protected prepareLifecycle(event: EventFired<R>): Lifecycle[] {
+    protected async prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Promise<Lifecycle[]> {
         const pushes = this.extractNodes(event);
         const preferences = this.extractPreferences(event);
 
-        return pushes.filter(p => p && p.after).map(push => {
+        const lifecycles = [];
+        for (const push of  pushes.filter(p => p && p.after)) {
             const channels = this.filterChannels(push, preferences);
+
+            const login = _.get(push, "after.author.login");
+            if (!!login) {
+                const subscriptions = await configurationValue<PreferenceStoreFactory>("sdm.preferenceStoreFactory")(ctx)
+                    .get<Channel[]>(subscribePreferenceKey(login), { defaultValue: [] });
+                channels.push(...subscriptions);
+            }
+
             const nodes: any[] = orderNodes(push);
 
             // Verify that there is at least a push and repo node
@@ -171,8 +171,9 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     return null;
                 },
             };
-            return configuration;
-        });
+            lifecycles.push(configuration);
+        }
+        return lifecycles;
     }
 
     private filterChannels(push: graphql.PushToPushLifecycle.Push,

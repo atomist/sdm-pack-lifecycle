@@ -44,7 +44,7 @@ export class ReviewLifecycleHandler<R> extends LifecycleHandler<R> {
         });
     }
 
-    protected prepareLifecycle(event: EventFired<R>): Lifecycle[] {
+    protected async prepareLifecycle(event: EventFired<R>): Promise<Lifecycle[]> {
         const [reviews, timestamp] = this.extractNodes(event);
 
         if (reviews) {

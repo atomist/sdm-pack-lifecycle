@@ -16,6 +16,7 @@
 
 import {
     EventFired,
+    HandlerContext,
     logger,
 } from "@atomist/automation-client";
 import { SlackMessage } from "@atomist/slack-messages";
@@ -48,7 +49,7 @@ export class CommentLifecycleHandler<R> extends LifecycleHandler<R> {
         });
     }
 
-    protected prepareLifecycle(event: EventFired<R>): Lifecycle[] {
+    protected async prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Promise<Lifecycle[]> {
         const [comments, issue, pullRequest, repo, updateOnly] = this.extractNodes(event);
 
         if (!!comments) {

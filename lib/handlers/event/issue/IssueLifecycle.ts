@@ -56,7 +56,7 @@ export class IssueCardLifecycleHandler<R> extends LifecycleHandler<R> {
         return Promise.resolve(msg);
     }
 
-    protected prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Lifecycle[] {
+    protected async prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Promise<Lifecycle[]> {
         const nodes: any[] = [];
         const [issue, repo, comment, timestamp] = this.extractNodes(event);
 
@@ -123,7 +123,7 @@ export class IssueLifecycleHandler<R> extends LifecycleHandler<R> {
         });
     }
 
-    protected prepareLifecycle(event: EventFired<R>): Lifecycle[] {
+    protected async prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Promise<Lifecycle[]> {
         const nodes: any[] = [];
         const [issue, repo, timestamp] = this.extractNodes(event);
 
