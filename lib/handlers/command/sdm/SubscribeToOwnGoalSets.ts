@@ -34,7 +34,7 @@ import { Channel } from "../../../lifecycle/Lifecycle";
  */
 export function toggleGoalSetsSubscription(sdm: SoftwareDeliveryMachine,
                                            subscribe: boolean)
-    : CommandHandlerRegistration<{ userName: string, login: string, channelName: string, channelId: string, chatTeamId: string }> {
+    : CommandHandlerRegistration<{ login: string, scmLogin: string, channelName: string, channelId: string, chatTeamId: string }> {
     return {
         name: subscribe ? "SubscribeToGoalSets" : "UnscribeFromGoalSets",
         tags: [],
@@ -42,14 +42,14 @@ export function toggleGoalSetsSubscription(sdm: SoftwareDeliveryMachine,
         description: `${subscribe ? "Subscribe to" : "Unsubscribe from"} goal sets`,
         autoSubmit: true,
         parameters: {
-            userName: { description: `SCM login of the user you want to ${subscribe ? "subscribe to" : "unsubscribe from"}`, required: false },
-            login: { uri: MappedParameters.GitHubUserLogin, declarationType: DeclarationType.Mapped },
+            login: { description: `SCM login of the user you want to ${subscribe ? "subscribe to" : "unsubscribe from"}`, required: false },
+            scmLogin: { uri: MappedParameters.GitHubUserLogin, declarationType: DeclarationType.Mapped },
             channelName: { uri: MappedParameters.SlackChannelName, declarationType: DeclarationType.Mapped },
             channelId: { uri: MappedParameters.SlackChannel, declarationType: DeclarationType.Mapped },
             chatTeamId: { uri: MappedParameters.SlackTeam, declarationType: DeclarationType.Mapped },
         },
         listener: async ci => {
-            const user = ci.parameters.userName || ci.parameters.login;
+            const user = ci.parameters.login || ci.parameters.scmLogin;
             if (subscribe) {
                 const subscriptions = await ci.preferences.get<Channel[]>(subscribePreferenceKey(user), { defaultValue: [] });
                 await ci.preferences.put<Channel[]>(
