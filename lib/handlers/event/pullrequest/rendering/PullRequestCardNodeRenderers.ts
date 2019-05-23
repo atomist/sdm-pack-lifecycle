@@ -129,7 +129,7 @@ export class CommitCardNodeRenderer extends AbstractIdentifiableContribution
     public render(pr: graphql.PullRequestToPullRequestLifecycle.PullRequest, actions: Action[], msg: CardMessage,
                   context: RendererContext): Promise<CardMessage> {
         const repo = context.lifecycle.extract("repo");
-        const commits = _.uniqBy(pr.commits, c => c.sha).sort((c1, c2) => c2.timestamp.localeCompare(c1.timestamp));
+        const commits = _.uniqBy(pr.commits, c => c.sha).sort((c1, c2) => (c2.timestamp || "0").localeCompare(c1.timestamp));
 
         msg.correlations.push({
             type: "commit",
