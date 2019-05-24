@@ -44,6 +44,15 @@ fragment PushFields on Push {
         }
       }
     }
+    committer {
+      login
+      name
+      person {
+        chatId {
+          screenName
+        }
+      }
+    }
     statuses {
       context
       description
@@ -173,6 +182,15 @@ fragment PushFields on Push {
     author {
       login
       avatar
+      person {
+        chatId {
+          screenName
+        }
+      }
+    }
+    committer {
+      login
+      name
       person {
         chatId {
           screenName

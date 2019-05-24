@@ -133,8 +133,16 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
         for (const push of  pushes.filter(p => p && p.after)) {
             const channels = this.filterChannels(push, preferences);
 
-            const login = _.get(push, "after.author.login");
-            if (!!login) {
+            const logins: string[] = [];
+            logins.push(_.get(push, "after.author.login"));
+            logins.push(_.get(push, "after.committer.login"));
+
+            push.commits.forEach(c => {
+                logins.push(_.get(c, "author.login"));
+                logins.push(_.get(c, "committer.login"));
+            });
+
+            for (const login of _.uniq(logins)) {
                 const subscriptions = await configurationValue<PreferenceStoreFactory>("sdm.preferenceStoreFactory")(ctx)
                     .get<Channel[]>(subscribePreferenceKey(login), { defaultValue: [] });
                 channels.push(...subscriptions);
