@@ -82,7 +82,6 @@ export class SetTeamPreference implements HandleCommand {
     @Parameter({
         displayable: false,
         description: "id of the message to use for confirmation",
-        pattern: /^\S*$/,
         required: false,
     })
     public msgId: string;

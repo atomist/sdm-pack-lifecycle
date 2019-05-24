@@ -45,7 +45,7 @@ export const LifecyclePreferencesName = "lifecycle_preferences";
 export class ToggleCustomEmojiEnablement implements HandleCommand {
 
     @Parameter({
-        description: "id of the message to use for confirmation", pattern: /^.*$/,
+        description: "id of the message to use for confirmation",
         required: false,
         displayable: false,
     })

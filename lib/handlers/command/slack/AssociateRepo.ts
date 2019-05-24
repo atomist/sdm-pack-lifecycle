@@ -151,7 +151,7 @@ export class AssociateRepo implements HandleCommand {
     })
     public repo: string;
 
-    @Parameter({ pattern: /^\S*$/, displayable: false, required: false })
+    @Parameter({ displayable: false, required: false })
     public msgId: string;
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {

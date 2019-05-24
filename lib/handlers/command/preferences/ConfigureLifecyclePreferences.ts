@@ -36,7 +36,6 @@ import {
 import {
     Action,
     Attachment,
-    bold,
     channel,
     SlackMessage,
     url,
@@ -75,19 +74,22 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
 
     @Parameter({
         description: "lifecycle to configure", pattern: /^.*$/,
-        required: false, displayable: false,
+        required: false,
+        displayable: false,
     })
     public lifecycle: string;
 
     @Parameter({
-        description: "id of the message to use for confirmation", pattern: /^.*$/,
-        required: false, displayable: false,
+        description: "id of the message to use for confirmation",
+        required: false,
+        displayable: false,
     })
     public msgId: string;
 
     @Parameter({
-        description: "cancel configuration", pattern: /^.*$/,
-        required: false, displayable: false,
+        description: "cancel configuration",
+        required: false,
+        displayable: false,
     })
     public cancel: string;
 

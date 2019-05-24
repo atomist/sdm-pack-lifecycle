@@ -43,7 +43,7 @@ import { SetUserPreference } from "./SetUserPreference";
  * Configure DM preferences for the invoking user.
  */
 @CommandHandler("Configure DM preferences for the invoking user", "configure direct messages",
-    "configure dms", "configure dm preferences" )
+    "configure dms", "configure dm preferences")
 @Tags("preferences", "configure")
 export class ConfigureDirectMessageUserPreferences implements HandleCommand {
 
@@ -53,12 +53,18 @@ export class ConfigureDirectMessageUserPreferences implements HandleCommand {
     @MappedParameter(MappedParameters.SlackTeam, false)
     public teamId: string;
 
-    @Parameter({ description: "id of the message to use for confirmation", pattern: /^.*$/,
-        required: false, displayable: false })
+    @Parameter({
+        description: "id of the message to use for confirmation",
+        required: false,
+        displayable: false,
+    })
     public msgId: string;
 
-    @Parameter({ description: "cancel configuration", pattern: /^.*$/,
-        required: false, displayable: false })
+    @Parameter({
+        description: "cancel configuration",
+        required: false,
+        displayable: false,
+    })
     public cancel: string;
 
     public handle(ctx: HandlerContext): Promise<HandlerResult> {
@@ -82,13 +88,13 @@ export class ConfigureDirectMessageUserPreferences implements HandleCommand {
 
         } else {
             return ctx.graphClient.query<graphql.ChatId.Query, graphql.ChatId.Variables>({
-                    name: "chatId",
-                    variables: {
-                        teamId: this.teamId,
-                        chatId: this.requester,
-                    },
-                    options: QueryNoCacheOptions,
-                })
+                name: "chatId",
+                variables: {
+                    teamId: this.teamId,
+                    chatId: this.requester,
+                },
+                options: QueryNoCacheOptions,
+            })
                 .then(result => {
                     const preferences =
                         _.get(result, "ChatTeam[0].members[0].preferences");
@@ -120,7 +126,7 @@ export class ConfigureDirectMessageUserPreferences implements HandleCommand {
                 const actions: Action[] = [];
 
                 if (this.isDirectMessageDisabled(preferences, dmType.id)) {
-                    actions.push(buttonForCommand({text: "Enable", style: "primary" }, "SetUserPreference",
+                    actions.push(buttonForCommand({ text: "Enable", style: "primary" }, "SetUserPreference",
                         {
                             id,
                             key: DirectMessagePreferences.key,
@@ -129,7 +135,7 @@ export class ConfigureDirectMessageUserPreferences implements HandleCommand {
                             label: `'${dmType.name}' direct messages enabled`,
                         }));
                 } else {
-                    actions.push(buttonForCommand({text: "Disable", style: "danger" }, "SetUserPreference",
+                    actions.push(buttonForCommand({ text: "Disable", style: "danger" }, "SetUserPreference",
                         {
                             id,
                             key: DirectMessagePreferences.key,

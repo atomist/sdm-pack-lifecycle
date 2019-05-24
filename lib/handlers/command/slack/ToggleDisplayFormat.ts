@@ -33,8 +33,8 @@ import {
     SlackMessage,
 } from "@atomist/slack-messages";
 import * as _ from "lodash";
-import { SdmGoalDisplayFormat } from "../../../typings/types";
 import * as graphql from "../../../typings/types";
+import { SdmGoalDisplayFormat } from "../../../typings/types";
 
 export const LifecyclePreferencesName = "lifecycle_preferences";
 
@@ -42,8 +42,11 @@ export const LifecyclePreferencesName = "lifecycle_preferences";
 @Tags("slack")
 export class ToggleDisplayFormat implements HandleCommand {
 
-    @Parameter({ description: "id of the message to use for confirmation", pattern: /^.*$/,
-        required: false, displayable: false })
+    @Parameter({
+        description: "id of the message to use for confirmation",
+        required: false,
+        displayable: false,
+    })
     public msgId: string;
 
     @MappedParameter(MappedParameters.SlackTeam, false)
@@ -73,7 +76,7 @@ export class ToggleDisplayFormat implements HandleCommand {
                         value: JSON.stringify(preferences),
                     },
                 })
-                .then(() => preferencesState);
+                    .then(() => preferencesState);
             })
             .then(preferencesState => {
                 const enabled = !preferencesState.enabled;
@@ -86,7 +89,7 @@ export class ToggleDisplayFormat implements HandleCommand {
                         text,
                         fallback: text,
                         color: "#37A745",
-                        mrkdwn_in: [ "text" ],
+                        mrkdwn_in: ["text"],
                     }],
                 };
 
@@ -97,13 +100,13 @@ export class ToggleDisplayFormat implements HandleCommand {
 }
 
 export function isCompactStyleEnabled(teamId: string, ctx: HandlerContext)
-: Promise<{preferences: graphql.ChatTeamPreferences.Preferences, enabled: boolean}> {
+    : Promise<{ preferences: graphql.ChatTeamPreferences.Preferences, enabled: boolean }> {
     return ctx.graphClient.query<graphql.ChatTeamPreferences.Query,
         graphql.ChatTeamPreferences.Variables>({
-            name: "chatTeamPreferences",
-            variables: { teamId },
-            options: QueryNoCacheOptions,
-        })
+        name: "chatTeamPreferences",
+        variables: { teamId },
+        options: QueryNoCacheOptions,
+    })
         .then(result => {
             const preferences = (_.get(result, "ChatTeam[0].preferences")
                 || []) as graphql.ChatTeamPreferences.Preferences[];

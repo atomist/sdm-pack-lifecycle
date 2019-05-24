@@ -35,7 +35,7 @@ export class NoLinkRepo implements HandleCommand {
     @MappedParameter(MappedParameters.SlackChannelName)
     public channelName: string;
 
-    @Parameter({ pattern: /^\S*$/, displayable: false, required: false })
+    @Parameter({ displayable: false, required: false })
     public msgId: string;
 
     @Parameter({ pattern: /^[\S\s]*$/, displayable: false, required: false })

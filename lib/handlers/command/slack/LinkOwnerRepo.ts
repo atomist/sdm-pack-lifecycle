@@ -69,7 +69,7 @@ export class LinkOwnerRepo implements HandleCommand {
     })
     public repoProvider: string;
 
-    @Parameter({ pattern: /^\S*$/, displayable: false, required: false })
+    @Parameter({ displayable: false, required: false })
     public msgId: string;
 
     @Parameter({ pattern: /^[\S\s]*$/, displayable: false, required: false })
