@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+import * as slack from "@atomist/slack-messages";
 import "mocha";
 import * as assert from "power-assert";
-import * as slack from "@atomist/slack-messages";
 import { DefaultBotName } from "../../../../lib/handlers/command/slack/LinkRepo";
 import {
     extractScreenNameFromMapRepoMessageId,

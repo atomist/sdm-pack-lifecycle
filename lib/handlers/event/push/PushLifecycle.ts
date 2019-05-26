@@ -39,7 +39,7 @@ import {
     PushToPushLifecycle,
     SdmGoalFields,
 } from "../../../typings/types";
-import { subscribePreferenceKey } from "../../command/sdm/SubscribeToOwnGoalSets";
+import { subscribePreferenceKey } from "../../command/sdm/SubscribeToGoalSets";
 import { LifecyclePreferences } from "../preferences";
 import { sortTagsByName } from "./rendering/PushNodeRenderers";
 
