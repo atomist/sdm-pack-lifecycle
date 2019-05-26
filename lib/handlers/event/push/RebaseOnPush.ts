@@ -91,7 +91,7 @@ export function rebaseOnPush<T>(options: { commentCreator?: PullRequestCommentCr
                             pr,
                             credentials,
                             `Pull request rebase is in progress because @${push.after.author.login} pushed ${push.commits.length} ${
-                                push.commits.length === 1 ? "commit" : "commits"} to **${push.branch}**`);
+                                push.commits.length === 1 ? "commit" : "commits"} to **${push.branch}**.`);
                     }
 
                     await params.configuration.projectLoader.doWithProject<void>(
@@ -120,8 +120,9 @@ export function rebaseOnPush<T>(options: { commentCreator?: PullRequestCommentCr
                                     await options.commentUpdater(
                                         comment,
                                         credentials,
-                                        `Pull request rebase failed because branch **${pr.branchName}** couldn't be checked out`);
+                                        `Pull request rebase failed because branch **${pr.branchName}** couldn't be checked out.`);
                                 }
+                                return;
                             }
                             try {
                                 await execPromise("git", ["rebase", `origin/${pr.baseBranchName}`], { cwd: p.baseDir });
@@ -129,7 +130,7 @@ export function rebaseOnPush<T>(options: { commentCreator?: PullRequestCommentCr
                                 logger.warn("Failed to rebase PR branch: %s", e.message);
 
                                 const result = await execPromise("git", ["diff", "--name-only", "--diff-filter=U"], { cwd: p.baseDir });
-                                const conflicts = result.stdout.split("\n");
+                                const conflicts = result.stdout.trim().split("\n");
 
                                 if (!!options.commentUpdater) {
                                     await options.commentUpdater(
@@ -139,6 +140,7 @@ export function rebaseOnPush<T>(options: { commentCreator?: PullRequestCommentCr
 
 ${conflicts.map(c => `- ${codeLine(c)}`).join("\n")}`);
                                 }
+                                return;
                             }
 
                             try {
@@ -150,15 +152,16 @@ ${conflicts.map(c => `- ${codeLine(c)}`).join("\n")}`);
                                     await options.commentUpdater(
                                         comment,
                                         credentials,
-                                        `Pull request rebase failed because force push to **${pr.branchName}** errored`);
+                                        `Pull request rebase failed because force push to **${pr.branchName}** errored.`);
                                 }
+                                return;
                             }
 
                             if (!!options.commentUpdater) {
                                 await options.commentUpdater(
                                     comment,
                                     credentials,
-                                    `Pull request was successfully rebased onto ${codeLine(push.after.sha.slice(0, 7))} from @${push.after.author.login}`);
+                                    `Pull request was successfully rebased onto ${codeLine(push.after.sha.slice(0, 7))} from @${push.after.author.login}.`);
                             }
 
                         });
