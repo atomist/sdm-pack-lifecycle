@@ -123,6 +123,7 @@ import {
     pushToPushLifecycle,
 } from "./handlers/event/push/PushToPushLifecycle";
 import { pushToUnmappedRepo } from "./handlers/event/push/PushToUnmappedRepo";
+import { RebaseOnPush } from "./handlers/event/push/RebaseOnPush";
 import {
     releaseToPushCardLifecycle,
     releaseToPushLifecycle,
@@ -405,6 +406,8 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(sdmGoalToPushCardLifecycle(optsToUse.push.web));
             sdm.addEvent(statusToPushCardLifecycle(optsToUse.push.web));
             sdm.addEvent(tagToPushCardLifecycle(optsToUse.push.web));
+
+            sdm.addEvent(RebaseOnPush);
 
             // Review
             sdm.addEvent(notifyAuthorOnReview());

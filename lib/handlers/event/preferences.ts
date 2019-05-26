@@ -237,6 +237,12 @@ export const LifecycleActionPreferences: any = {
             description: "Auto merge a GitHub pull request after successful status checks and reviews",
             enabled: true,
         },
+        auto_rebase: {
+            id: "auto_rebase",
+            name: "Auto Rebase Pull Request",
+            description: "Auto rebase a GitHub pull request after pushes to the pull request base branch",
+            enabled: true,
+        },
         approve: {
             id: "approve",
             name: "Approve Breaking Change",

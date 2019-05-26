@@ -19,7 +19,6 @@ import * as deepmerge from "deepmerge";
 import {
     DefaultLifecycleRenderingOptions,
     LifecycleOptions,
-    lifecycleSupport,
 } from "../lib/lifecycleSupport";
 import {
     CommitMessageWarningPushActionContributor,
@@ -45,5 +44,7 @@ export const configuration = configure(async sdm => {
         ],
     });
 
-    sdm.addExtensionPacks(lifecycleSupport(lifecycleOptions));
+    // sdm.addExtensionPacks(lifecycleSupport(lifecycleOptions));
+
+    // sdm.addEvent(RebaseOnPush);
 });

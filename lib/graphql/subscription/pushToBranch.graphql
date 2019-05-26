@@ -1,0 +1,12 @@
+subscription pushToBranch {
+    Push {
+        after {
+            sha
+        }
+        repo {
+            owner
+            name
+        }
+        branch
+    }
+}
