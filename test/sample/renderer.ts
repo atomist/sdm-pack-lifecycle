@@ -92,7 +92,8 @@ export async function isDismissed(push: Pick<PushToPushLifecycle.Push, "repo">,
     if (!!psf) {
         return psf(rc.context).get<boolean>(
             DismissedPreferenceKey,
-            { defaultValue: false, scope: `${push.repo.owner}/${push.repo.name}` });
+            `${push.repo.owner}/${push.repo.name}`,
+            { defaultValue: false });
     } else {
         return false;
     }

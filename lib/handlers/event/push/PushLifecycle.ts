@@ -20,7 +20,10 @@ import {
     HandlerContext,
     logger,
 } from "@atomist/automation-client";
-import { PreferenceStoreFactory } from "@atomist/sdm";
+import {
+    PreferenceScope,
+    PreferenceStoreFactory,
+} from "@atomist/sdm";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {
@@ -144,7 +147,7 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
 
             for (const login of _.uniq(logins)) {
                 const subscriptions = await configurationValue<PreferenceStoreFactory>("sdm.preferenceStoreFactory")(ctx)
-                    .get<Channel[]>(subscribePreferenceKey(login), { defaultValue: [] });
+                    .get<Channel[]>(subscribePreferenceKey(login), PreferenceScope.Workspace, { defaultValue: [] });
                 channels.push(...subscriptions);
             }
 

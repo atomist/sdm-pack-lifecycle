@@ -18,6 +18,7 @@ import { MappedParameters } from "@atomist/automation-client";
 import {
     CommandHandlerRegistration,
     DeclarationType,
+    PreferenceScope,
     slackInfoMessage,
     slackSuccessMessage,
     SoftwareDeliveryMachine,
@@ -51,22 +52,24 @@ export function toggleGoalSetsSubscription(sdm: SoftwareDeliveryMachine,
         listener: async ci => {
             const login = ci.parameters.login || ci.parameters.scmLogin;
             if (subscribe) {
-                const subscriptions = await ci.preferences.get<Channel[]>(subscribePreferenceKey(login), { defaultValue: [] });
+                const subscriptions = await ci.preferences.get<Channel[]>(subscribePreferenceKey(login), PreferenceScope.Workspace, { defaultValue: [] });
                 await ci.preferences.put<Channel[]>(
                     subscribePreferenceKey(login),
                     _.uniqBy([...subscriptions, {
                         name: ci.parameters.channelName,
                         teamId: ci.parameters.chatTeamId,
-                    }], e => `${e.teamId}#${e.name}`));
+                    }], e => `${e.teamId}#${e.name}`),
+                    PreferenceScope.Workspace);
                 await ci.context.messageClient.respond(
                     slackSuccessMessage(
                         "Goal Set Subscription",
                         `Successfully subscribed to goal sets of ${bold(login)} in ${channel(ci.parameters.channelId, ci.parameters.channelName)}`));
             } else {
-                const subscriptions = await ci.preferences.get<Channel[]>(subscribePreferenceKey(login), { defaultValue: [] });
+                const subscriptions = await ci.preferences.get<Channel[]>(subscribePreferenceKey(login), PreferenceScope.Workspace, { defaultValue: [] });
                 await ci.preferences.put<Channel[]>(
                     subscribePreferenceKey(login),
-                    subscriptions.filter(s => s.name !== ci.parameters.channelName && s.teamId === ci.parameters.chatTeamId));
+                    subscriptions.filter(s => s.name !== ci.parameters.channelName && s.teamId === ci.parameters.chatTeamId),
+                    PreferenceScope.Workspace);
                 await ci.context.messageClient.respond(
                     slackInfoMessage(
                         "Goal Set Subscription",
