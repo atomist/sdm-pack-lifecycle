@@ -47,6 +47,10 @@ export {
 export {
     isFullRenderingEnabled,
 } from "./lib/handlers/event/push/rendering/PushNodeRenderers";
+export {
+    PullRequestCommentCreator,
+    PullRequestCommentUpdater,
+} from "./lib/handlers/event/push/RebaseOnPush";
 
 import * as graphql from "./lib/typings/types";
 
