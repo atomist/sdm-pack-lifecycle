@@ -15,6 +15,7 @@
  */
 
 import {
+    GitProject,
     GraphQL,
     logger,
     QueryNoCacheOptions,
@@ -23,6 +24,8 @@ import {
 import {
     EventHandlerRegistration,
     execPromise,
+    isLazyProjectLoader,
+    LazyProject,
     ParametersDefinition,
     resolveCredentialsPromise,
     SoftwareDeliveryMachineOptions,
@@ -85,6 +88,12 @@ export const RebaseOnPush: EventHandlerRegistration<PushToBranch.Subscription, R
                             detachHead: false,
                         },
                     }, async p => {
+
+                        // Trigger project materialization if needed
+                        if (isLazyProjectLoader(params.configuration.projectLoader) && !(p as any).materialized()) {
+                            await (p as any).materialize();
+                        }
+
                         try {
                             await execPromise("git", ["checkout", pr.branchName], { cwd: p.baseDir });
                             await execPromise("git", ["rebase", `origin/${pr.baseBranchName}`], { cwd: p.baseDir });
