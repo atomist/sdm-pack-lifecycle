@@ -123,7 +123,11 @@ import {
     pushToPushLifecycle,
 } from "./handlers/event/push/PushToPushLifecycle";
 import { pushToUnmappedRepo } from "./handlers/event/push/PushToUnmappedRepo";
-import { RebaseOnPush } from "./handlers/event/push/RebaseOnPush";
+import {
+    PullRequestCommentCreator,
+    PullRequestCommentUpdater,
+    rebaseOnPush,
+} from "./handlers/event/push/RebaseOnPush";
 import {
     releaseToPushCardLifecycle,
     releaseToPushLifecycle,
@@ -192,6 +196,10 @@ export interface LifecycleOptions {
     pullRequest?: {
         chat?: Contributions<PullRequestFields.Repo, SlackMessage, Action>;
         web?: Contributions<PullRequestFields.Repo, CardMessage, CardAction>;
+        rebase?: {
+            commentCreator?: PullRequestCommentCreator<any>;
+            commentUpdater?: PullRequestCommentUpdater<any>;
+        }
     };
     push?: {
         chat?: Contributions<PushToPushLifecycle.Push, SlackMessage, Action>;
@@ -407,7 +415,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(statusToPushCardLifecycle(optsToUse.push.web));
             sdm.addEvent(tagToPushCardLifecycle(optsToUse.push.web));
 
-            sdm.addEvent(RebaseOnPush);
+            sdm.addEvent(rebaseOnPush(optsToUse.pullRequest.rebase));
 
             // Review
             sdm.addEvent(notifyAuthorOnReview());
