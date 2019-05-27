@@ -136,7 +136,7 @@ export function rebaseOnPush<T>(options: { commentCreator?: PullRequestCommentCr
                                     await options.commentUpdater(
                                         comment,
                                         credentials,
-                                        `Pull request rebase failed because of following ${conflicts.length === 1 ? "conflict" : "conflicts"}:
+                                        `Pull request rebase failed because of following conflicting ${conflicts.length === 1 ? "file" : "files"}:
 
 ${conflicts.map(c => `- ${codeLine(c)}`).join("\n")}`);
                                 }
