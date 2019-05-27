@@ -140,7 +140,8 @@ ${commits}`);
                                     await options.commentUpdater(
                                         comment,
                                         credentials,
-                                        `Pull request rebase failed because of following conflicting ${conflicts.length === 1 ? "file" : "files"}:
+                                        `Pull request rebase to ${codeLine(push.after.sha.slice(0, 7))} by @${
+                                            push.after.author.login} failed because of following conflicting ${conflicts.length === 1 ? "file" : "files"}:
 ${conflicts.map(c => `- ${codeLine(c)}`).join("\n")}`);
                                 }
                                 return;
@@ -164,7 +165,7 @@ ${conflicts.map(c => `- ${codeLine(c)}`).join("\n")}`);
                                 await options.commentUpdater(
                                     comment,
                                     credentials,
-                                    `Pull request was successfully rebased onto ${codeLine(push.after.sha.slice(0, 7))} from @${push.after.author.login}:
+                                    `Pull request was successfully rebased onto ${codeLine(push.after.sha.slice(0, 7))} by @${push.after.author.login}:
 ${commits}`);
                             }
 
