@@ -38,6 +38,7 @@ import {
     PullRequestByRepoAndBranch,
     PushToBranch,
 } from "../../../typings/types";
+import { truncateCommitMessage } from "../../../util/helpers";
 
 type RebaseOnPushParametersDefinition = { configuration: SoftwareDeliveryMachineOptions } & LifecycleParametersDefinition;
 
@@ -80,6 +81,8 @@ export function rebaseOnPush<T>(options: { commentCreator?: PullRequestCommentCr
 
             if (!!prs && !!prs.PullRequest) {
 
+                const commits = push.commits.map(c => `- ${c.sha.slice(0, 7)} _${truncateCommitMessage(c.message, push.repo)}_`).join("\n");
+
                 for (const pr of prs.PullRequest) {
 
                     const id = params.configuration.repoRefResolver.toRemoteRepoRef(pr.repo, {});
@@ -91,7 +94,8 @@ export function rebaseOnPush<T>(options: { commentCreator?: PullRequestCommentCr
                             pr,
                             credentials,
                             `Pull request rebase is in progress because @${push.after.author.login} pushed ${push.commits.length} ${
-                                push.commits.length === 1 ? "commit" : "commits"} to **${push.branch}**.`);
+                                push.commits.length === 1 ? "commit" : "commits"} to **${push.branch}**:
+${commits}`);
                     }
 
                     await params.configuration.projectLoader.doWithProject<void>(
@@ -137,7 +141,6 @@ export function rebaseOnPush<T>(options: { commentCreator?: PullRequestCommentCr
                                         comment,
                                         credentials,
                                         `Pull request rebase failed because of following conflicting ${conflicts.length === 1 ? "file" : "files"}:
-
 ${conflicts.map(c => `- ${codeLine(c)}`).join("\n")}`);
                                 }
                                 return;
@@ -161,7 +164,8 @@ ${conflicts.map(c => `- ${codeLine(c)}`).join("\n")}`);
                                 await options.commentUpdater(
                                     comment,
                                     credentials,
-                                    `Pull request was successfully rebased onto ${codeLine(push.after.sha.slice(0, 7))} from @${push.after.author.login}.`);
+                                    `Pull request was successfully rebased onto ${codeLine(push.after.sha.slice(0, 7))} from @${push.after.author.login}:
+${commits}`);
                             }
 
                         });
