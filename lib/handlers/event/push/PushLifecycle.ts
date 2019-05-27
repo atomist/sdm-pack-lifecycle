@@ -147,7 +147,7 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
 
             for (const login of _.uniq(logins)) {
                 const subscriptions = await configurationValue<PreferenceStoreFactory>("sdm.preferenceStoreFactory")(ctx)
-                    .get<Channel[]>(subscribePreferenceKey(login), PreferenceScope.Workspace, { defaultValue: [] });
+                    .get<Channel[]>(subscribePreferenceKey(login), { defaultValue: [] });
                 channels.push(...subscriptions);
             }
 

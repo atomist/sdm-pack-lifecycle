@@ -90,7 +90,7 @@ export const DismissCommitMessageWarningCommand: CommandHandlerRegistration<{ ow
         await ci.preferences.put<boolean>(
             DismissedPreferenceKey,
             true,
-            slug);
+            { scope: slug });
         await ci.context.messageClient.respond(
             slackSuccessMessage(
                 "Dismiss Commit Format Warnings",
