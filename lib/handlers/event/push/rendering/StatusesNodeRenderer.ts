@@ -308,7 +308,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
 
                 if (displayFormat === SdmGoalDisplayFormat.full) {
                     const start = (s.provenance.find(p => p.name === "RequestDownstreamGoalsOnGoalSuccess") || _.minBy(s.provenance, "ts")).ts;
-                    const end = s.ts;
+                    const end = (s.provenance.find(p => p.name === "FulfillGoalOnRequested") || s).ts;
                     if (end - start > 0) {
                         details += ` \u00B7 ${formatDuration(end - start)}`;
                     }
