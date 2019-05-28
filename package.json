@@ -36,8 +36,6 @@
     "format-date": "^1.0.0",
     "js-yaml": "^3.10.0",
     "lodash": "^4.17.4",
-    "moment": "^2.22.0",
-    "moment-duration-format": "^2.2.2",
     "murmurhash3js": "^3.0.1",
     "semver": "^5.5.1",
     "toposort": "^2.0.2"

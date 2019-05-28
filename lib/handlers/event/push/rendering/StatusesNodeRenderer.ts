@@ -15,6 +15,7 @@
  */
 
 import { logger } from "@atomist/automation-client";
+import { formatDuration } from "@atomist/sdm-core/lib/util/misc/time";
 import {
     Action,
     Attachment,
@@ -36,7 +37,6 @@ import {
     RendererContext,
     SlackNodeRenderer,
 } from "../../../../lifecycle/Lifecycle";
-import * as graphql from "../../../../typings/types";
 import {
     PushToPushLifecycle,
     SdmGoalDisplayFormat,
@@ -53,7 +53,7 @@ import { GoalSet } from "../PushLifecycle";
 import { EMOJI_SCHEME } from "./PushNodeRenderers";
 
 export class StatusesNodeRenderer extends AbstractIdentifiableContribution
-    implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
+    implements SlackNodeRenderer<PushToPushLifecycle.Push> {
 
     public showOnPush: boolean;
     public emojiStyle: "default" | "atomist";
@@ -75,7 +75,7 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
         }
     }
 
-    public render(push: graphql.PushToPushLifecycle.Push,
+    public render(push: PushToPushLifecycle.Push,
                   actions: Action[],
                   msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
@@ -134,7 +134,7 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
 }
 
 export class StatusesCardNodeRenderer extends AbstractIdentifiableContribution
-    implements CardNodeRenderer<graphql.PushToPushLifecycle.Push> {
+    implements CardNodeRenderer<PushToPushLifecycle.Push> {
 
     constructor() {
         super("statuses");
@@ -148,7 +148,7 @@ export class StatusesCardNodeRenderer extends AbstractIdentifiableContribution
         }
     }
 
-    public render(push: graphql.PushToPushLifecycle.Push,
+    public render(push: PushToPushLifecycle.Push,
                   actions: CardAction[],
                   msg: CardMessage,
                   context: RendererContext): Promise<CardMessage> {
@@ -305,6 +305,15 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                         details += ` \u00B7 approved by @${s.approval.userId}`;
                     }
                 }
+
+                if (displayFormat === SdmGoalDisplayFormat.full) {
+                    const start = (s.provenance.find(p => p.name === "RequestDownstreamGoalsOnGoalSuccess") || _.minBy(s.provenance, "ts")).ts;
+                    const end = s.ts;
+                    if (end - start > 0) {
+                        details += ` \u00B7 ${formatDuration(end - start)}`;
+                    }
+                }
+
                 if (!!s.url && s.url.length > 0) {
                     return `${this.emoji(s.state)} ${url(s.url, s.description)}${details}`;
                 } else {
@@ -387,11 +396,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             const max = _.max(ts);
             const dur = max - min;
 
-            const moment = require("moment");
-            // The following require is needed to initialize the format function
-            require("moment-duration-format");
-
-            const duration = moment.duration(dur < 0 ? 0 : dur, "millisecond").format("h[h] m[m] s[s]");
+            const duration = formatDuration(dur < 0 ? 0 : dur);
 
             const creator = _.minBy(
                 _.flatten<SdmGoalsByCommit.Provenance>(
