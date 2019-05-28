@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist/sdm-pack-lifecycle/compare/0.1.0...HEAD)
 
+### Added
+
+-   Show goal durations in full rendering. [b0478c2](https://github.com/atomist/sdm-pack-lifecycle/commit/b0478c2446e77989d5edf83f56c36293e02caed1)
+
 ### Changed
 
 -   Disable review lifecycle by default. [5defe4d](https://github.com/atomist/sdm-pack-lifecycle/commit/5defe4d04a7241dcd03bbcfd8b0d7e3386a181fb)
