@@ -106,7 +106,7 @@ export class CommitCardNodeRenderer extends AbstractIdentifiableContribution
                   context: RendererContext): Promise<CardMessage> {
         const repo = context.lifecycle.extract("repo");
         const commits = _.uniqBy(push.commits, c => c.sha)
-            .sort((c1, c2) => c2.timestamp.localeCompare(c1.timestamp));
+            .sort((c1, c2) => c1.timestamp.localeCompare(c2.timestamp));
         const author = getAuthor(push.after);
 
         msg.body = {
