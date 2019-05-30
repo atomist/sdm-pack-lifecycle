@@ -163,7 +163,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
                         context: RendererContext): Promise<SlackMessage> {
         const repo = context.lifecycle.extract("repo");
         const slug = repo.owner + "/" + repo.name + "/" + push.branch;
-        const commits = _.uniqBy(push.commits, c => c.sha).sort((c1, c2) => c1.timestamp.localeCompare(c2.timestamp));
+        const commits = _.uniqBy(push.commits, c => c.sha).sort((c1, c2) => c2.timestamp.localeCompare(c1.timestamp));
 
         const commitsGroupedByAuthor = [];
 
