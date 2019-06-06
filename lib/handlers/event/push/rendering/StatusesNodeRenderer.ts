@@ -306,7 +306,12 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                     }
                 }
 
-                if (displayFormat === SdmGoalDisplayFormat.full) {
+                if (displayFormat === SdmGoalDisplayFormat.full &&
+                    ![SdmGoalState.planned,
+                        SdmGoalState.requested,
+                        SdmGoalState.skipped,
+                        SdmGoalState.pre_approved,
+                        SdmGoalState.waiting_for_pre_approval].includes(s.state)) {
                     const start = (s.provenance.find(p => p.name === "RequestDownstreamGoalsOnGoalSuccess") || _.minBy(s.provenance, "ts")).ts;
                     const end = (s.provenance.find(p => p.name === "FulfillGoalOnRequested") || s).ts;
                     if (end - start > 0) {
