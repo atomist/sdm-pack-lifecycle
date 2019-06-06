@@ -367,7 +367,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                     label = "completed";
                 }
                 lines.push(
-                    `${this.emoji(state)} ${url(link, `Goal set ${italic(gs)} ${
+                    `${this.emoji(state)} ${url(link, `Goal set ${italic(gs.toLowerCase())} ${
                         codeLine(gsid.slice(0, 7))} ${label}`)}`);
             }
 
@@ -409,7 +409,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             if (displayFormat === SdmGoalDisplayFormat.full) {
                 if (creator) {
                     attachment.footer =
-                        `${creator.registration}:${creator.version} \u00B7 ${lastGoals[0].goalSet} \u00B7 ${
+                        `${creator.registration}:${creator.version} \u00B7 ${lastGoals[0].goalSet.toLowerCase()} \u00B7 ${
                             url(link, gsid.slice(0, 7))} \u00B7 ${duration}`;
                 } else {
                     attachment.footer = `${url(link, gsid.slice(0, 7))} \u00B7 ${duration}`;
@@ -445,7 +445,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 }
 
                 attachment.footer_icon = "https://images.atomist.com/rug/goals.png";
-                attachment.footer = `${url(link, lastGoals[0].goalSet)} \u00B7 ${duration}`;
+                attachment.footer = `${url(link, lastGoals[0].goalSet.toLowerCase())} \u00B7 ${duration}`;
                 if (this.emojiStyle === "atomist") {
                     attachment.thumb_url =
                         `https://badge.atomist.services/v2/progress/${state}/${inProcessCount}/${totalCount}`;
