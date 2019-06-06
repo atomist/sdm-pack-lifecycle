@@ -15,6 +15,7 @@
  */
 
 import {
+    addressSlackChannels,
     configurationValue,
     EventFired,
     HandlerContext,
@@ -160,13 +161,22 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
             }
 
             const mostCurrentGoal = _.maxBy(push.goals || [], "ts");
+            const ids = createId(push);
+
+            if (!!ids.toDelete) {
+                for (const id of ids.toDelete) {
+                    for (const channel of channels) {
+                        await ctx.messageClient.delete(addressSlackChannels(channel.teamId, channel.name), { id });
+                    }
+                }
+            }
 
             const configuration: Lifecycle = {
                 name: LifecyclePreferences.push.id,
                 nodes,
                 renderers: _.flatten((this.contributors.renderers || []).map(r => r(push))),
                 contributors: _.flatten((this.contributors.actions || []).map(a => a(push))),
-                id: createId(push),
+                id: ids.id,
                 timestamp: mostCurrentGoal ? mostCurrentGoal.ts.toString() : Date.now().toString(),
                 channels,
                 extract: (type: string) => {
@@ -326,16 +336,20 @@ function matches(pattern: string, target: string): boolean {
     return !!match && match.length > 0;
 }
 
-function createId(push: graphql.PushToPushLifecycle.Push): string {
+function createId(push: graphql.PushToPushLifecycle.Push): { id: string, toDelete?: string[] } {
     const id = `push_lifecycle/${push.repo.owner}/${push.repo.name}/${push.branch}/${push.after.sha}`;
     if (!!push.goalSets) {
         if (push.goalSets.length > 1) {
-            return `${id}/${push.goalSets.length}`;
+            const toDelete = [id];
+            for (let i = 1, len = push.goalSets.length; i < len; i++) {
+                toDelete.push(`${id}/${i}`);
+            }
+            return { id: `${id}/${push.goalSets.length}`, toDelete };
         } else if (push.goalSets.length === 1 && push.goalSets[0].provenance.name !== "SetGoalsOnPush") {
-            return `${id}/${push.goalSets.length}`;
+            return { id: `${id}/${push.goalSets.length}`, toDelete: [id] };
         }
     }
-    return id;
+    return { id };
 }
 
 export interface Domain {
