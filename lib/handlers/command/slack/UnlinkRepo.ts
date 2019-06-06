@@ -37,6 +37,7 @@ import {
 
 @ConfigurableCommandHandler("Unlink a repository and channel", {
     intent: ["unlink repo", "unlink repository"],
+    autoSubmit: true,
 })
 @Tags("slack", "repo")
 export class UnlinkRepo implements HandleCommand {
@@ -50,6 +51,9 @@ export class UnlinkRepo implements HandleCommand {
     @MappedParameter(MappedParameters.SlackChannelName)
     public channelName: string;
 
+    @MappedParameter(MappedParameters.GitHubRepository)
+    public name: string;
+
     @MappedParameter(MappedParameters.GitHubOwnerWithUser)
     public owner: string;
 
@@ -58,16 +62,6 @@ export class UnlinkRepo implements HandleCommand {
 
     @MappedParameter(MappedParameters.GitHubRepositoryProvider)
     public provider: string;
-
-    @Parameter({
-        displayName: "Repository Name",
-        description: "name of the repository to link",
-        pattern: /^[-.\w]+$/,
-        minLength: 1,
-        maxLength: 100,
-        required: true,
-    })
-    public name: string;
 
     @Parameter({ displayable: false, required: false })
     public msgId: string;
@@ -80,15 +74,15 @@ export class UnlinkRepo implements HandleCommand {
                 } else {
                     return ctx.graphClient.mutate<graphql.UnlinkSlackChannelFromRepo.Mutation,
                         graphql.UnlinkSlackChannelFromRepo.Variables>({
-                            name: "unlinkSlackChannelFromRepo",
-                            variables: {
-                                teamId: this.teamId,
-                                channelId: this.channelId,
-                                repo: this.name,
-                                owner: this.owner,
-                                providerId: this.provider,
-                            },
-                        })
+                        name: "unlinkSlackChannelFromRepo",
+                        variables: {
+                            teamId: this.teamId,
+                            channelId: this.channelId,
+                            repo: this.name,
+                            owner: this.owner,
+                            providerId: this.provider,
+                        },
+                    })
                         .then(() => {
                             const text = `Successfully unlinked repository ${
                                 codeLine(`${this.owner}/${this.name}`)} from this channel`;
