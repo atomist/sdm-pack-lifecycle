@@ -161,8 +161,9 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
             }
 
             const mostCurrentGoal = _.maxBy(push.goals || [], "ts");
-            const ids = createId(push);
 
+            // Delete old messages
+            const ids = createId(push);
             if (!!ids.toDelete) {
                 for (const id of ids.toDelete) {
                     for (const channel of channels) {
