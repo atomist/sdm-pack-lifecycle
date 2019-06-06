@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 -   Show goal durations in full rendering. [b0478c2](https://github.com/atomist/sdm-pack-lifecycle/commit/b0478c2446e77989d5edf83f56c36293e02caed1)
+-   Add unlink intent to command. [#7](https://github.com/atomist/sdm-pack-lifecycle/issues/7)
 
 ### Changed
 
