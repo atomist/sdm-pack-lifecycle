@@ -162,7 +162,7 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
 
             const mostCurrentGoal = _.maxBy(push.goals || [], "ts");
 
-            // Delete old messages
+            // Delete old messages if there are more goal sets now
             const ids = createId(push);
             if (!!ids.toDelete) {
                 for (const id of ids.toDelete) {
