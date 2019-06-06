@@ -24,7 +24,7 @@ import {
     Success,
     Tags,
 } from "@atomist/automation-client";
-import { CommandHandler } from "@atomist/automation-client/lib/decorators";
+import { ConfigurableCommandHandler } from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import * as slack from "@atomist/slack-messages";
 import { codeLine } from "@atomist/slack-messages";
@@ -35,7 +35,9 @@ import {
     noRepoMessage,
 } from "./AssociateRepo";
 
-@CommandHandler("Unlink a repository and channel")
+@ConfigurableCommandHandler("Unlink a repository and channel", {
+    intent: ["unlink repo", "unlink repository"],
+})
 @Tags("slack", "repo")
 export class UnlinkRepo implements HandleCommand {
 
@@ -77,7 +79,7 @@ export class UnlinkRepo implements HandleCommand {
                     return ctx.messageClient.respond(noRepoMessage(this.name, this.owner, ctx));
                 } else {
                     return ctx.graphClient.mutate<graphql.UnlinkSlackChannelFromRepo.Mutation,
-                            graphql.UnlinkSlackChannelFromRepo.Variables>({
+                        graphql.UnlinkSlackChannelFromRepo.Variables>({
                             name: "unlinkSlackChannelFromRepo",
                             variables: {
                                 teamId: this.teamId,
