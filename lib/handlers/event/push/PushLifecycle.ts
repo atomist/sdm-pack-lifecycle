@@ -309,7 +309,7 @@ function orderNodes(push: graphql.PushToPushLifecycle.Push): any[] {
             });
         });
 
-    nodes.push(...goalSets.filter(gs => !(gs.tags || []).some(t => t.name === "@atomist/sdm/internal" && t.value === "true"))
+    nodes.push(...goalSets.filter(gs => !(gs.tags || []).some(t => t.name === "@atomist/sdm/internal"))
         .sort((g1, g2) => g2.ts - g1.ts));
 
     return nodes;
