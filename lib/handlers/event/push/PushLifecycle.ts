@@ -21,10 +21,7 @@ import {
     HandlerContext,
     logger,
 } from "@atomist/automation-client";
-import {
-    PreferenceScope,
-    PreferenceStoreFactory,
-} from "@atomist/sdm";
+import { PreferenceStoreFactory } from "@atomist/sdm";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {
@@ -304,9 +301,17 @@ function orderNodes(push: graphql.PushToPushLifecycle.Push): any[] {
     _.forEach(_.groupBy(push.goals, "goalSetId"),
         (v, k) => {
             const gs = (push.goalSets || []).find(g => g.goalSetId === k);
-            goalSets.push({ goals: v, goalSetId: k, ts: !!gs ? gs.ts : _.min(v.map(g => g.ts)) });
+            goalSets.push({
+                goals: v,
+                goalSetId: k,
+                ts: !!gs ? gs.ts : _.min(v.map(g => g.ts)),
+                tags: gs.tags as any[] || [],
+            });
         });
-    nodes.push(...goalSets.sort((g1, g2) => g2.ts - g1.ts));
+
+    nodes.push(...goalSets.filter(gs => !(gs.tags || []).some(t => t.name === "@atomist/sdm/internal" && t.value === "true"))
+        .sort((g1, g2) => g2.ts - g1.ts));
+
     return nodes;
 }
 
@@ -362,4 +367,5 @@ export interface GoalSet {
     goalSetId: string;
     goals: SdmGoalFields.Fragment[];
     ts: number;
+    tags: Array<{ name: string, value: string }>;
 }
