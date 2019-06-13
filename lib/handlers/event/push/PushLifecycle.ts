@@ -97,7 +97,8 @@ export class PushCardLifecycleHandler<R> extends LifecycleHandler<R> {
                     } else if (type === "events") {
                         return null;
                     } else if (type === "goalSets") {
-                        return (push.goalSets || []).sort((g1, g2) => g2.ts - g1.ts);
+                        return (push.goalSets || []).sort((g1, g2) => g2.ts - g1.ts)
+                            .filter(gs => !(gs.tags || []).some(t => t.name === "@atomist/sdm/internal"));
                     }
                     return null;
                 },
@@ -185,7 +186,8 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     } else if (type === "domains") {
                         return extractDomains(push).sort((d1, d2) => d1.name.localeCompare(d2.name));
                     } else if (type === "goalSets") {
-                        return (push.goalSets || []).sort((g1, g2) => g2.ts - g1.ts);
+                        return (push.goalSets || []).sort((g1, g2) => g2.ts - g1.ts)
+                            .filter(gs => !(gs.tags || []).some(t => t.name === "@atomist/sdm/internal"));
                     }
                     return null;
                 },
