@@ -43,7 +43,7 @@ export function updateOnJob(sdm: SoftwareDeliveryMachine): EventHandlerRegistrat
         name: "UpdateOnJob",
         description: "Update a summary message on any job update",
         subscription: GraphQL.subscription({
-            name: "OnAnyJob",
+            name: "UpdateOnJob",
         }),
         listener: async (e, ctx) => {
             const job = e.data.AtmJob[0];
