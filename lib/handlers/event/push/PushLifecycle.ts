@@ -307,7 +307,7 @@ function orderNodes(push: graphql.PushToPushLifecycle.Push): any[] {
                 goals: v,
                 goalSetId: k,
                 ts: !!gs ? gs.ts : _.min(v.map(g => g.ts)),
-                tags: gs.tags as any[] || [],
+                tags: (!!gs ? gs.tags as any[] : undefined) || [],
             });
         });
 
