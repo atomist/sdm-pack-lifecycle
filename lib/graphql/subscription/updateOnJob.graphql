@@ -1,0 +1,18 @@
+subscription UpdateOnJob {
+    AtmJob {
+        id
+        data
+        name
+        owner
+        state
+        createdAt
+        updatedAt
+        completedAt
+        jobCount
+        completedCount
+        jobTasks {
+            state
+            message
+        }
+    }
+}

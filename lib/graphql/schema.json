@@ -8236,6 +8236,16 @@
                 "defaultValue": null
               },
               {
+                "name": "owner",
+                "description": "The owner of AtmJobs to match",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
                 "name": "state",
                 "description": "The state of AtmJobs to match",
                 "type": {
@@ -8279,6 +8289,16 @@
               {
                 "name": "name",
                 "description": "The name of AtmJobsTasks to match",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "owner",
+                "description": "The owner of the parent AtmJob",
                 "type": {
                   "kind": "SCALAR",
                   "name": "String",
@@ -37748,7 +37768,7 @@
         "fields": [
           {
             "name": "completedAt",
-            "description": "An ISO8601 timestamp set by the API when the AtmJob is set to any state other than created or running",
+            "description": "An ISO8601 timestamp set by the API when the AtmJob was considered complete (when all tasks were complete)",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -37786,6 +37806,18 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "data",
+            "description": "Used to store additional information about this AtmJob",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -37863,6 +37895,18 @@
             "deprecationReason": null
           },
           {
+            "name": "owner",
+            "description": "The owner of this job. Clients may use this in a subscription to avoid all clients subscribing to all tasks in a team.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "state",
             "description": "The AtmJobState of this AtmJob",
             "args": [],
@@ -37907,7 +37951,7 @@
         "fields": [
           {
             "name": "completedAt",
-            "description": "An ISO8601 timestamp set by the API when the AtmJobTask is set to any state other than created or running",
+            "description": "An ISO8601 timestamp set by the API when the AtmJobTask was considered complete",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -37971,6 +38015,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "job",
+            "description": "The owning job",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "AtmJob",
                 "ofType": null
               }
             },
@@ -44486,6 +44546,16 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "data",
+            "description": "Used to store additional information about this AtmJob",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "jobTasks",
             "description": "",
             "type": {
@@ -44518,6 +44588,16 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "owner",
+            "description": "The owner of this job. Clients may use this in a subscription to avoid all clients subscribing to all tasks in a team.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null
           }
@@ -52832,6 +52912,16 @@
                 "defaultValue": null
               },
               {
+                "name": "owner",
+                "description": "The owner of AtmJobs to match",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
                 "name": "state",
                 "description": "The state of AtmJobs to match",
                 "type": {
@@ -52875,6 +52965,16 @@
               {
                 "name": "name",
                 "description": "The name of AtmJobsTasks to match",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "owner",
+                "description": "The owner of the parent AtmJob",
                 "type": {
                   "kind": "SCALAR",
                   "name": "String",

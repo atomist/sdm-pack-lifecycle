@@ -47,7 +47,7 @@
     "@atomist/slack-messages": "*"
   },
   "devDependencies": {
-    "@atomist/automation-client": "^1.5.3",
+    "@atomist/automation-client": "1.5.4-master.20190618091503",
     "@atomist/sdm": "^1.5.1",
     "@atomist/sdm-core": "^1.5.2",
     "@atomist/slack-messages": "^1.1.0",
