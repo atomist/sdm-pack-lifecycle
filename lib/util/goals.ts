@@ -121,7 +121,7 @@ export function sortGoals(allGoals: SdmGoalsByCommit.SdmGoal[],
             const goalConditions = _.flatten(env.goals.map(g => {
                 const preConditions = (g.preConditions || []).filter(p => p.environment === env.environment);
                 if (preConditions.length > 0) {
-                    return preConditions.map(p => [g.name, p.name]) as any;
+                    return preConditions.map(p => [g.name, p.name]);
                 } else {
                     return [[g.name, env.environment]] as any;
                 }

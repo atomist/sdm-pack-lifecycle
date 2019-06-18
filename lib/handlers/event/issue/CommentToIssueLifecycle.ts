@@ -44,7 +44,7 @@ export function commentToIssueCardLifecycle(contributions: Contributions)
                 ctx,
                 () => new IssueCardLifecycleHandler(
                     e => {
-                        const issue = _.get(e.data, "Comment[0].issue") as graphql.CommentToIssueLifecycle.Issue;
+                        const issue = _.get(e.data, "Comment[0].issue");
                         return [issue, _.get(e.data, "Comment[0].issue.repo"), _.get(e.data, "Comment[0]"),
                             (issue ? Date.parse(issue.timestamp).toString() : Date.now().toString())];
                     },

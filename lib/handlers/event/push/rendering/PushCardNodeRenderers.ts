@@ -499,7 +499,7 @@ export class PullRequestCardNodeRenderer extends AbstractIdentifiableContributio
                 },
             })
             .then(result => {
-                const pr = _.get(result, "Repo[0].branches[0].pullRequests[0]") as graphql.OpenPr.PullRequests;
+                const pr = _.get(result, "Repo[0].branches[0].pullRequests[0]");
                 if (pr) {
                     const state = (pr.state === "closed" ? (pr.merged ? "merged" : "closed") : "open");
 

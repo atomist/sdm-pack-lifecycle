@@ -59,7 +59,7 @@ export function repositoryOnboarded(options: LifecycleOptions)
                     branch: repo.defaultBranch,
                 },
             });
-            const commit = _.get(commitResult, "Repo[0].branches[0].commit") as LastCommitOnBranch.Commit;
+            const commit = _.get(commitResult, "Repo[0].branches[0].commit");
             if (commit) {
                 promises.push(processCommit(commit, repo, e, ctx, params, options));
             }
