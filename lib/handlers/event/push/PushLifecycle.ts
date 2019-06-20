@@ -347,14 +347,15 @@ function matches(pattern: string, target: string): boolean {
 function createId(push: graphql.PushToPushLifecycle.Push): { id: string, toDelete?: string[] } {
     const id = `push_lifecycle/${push.repo.owner}/${push.repo.name}/${push.branch}/${push.after.sha}`;
     if (!!push.goalSets) {
-        if (push.goalSets.length > 1) {
+        const goalSets = push.goalSets.filter(gs => !(gs.tags || []).some(t => t.name === "@atomist/sdm/internal"));
+        if (goalSets.length > 1) {
             const toDelete = [id];
-            for (let i = 1, len = push.goalSets.length; i < len; i++) {
+            for (let i = 1, len = goalSets.length; i < len; i++) {
                 toDelete.push(`${id}/${i}`);
             }
-            return { id: `${id}/${push.goalSets.length}`, toDelete };
-        } else if (push.goalSets.length === 1 && push.goalSets[0].provenance.name !== "SetGoalsOnPush") {
-            return { id: `${id}/${push.goalSets.length}`, toDelete: [id] };
+            return { id: `${id}/${goalSets.length}`, toDelete };
+        } else if (goalSets.length === 1 && goalSets[0].provenance.name !== "SetGoalsOnPush") {
+            return { id: `${id}/${goalSets.length}`, toDelete: [id] };
         }
     }
     return { id };
