@@ -3,6 +3,7 @@ subscription UpdateOnJob {
         id
         data
         name
+        description
         owner
         state
         createdAt

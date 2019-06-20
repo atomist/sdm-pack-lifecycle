@@ -57,6 +57,7 @@ export function updateOnJob(sdm: SoftwareDeliveryMachine): EventHandlerRegistrat
             const totalCount = job.jobCount;
             const count = job.completedCount;
             const name = job.name;
+            const description = job.description;
             const createdAt = new Date(job.createdAt).getTime();
             const updatedAt = new Date(job.updatedAt).getTime();
             const failedTasks = job.jobTasks.filter(t => t.state === AtmJobTaskState.failed);
@@ -85,17 +86,17 @@ ${failedTasks.map(ft => ft.message).filter(m => !!m && m.length > 0).map(codeBlo
             if (job.state === "running") {
                 msg = slackInfoMessage(
                     "Job Progress",
-                    `Running job ${italic(name)}${body}`);
+                    `Running job ${italic(description)}${body}`);
                 color = "#2A7D7D";
             } else {
                 msg = slackSuccessMessage(
                     "Job Progress",
-                    `Completed job ${italic(name)}${body}`);
+                    `Completed job ${italic(description)}${body}`);
                 color = "#37A745";
             }
 
             msg.attachments[0].thumb_url = url;
-            msg.attachments[0].footer = `${owner} \u00B7 ${formatDuration(updatedAt - createdAt)}`;
+            msg.attachments[0].footer = `${owner} \u00B7 ${name} \u00B7 ${formatDuration(updatedAt - createdAt)}`;
             msg.attachments[0].color = color;
 
             await ctx.messageClient.send(msg, new SourceDestination(trigger, trigger.user_agent), { id: `atomist/sdm/job/${job.id}` });
