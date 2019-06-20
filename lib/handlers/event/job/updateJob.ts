@@ -48,6 +48,11 @@ export function updateOnJob(sdm: SoftwareDeliveryMachine): EventHandlerRegistrat
         listener: async (e, ctx) => {
             const job = e.data.AtmJob[0];
             const trigger = JSON.parse(job.data).source as Source;
+
+            if (!trigger || !trigger.user_agent) {
+                return Success;
+            }
+
             const owner = job.owner;
             const totalCount = job.jobCount;
             const count = job.completedCount;
