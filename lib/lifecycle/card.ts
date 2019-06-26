@@ -156,7 +156,7 @@ export interface Action {
     confirm?: {
         title: string;
         body: string;
-        ok?: string:
+        ok?: string;
         dismiss?: string;
     };
 
