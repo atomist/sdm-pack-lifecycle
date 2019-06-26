@@ -61,7 +61,10 @@ import {
     isCardMessage,
 } from "./card";
 
-export interface LifecycleParametersDefinition { orgToken: string; credentialsResolver?: CredentialsResolver; }
+export interface LifecycleParametersDefinition {
+    orgToken: string;
+    credentialsResolver?: CredentialsResolver;
+}
 
 export const LifecycleParameters: ParametersDefinition<LifecycleParametersDefinition> = {
     orgToken: {
@@ -697,6 +700,12 @@ export class CardActionContributorWrapper implements CardActionContributor<any> 
                         registration: "@atomist/lifecycle-automation",
                         command: cra.command.name,
                         parameters,
+                        confirm: !!cra.confirm ? ({
+                            title: cra.confirm.title,
+                            body: cra.confirm.text,
+                            ok: cra.confirm.ok_text,
+                            dismiss: cra.confirm.dismiss_text,
+                        }) : undefined,
                     };
                     if ((a as any).role) {
                         action.role = (a as any).role;

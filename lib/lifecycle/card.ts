@@ -33,13 +33,13 @@ export function isCardMessage(object: any): object is CardMessage {
     return object.title && object.body;
 }
 
-export function addCollaborator(collaborator: { avatar: string, login: string, link: string}, card: CardMessage) {
+export function addCollaborator(collaborator: { avatar: string, login: string, link: string }, card: CardMessage) {
     if (!card.collaborators) {
         card.collaborators = [];
     }
     /* tslint:disable */
     /**
-        if (card.body && card.body.login === collaborator.login) {
+     if (card.body && card.body.login === collaborator.login) {
             return;
         }
      */
@@ -103,7 +103,7 @@ export interface CardMessage {
         reaction: string;
     }>;
 
-    provenance?: Array<{name: string}>;
+    provenance?: Array<{ name: string }>;
 }
 
 export interface Goal {
@@ -152,6 +152,13 @@ export interface Action {
 
     text: string;
     type: "button" | "menu";
+
+    confirm?: {
+        title: string;
+        body: string;
+        ok?: string:
+        dismiss?: string;
+    };
 
     registration: string;
     command: string;
