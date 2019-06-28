@@ -86,12 +86,12 @@ ${failedTasks.map(ft => ft.message).filter(m => !!m && m.length > 0).map(codeBlo
             if (job.state === "running") {
                 msg = slackInfoMessage(
                     "Job Progress",
-                    `Running job ${italic(description)}${body}`);
+                    `${description}${body}`);
                 color = "#2A7D7D";
             } else {
                 msg = slackSuccessMessage(
-                    "Job Progress",
-                    `Completed job ${italic(description)}${body}`);
+                    "Job Summary",
+                    `${description}${body}`);
                 color = "#37A745";
             }
 
