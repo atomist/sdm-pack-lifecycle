@@ -41,15 +41,15 @@
     "toposort": "^2.0.2"
   },
   "peerDependencies": {
-    "@atomist/automation-client": "*",
-    "@atomist/sdm": "*",
-    "@atomist/sdm-core": "*",
+    "@atomist/automation-client": ">=1.6.0",
+    "@atomist/sdm": ">=1.6.0",
+    "@atomist/sdm-core": ">=1.6.0",
     "@atomist/slack-messages": "*"
   },
   "devDependencies": {
-    "@atomist/automation-client": "1.5.4-master.20190618091503",
-    "@atomist/sdm": "^1.5.1",
-    "@atomist/sdm-core": "^1.5.2",
+    "@atomist/automation-client": "1.6.0-master.20190704120909",
+    "@atomist/sdm": "1.6.0-master.20190702114952",
+    "@atomist/sdm-core": "1.6.0-master.20190703072440",
     "@atomist/slack-messages": "^1.1.0",
     "@types/mocha": "^5.2.7",
     "@types/power-assert": "^1.5.0",
