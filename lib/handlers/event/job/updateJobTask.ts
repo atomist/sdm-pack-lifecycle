@@ -30,15 +30,15 @@ import {
 import { formatDuration } from "@atomist/sdm-core/lib/util/misc/time";
 import {
     codeBlock,
-    italic,
     SlackMessage,
 } from "@atomist/slack-messages";
+import * as _ from "lodash";
 import {
     AtmJobTaskState,
-    UpdateOnJob,
+    UpdateOnJobTask,
 } from "../../../typings/types";
 
-export function updateOnJob(sdm: SoftwareDeliveryMachine): EventHandlerRegistration<UpdateOnJob.Subscription> {
+export function updateOnJobTask(sdm: SoftwareDeliveryMachine): EventHandlerRegistration<UpdateOnJobTask.Subscription> {
     return {
         name: "UpdateOnJob",
         description: "Update a summary message on any job update",
@@ -46,9 +46,12 @@ export function updateOnJob(sdm: SoftwareDeliveryMachine): EventHandlerRegistrat
             name: "UpdateOnJob",
         }),
         listener: async (e, ctx) => {
-            const job = e.data.AtmJob[0];
-            const trigger = JSON.parse(job.data).source as Source;
+            const job = _.get(e.data, "AtmJobTask[0].job") as UpdateOnJobTask.Job;
+            if (!job) {
+                return Success;
+            }
 
+            const trigger = JSON.parse(job.data).source as Source;
             if (!trigger || !trigger.user_agent) {
                 return Success;
             }

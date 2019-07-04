@@ -68,7 +68,7 @@ import {
 import { notifyMentionedOnIssue } from "./handlers/event/issue/NotifyMentionedOnIssue";
 import * as icr from "./handlers/event/issue/rendering/IssueCardNodeRenderers";
 import * as ir from "./handlers/event/issue/rendering/IssueNodeRenderers";
-import { updateOnJob } from "./handlers/event/job/updateJob";
+import { updateOnJobTask } from "./handlers/event/job/updateJobTask";
 import { deploymentOnK8Pod } from "./handlers/event/k8container/DeploymentOnK8Pod";
 import { repositoryOnboarded } from "./handlers/event/onboarded/RepositoryOnboarded";
 import {
@@ -438,7 +438,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addCommand(toggleGoalSetsSubscription(sdm, false));
 
             // Job
-            sdm.addEvent(updateOnJob(sdm));
+            sdm.addEvent(updateOnJobTask(sdm));
 
             // Slack
             sdm.addCommand(adaptHandleCommand(AddBotToChannel));
