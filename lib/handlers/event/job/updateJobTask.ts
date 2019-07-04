@@ -46,7 +46,7 @@ export function updateOnJobTask(sdm: SoftwareDeliveryMachine): EventHandlerRegis
             name: "UpdateOnJob",
         }),
         listener: async (e, ctx) => {
-            const job = _.get(e.data, "AtmJobTask[0].job");
+            const job: UpdateOnJobTask.Job = _.get(e.data, "AtmJobTask[0].job");
             if (!job) {
                 return Success;
             }
