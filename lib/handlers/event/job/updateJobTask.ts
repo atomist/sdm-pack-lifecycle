@@ -40,10 +40,10 @@ import {
 
 export function updateOnJobTask(sdm: SoftwareDeliveryMachine): EventHandlerRegistration<UpdateOnJobTask.Subscription> {
     return {
-        name: "UpdateOnJob",
+        name: "UpdateOnJobTask",
         description: "Update a summary message on any job update",
         subscription: GraphQL.subscription({
-            name: "UpdateOnJob",
+            name: "UpdateOnJobTask",
         }),
         listener: async (e, ctx) => {
             const job: UpdateOnJobTask.Job = _.get(e.data, "AtmJobTask[0].job");
