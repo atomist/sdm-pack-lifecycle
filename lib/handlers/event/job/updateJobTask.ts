@@ -41,7 +41,7 @@ import {
 export function updateOnJobTask(sdm: SoftwareDeliveryMachine): EventHandlerRegistration<UpdateOnJobTask.Subscription> {
     return {
         name: "UpdateOnJobTask",
-        description: "Update a summary message on any job update",
+        description: "Update a summary message on any job task update",
         subscription: GraphQL.subscription({
             name: "UpdateOnJobTask",
         }),
