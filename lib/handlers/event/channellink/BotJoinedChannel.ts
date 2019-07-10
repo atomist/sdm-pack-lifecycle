@@ -113,8 +113,8 @@ I won't be able to do much without GitHub integration, though. Run \`@${botName}
                     const apiUrl = (o.provider && o.provider.apiUrl) ? o.provider.apiUrl : github.DefaultGitHubApiUrl;
                     const api = github.api((creds as TokenCredentials).token, apiUrl);
                     return ((o.ownerType === "user") ?
-                        api.repos.getForUser({ username: o.owner, per_page: 100 }) :
-                        api.repos.getForOrg({ org: o.owner, per_page: 100 }))
+                        api.repos.listForUser({ username: o.owner, per_page: 100 }) :
+                        api.repos.listForOrg({ org: o.owner, per_page: 100 }))
                         .then(res => {
                             interface GitHubRepoResponse {
                                 name: string;

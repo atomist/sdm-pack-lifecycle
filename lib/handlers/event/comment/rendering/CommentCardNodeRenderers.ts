@@ -120,10 +120,10 @@ export class IssueCommentCardNodeRenderer extends AbstractIdentifiableContributi
                 return msg;
             }).then(card => {
                 const api = github.api((context.credentials as TokenCredentials).token);
-                return api.reactions.getForIssueComment({
+                return api.reactions.listForIssueComment({
                     owner: repo.owner,
                     repo: repo.name,
-                    id: node.gitHubId,
+                    comment_id: +node.gitHubId,
                     content: "+1",
                 })
                     .then(result => {
@@ -207,10 +207,10 @@ export class PullRequestCommentCardNodeRenderer extends AbstractIdentifiableCont
                 return Promise.resolve(msg);
             }).then(card => {
                 const api = github.api((context.credentials as TokenCredentials).token);
-                return api.reactions.getForIssueComment({
+                return api.reactions.listForIssueComment({
                     owner: repo.owner,
                     repo: repo.name,
-                    id: node.gitHubId,
+                    comment_id: +node.gitHubId,
                     content: "+1",
                 })
                     .then(result => {

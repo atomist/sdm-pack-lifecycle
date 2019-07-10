@@ -118,7 +118,7 @@ export class IssueCardNodeRenderer extends AbstractIdentifiableContribution
             })
             .then(card => {
                 const api = github.api((context.credentials as TokenCredentials).token, _.get(repo, "org.provider.apiUrl"));
-                return api.reactions.getForIssue({
+                return api.reactions.listForIssue({
                     owner: repo.owner,
                     repo: repo.name,
                     number: node.number,
@@ -144,7 +144,7 @@ export class IssueCardNodeRenderer extends AbstractIdentifiableContribution
             })
             .then(card => {
                 const api = github.api((context.credentials as TokenCredentials).token, _.get(repo, "org.provider.apiUrl"));
-                return api.issues.getComments({
+                return api.issues.listComments({
                     owner: repo.owner,
                     repo: repo.name,
                     number: node.number,
@@ -154,6 +154,7 @@ export class IssueCardNodeRenderer extends AbstractIdentifiableContribution
                             avatar: c.user.avatar_url,
                             login: c.user.login,
                             text: c.body,
+                            ts: undefined,
                         }));
 
                         (result.data || []).forEach((c: any) => addCollaborator(
@@ -222,7 +223,7 @@ export class CommentCardNodeRenderer extends AbstractIdentifiableContribution
             })
             .then(card => {
                 const api = github.api((context.credentials as TokenCredentials).token, _.get(repo, "org.provider.apiUrl"));
-                return api.reactions.getForIssue({
+                return api.reactions.listForIssue({
                     owner: repo.owner,
                     repo: repo.name,
                     number: issue.number,
@@ -251,7 +252,7 @@ export class CommentCardNodeRenderer extends AbstractIdentifiableContribution
             })
             .then(card => {
                 const api = github.api((context.credentials as TokenCredentials).token, _.get(repo, "org.provider.apiUrl"));
-                return api.issues.getComments({
+                return api.issues.listComments({
                     owner: repo.owner,
                     repo: repo.name,
                     number: issue.number,
@@ -261,6 +262,7 @@ export class CommentCardNodeRenderer extends AbstractIdentifiableContribution
                             avatar: c.user.avatar_url,
                             login: c.user.login,
                             text: c.body,
+                            ts: undefined,
                         }));
 
                         (result.data || []).forEach((c: any) => addCollaborator(
@@ -336,7 +338,7 @@ export class CorrelationsCardNodeRenderer extends AbstractIdentifiableContributi
 
         try {
             const api = github.api((context.credentials as TokenCredentials).token);
-            const result = await api.issues.getEventsTimeline({
+            const result = await api.issues.listEventsForTimeline({
                 owner: repo.owner,
                 repo: repo.name,
                 issue_number: issue.number,
