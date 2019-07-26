@@ -281,7 +281,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             }).map(s => {
                 let details = "";
                 if ((s.state === SdmGoalState.in_process || s.state === SdmGoalState.failure ||
-                    s.state === SdmGoalState.stopped) && s.phase) {
+                    s.state === SdmGoalState.stopped || s.state === SdmGoalState.canceled) && s.phase) {
                     details += ` \u00B7 ${s.phase}`;
                 } else {
                     if (s.externalUrl) {
