@@ -315,7 +315,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                     const start = (s.provenance.find(p => p.name === "RequestDownstreamGoalsOnGoalSuccess") || _.minBy(s.provenance, "ts")).ts;
                     const end = (s.provenance.find(p => p.name === "FulfillGoalOnRequested") || s).ts;
                     if (end - start > 0) {
-                        details += ` \u00B7 ${formatDuration(end - start)}`;
+                        details += ` \u00B7 ${formatDuration(end - start, "d[d] h[h] m[m] s[s]")}`;
                     }
                 }
 
@@ -401,7 +401,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
             const max = _.max(ts);
             const dur = max - min;
 
-            const duration = formatDuration(dur < 0 ? 0 : dur);
+            const duration = formatDuration(dur < 0 ? 0 : dur, "d[d] h[h] m[m] s[s]");
 
             const creator = _.minBy(
                 _.flatten<SdmGoalsByCommit.Provenance>(
