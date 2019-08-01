@@ -15,6 +15,7 @@
  */
 
 import {
+    addressWeb,
     GraphQL,
     SourceDestination,
     Success,
@@ -103,6 +104,7 @@ ${failedTasks.map(ft => ft.message).filter(m => !!m && m.length > 0).map(codeBlo
             msg.attachments[0].color = color;
 
             await ctx.messageClient.send(msg, new SourceDestination(trigger, trigger.user_agent), { id: `atomist/sdm/job/${job.id}` });
+            await ctx.messageClient.send(msg, addressWeb(), { id: `atomist/sdm/job/${job.id}` });
             return Success;
         },
     };
