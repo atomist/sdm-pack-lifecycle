@@ -295,7 +295,7 @@ export function isGenerated(node: graphql.PullRequestToPullRequestLifecycle.Pull
 function urlToImageAttachment(url: string): slack.Attachment {
     const imageRegExp = /[^\/]+\.(?:png|jpe?g|gif|bmp)$/i;
     const imageMatch = imageRegExp.exec(url);
-    if (imageMatch) {
+    if (imageMatch && url !== "https://images.atomist.com/logo/atomist-color-mark-small.png") {
         const image = imageMatch[0];
         return {
             text: image,
