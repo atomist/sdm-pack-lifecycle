@@ -453,7 +453,7 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                 attachment.footer = `${url(link, lastGoals[0].goalSet.toLowerCase())} \u00B7 ${duration}`;
                 if (this.emojiStyle === "atomist") {
                     attachment.thumb_url =
-                        `https://badge.atomist.services/v2/progress/${state}/${inProcessCount}/${totalCount}`;
+                        `https://badge.atomist.com/v2/progress/${state}/${inProcessCount}/${totalCount}`;
                 }
             }
         }
