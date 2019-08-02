@@ -1070,8 +1070,7 @@ in line with some other text
 [atomist:generated]`;
             assert.equal(removeMarkers(body), `This is some test text
 
-in line with some other text
-`);
+in line with some other text`);
         });
 
         it("should remove the tags snippet", () => {
