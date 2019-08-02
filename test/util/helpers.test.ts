@@ -1074,6 +1074,48 @@ in line with some other text
 `);
         });
 
+        it("should remove the tags snippet", () => {
+            const body = `Apply target fingerprint \`npm-project-deps::atomist::automation-client\`:
+
+#### New NPM Package Target
+Target version for NPM package *@atomist/automation-client* is \`^1.6.2\`.
+Project *sdm-org/sdm-pack-changelog/master* is currently configured to use version \`^1.6.0\`.
+
+\`\`\`@atomist/automation-client (^1.6.2)\`\`\`
+
+---
+Apply target fingerprint \`npm-project-deps::atomist::sdm\`:
+
+#### New NPM Package Target
+Target version for NPM package *@atomist/sdm* is \`^1.6.1\`.
+Project *sdm-org/sdm-pack-changelog/master* is currently configured to use version \`^1.6.0\`.
+
+\`\`\`@atomist/sdm (^1.6.1)\`\`\`
+
+---
+<details>
+  <summary><img src="https://images.atomist.com/logo/atomist-color-mark-small.png" height="20" valign="bottom"/>Tags</summary>
+<br/>
+<code>[atomist:generated]</code><br/><code>[auto-merge-method:squash]</code><br/><code>[auto-merge:on-approve]</code><br/><code>[fingerprint:npm-project-deps::atomist::automation-client=87efccbdfd36903fd5d1f0d492c5f0d6a37287a0901717d24f21eaf7a75136fe]</code><br/><code>[fingerprint:npm-project-deps::atomist::sdm=6136dd8872a0bb3309a27a13ca7131308ae7b2d0ba37f143f5c3a5a5cb2e17fb]</code>
+</details>`;
+            assert.equal(removeMarkers(body), `Apply target fingerprint \`npm-project-deps::atomist::automation-client\`:
+
+#### New NPM Package Target
+Target version for NPM package *@atomist/automation-client* is \`^1.6.2\`.
+Project *sdm-org/sdm-pack-changelog/master* is currently configured to use version \`^1.6.0\`.
+
+\`\`\`@atomist/automation-client (^1.6.2)\`\`\`
+
+---
+Apply target fingerprint \`npm-project-deps::atomist::sdm\`:
+
+#### New NPM Package Target
+Target version for NPM package *@atomist/sdm* is \`^1.6.1\`.
+Project *sdm-org/sdm-pack-changelog/master* is currently configured to use version \`^1.6.0\`.
+
+\`\`\`@atomist/sdm (^1.6.1)\`\`\``);
+        });
+
     });
 
     /*
