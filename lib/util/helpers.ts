@@ -647,7 +647,7 @@ export function getGitHubUsers(msg: string = ""): string[] {
 }
 
 const MarkerExp = /(\[[a-zA-Z-]*:[a-zA-Z_\-:#()\/]*\])/gi;
-const TagSnippetExp = /---[\s]*<details>[\s]*<summary>(<img src=")?https:\/\/images\.atomist\.com[\s\S]*<\/details>/gm;
+const TagSnippetExp = /---[\s]*<details>[\s\S]*<\/details>/gm;
 
 export function removeMarkers(body: string): string {
     if (body) {

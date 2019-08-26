@@ -1093,7 +1093,7 @@ Project *sdm-org/sdm-pack-changelog/master* is currently configured to use versi
 
 ---
 <details>
-  <summary><img src="https://images.atomist.com/logo/atomist-color-mark-small.png" height="20" valign="bottom"/>Tags</summary>
+  <summary>Tags</summary>
 <br/>
 <code>[atomist:generated]</code><br/><code>[auto-merge-method:squash]</code><br/><code>[auto-merge:on-approve]</code><br/><code>[fingerprint:npm-project-deps::atomist::automation-client=87efccbdfd36903fd5d1f0d492c5f0d6a37287a0901717d24f21eaf7a75136fe]</code><br/><code>[fingerprint:npm-project-deps::atomist::sdm=6136dd8872a0bb3309a27a13ca7131308ae7b2d0ba37f143f5c3a5a5cb2e17fb]</code>
 </details>`;
