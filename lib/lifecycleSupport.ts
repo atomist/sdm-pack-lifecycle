@@ -284,6 +284,7 @@ export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
             renderers: [() => [
                 new pr.PushNodeRenderer(),
                 new pr.CommitNodeRenderer(),
+                new sr.ComplianceNodeRenderer(),
                 new sr.GoalSetNodeRenderer(),
                 new sr.StatusesNodeRenderer(),
                 new WorkflowNodeRenderer(),

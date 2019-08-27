@@ -38,6 +38,7 @@ import {
     SlackNodeRenderer,
 } from "../../../../lifecycle/Lifecycle";
 import {
+    PushFields,
     PushToPushLifecycle,
     SdmGoalDisplayFormat,
     SdmGoalDisplayState,
@@ -51,6 +52,38 @@ import {
 import { LifecycleRendererPreferences } from "../../preferences";
 import { GoalSet } from "../PushLifecycle";
 import { EMOJI_SCHEME } from "./PushNodeRenderers";
+
+export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
+    implements SlackNodeRenderer<PushToPushLifecycle.Push> {
+
+    constructor() {
+        super("compliance");
+    }
+
+    public supports(node: any): boolean {
+        return !!node.after;
+    }
+
+    public async render(push: PushToPushLifecycle.Push,
+                        actions: Action[],
+                        msg: SlackMessage,
+                        context: RendererContext): Promise<SlackMessage> {
+        const complianceGoals = context.lifecycle.extract("compliance") as PushFields.Goals[];
+        if (!!complianceGoals && complianceGoals.length > 0) {
+            complianceGoals.forEach(g => {
+                const attachment: Attachment = {
+                    author_name: g.description,
+                    author_icon: `https://images.atomist.com/rug/error-circle.png`,
+                    author_link: g.externalUrls[0].url,
+                    footer: g.phase,
+                    fallback: g.description,
+                };
+                msg.attachments.push(attachment);
+            });
+        }
+        return msg;
+    }
+}
 
 export class StatusesNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<PushToPushLifecycle.Push> {
