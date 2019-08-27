@@ -74,7 +74,8 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                 const data = JSON.parse(g.data || "{}") as { policies: any[] };
                 const attachment: Attachment = {
                     author_name: g.description,
-                    author_icon: `https://images.atomist.com/rug/warning-yellow.png`,
+                    author_icon: `https://images.atomist.com/rug/info.png`,
+                    color: "B5B5B5",
                     author_link: g.externalUrls[0].url,
                     footer: `${g.phase.toLowerCase()} \u00B7 ${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${data.policies.length} ${data.policies.length === 1 ? "policy" : "policies"} set`)}`,
                     fallback: g.description,
