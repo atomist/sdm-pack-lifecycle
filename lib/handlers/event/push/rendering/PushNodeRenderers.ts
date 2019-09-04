@@ -172,7 +172,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
         for (const commit of commits) {
             const ca = getAuthor(commit);
 
-            if (author == undefined || author !== ca) {
+            if (author === undefined || author !== ca) {
                 commitsByAuthor = {
                     author: ca,
                     avatar: commit.author ? commit.author.avatar : undefined,
@@ -295,7 +295,7 @@ export class BuildNodeRenderer extends AbstractIdentifiableContribution
         const [message, color] = renderDecorator(build, push.builds, attachment.text, this.emojiStyle);
         attachment.color = color;
         attachment.text = message;
-        if (attachment.actions != undefined) {
+        if (attachment.actions !== undefined) {
             attachment.actions = attachment.actions.concat(actions);
         } else {
             attachment.actions = actions;
@@ -505,7 +505,7 @@ export class K8PodNodeRenderer extends AbstractIdentifiableContribution
                     envs.push(env);
                 }
                 pod.containers.forEach(c => {
-                    if (c.state === "running") {
+                    if (c.state === "running" && c.ready === true) {
                         env.running++;
                     } else if (c.state === "waiting") {
                         env.waiting++;
@@ -557,7 +557,7 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
         const issues: any[] = [];
 
         // Process directly connected issues
-        push.commits.filter(c => c.resolves != undefined).forEach(c => c.resolves.forEach(i => {
+        push.commits.filter(c => c.resolves !== undefined).forEach(c => c.resolves.forEach(i => {
             const key = `${repo.owner}/${repo.name}#${i.number}`;
             if (issues.indexOf(key) < 0 && i.title && i.state) {
                 // tslint:disable-next-line:variable-name
