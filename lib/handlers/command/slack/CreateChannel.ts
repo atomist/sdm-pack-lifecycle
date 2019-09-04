@@ -73,7 +73,7 @@ export class CreateChannel implements HandleCommand {
         description: "name of the channel to create",
         pattern: /^\S+$/,
         minLength: 1,
-        maxLength: 21,
+        maxLength: 80,
         required: true,
     })
     public channel: string;

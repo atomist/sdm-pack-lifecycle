@@ -83,7 +83,7 @@ export function repoSlug(repo: any): string {
  * @return valid Slack channel name based on repository name
  */
 export function repoChannelName(repoName: string): string {
-    return (repoName) ? repoName.substring(0, 21).replace(/\./g, "_").toLowerCase() : repoName;
+    return (repoName) ? repoName.substring(0, 80).replace(/\./g, "_").toLowerCase() : repoName;
 }
 
 export function branchUrl(repo: any, branch: string): string {
