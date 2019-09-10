@@ -1,3 +1,4 @@
+import { generateHash } from "@atomist/automation-client/lib/internal/util/string";
 import { CommandHandlerRegistration } from "@atomist/sdm";
 
 export function reviewComplianceCommand(): CommandHandlerRegistration<{ owner: string, repo: string, branch: string, sha: string }> {
@@ -11,7 +12,7 @@ export function reviewComplianceCommand(): CommandHandlerRegistration<{ owner: s
             sha: {},
         },
         listener: async ci => {
-            await ci.context.messageClient.respond("test", { thread: true });
+            await ci.context.messageClient.respond("test", { thread: true, id: generateHash(JSON.stringify(ci.parameters)) });
         },
     };
 }
