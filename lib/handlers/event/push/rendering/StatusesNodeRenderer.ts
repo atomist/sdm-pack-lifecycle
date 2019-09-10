@@ -83,11 +83,20 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                 footer: `compliance ${compliance}% \u00B7 ${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${pluralize("target", targetCount, true)} set`)}`,
                 fallback: "Target differences detected",
                 actions: [
-                    buttonForCommand({ text: "Manage \u02C3" }, "test", {}),
+                    buttonForCommand(
+                        { text: "Review \u02C3" },
+                        "ReviewCompliance",
+                        { owner: push.repo.owner, repo: push.repo.name, branch: push.branch, sha: push.after.sha },
+                    ),
                 ],
             };
-            msg.attachments.push(attachment);
 
+            let present = 0;
+            if (context.has("attachment_count")) {
+                present = context.get("attachment_count");
+            }
+            context.set("attachment_count", present + msg.attachments.length);
+            msg.attachments = msg.attachments.concat(attachment);
         }
         return msg;
     }
