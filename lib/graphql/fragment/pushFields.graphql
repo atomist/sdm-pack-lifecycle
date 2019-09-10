@@ -225,4 +225,24 @@ fragment PushFields on Push {
     state
     format
   }
+  compliance {
+    id
+    owner
+    targets {
+      type
+      name
+      sha
+      data
+      displayName
+      displayValue
+    }
+    differences {
+      type
+      name
+      sha
+      data
+      displayName
+      displayValue
+    }
+  }
 }

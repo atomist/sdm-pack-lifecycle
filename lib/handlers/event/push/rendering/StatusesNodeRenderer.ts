@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
+import {
+    buttonForCommand,
+    logger,
+} from "@atomist/automation-client";
 import { formatDuration } from "@atomist/sdm-core/lib/util/misc/time";
 import {
     Action,
@@ -25,6 +28,7 @@ import {
     url,
 } from "@atomist/slack-messages";
 import * as _ from "lodash";
+import * as pluralize from "pluralize";
 import {
     Action as CardAction,
     CardMessage,
@@ -38,7 +42,6 @@ import {
     SlackNodeRenderer,
 } from "../../../../lifecycle/Lifecycle";
 import {
-    PushFields,
     PushToPushLifecycle,
     SdmGoalDisplayFormat,
     SdmGoalDisplayState,
@@ -60,28 +63,31 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
         super("compliance");
     }
 
-    public supports(node: any): boolean {
-        return !!node.after;
+    public supports(node: PushToPushLifecycle.Push): boolean {
+        return !!node.compliance && node.compliance.length > 0;
     }
 
     public async render(push: PushToPushLifecycle.Push,
                         actions: Action[],
                         msg: SlackMessage,
                         context: RendererContext): Promise<SlackMessage> {
-        const complianceGoals = context.lifecycle.extract("compliance") as PushFields.Goals[];
-        if (!!complianceGoals && complianceGoals.length > 0) {
-            complianceGoals.forEach(g => {
-                const data = JSON.parse(g.data || "{}") as { policies: any[] };
-                const attachment: Attachment = {
-                    author_name: g.description,
-                    author_icon: `https://images.atomist.com/rug/info.png`,
-                    color: "B5B5B5",
-                    author_link: g.externalUrls[0].url,
-                    footer: `${g.phase.toLowerCase()} \u00B7 ${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${data.policies.length} ${data.policies.length === 1 ? "policy" : "policies"} set`)}`,
-                    fallback: g.description,
-                };
-                msg.attachments.push(attachment);
-            });
+        const complianceData = push.compliance;
+        const differencesCount = _.sum(complianceData.filter(c => !!c.differences).map(c => c.differences.length));
+        if (differencesCount > 0) {
+            const targetCount = _.sum(complianceData.filter(c => !!c.targets).map(c => c.targets.length));
+            const compliance = ((1 - (differencesCount) / targetCount) * 100).toFixed(0);
+            const attachment: Attachment = {
+                author_name: `${differencesCount} target ${pluralize("difference")} detected`,
+                author_icon: `https://images.atomist.com/rug/info.png`,
+                color: "B5B5B5",
+                footer: `compliance ${compliance}% \u00B7 ${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${pluralize("target", targetCount, true)} set`)}`,
+                fallback: "Target differences detected",
+                actions: [
+                    buttonForCommand({ text: "Manage \u02C3" }, "test", {}),
+                ],
+            };
+            msg.attachments.push(attachment);
+
         }
         return msg;
     }
