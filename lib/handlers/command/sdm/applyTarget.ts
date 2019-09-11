@@ -38,7 +38,7 @@ export function applyTargetCommand(): CommandHandlerRegistration<ApplyTargetPara
             branch: {},
             apiUrl: {},
 
-            data: {}
+            data: {},
         },
         listener: async ci => {
             const data = JSON.parse(ci.parameters.data);
@@ -47,9 +47,9 @@ export function applyTargetCommand(): CommandHandlerRegistration<ApplyTargetPara
                 registration: data.aspectOwner,
                 command: "ApplyTargetFingerprintBySha",
                 parameters: [{
-                    "sha": data.sha,
-                    "targetfingerprint": `${data.type}::${data.name}`,
-                    "targets": {
+                    sha: data.sha,
+                    targetfingerprint: `${data.type}::${data.name}`,
+                    targets: {
                         owner: ci.parameters.owner,
                         repo: ci.parameters.repo,
                         branch: ci.parameters.branch,
