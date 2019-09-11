@@ -31,6 +31,7 @@ import {
 import * as _ from "lodash";
 import {
     AbstractIdentifiableContribution,
+    lifecycle,
     LifecycleConfiguration,
     RendererContext,
     SlackNodeRenderer,
@@ -766,7 +767,8 @@ export class ExpandAttachmentsNodeRenderer extends AbstractIdentifiableContribut
             if (context.has("attachment_count")) {
                 const count = context.get("attachment_count");
                 if (msg.attachments.length === count) {
-                    if (!push.goalSets || push.goalSets.length === 0) {
+                    const goalSetCount = (context.lifecycle.extract("goalSets") || []).length;
+                    if (goalSetCount === 0) {
                         return msg;
                     }
                 } else {
