@@ -505,7 +505,7 @@ export class K8PodNodeRenderer extends AbstractIdentifiableContribution
                     envs.push(env);
                 }
                 pod.containers.forEach(c => {
-                    if (c.state === "running") {
+                    if (c.state === "running" && c.ready === true) {
                         env.running++;
                     } else if (c.state === "waiting") {
                         env.waiting++;
