@@ -255,7 +255,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
             lastAttachment.ts = Math.floor(Date.parse(push.timestamp) / 1000);
         }
 
-        let present = !!push.compliance && push.compliance.length > 0 ? 1 : 0;
+        let present = hasTargetDifferences(push) ? 1 : 0;
         if (context.has("attachment_count")) {
             present = context.get("attachment_count");
         }
@@ -810,6 +810,13 @@ export class ExpandNodeRenderer extends AbstractIdentifiableContribution
 export function isComplianceReview(push: graphql.PushToPushLifecycle.Push): boolean {
     if (!!push && !!push.compliance && push.compliance.length > 0) {
         return push.compliance.some(c => c.state === PolicyCompliaceState.in_review);
+    }
+    return false;
+}
+
+export function hasTargetDifferences(push: graphql.PushToPushLifecycle.Push): boolean {
+    if (!!push && !!push.compliance && push.compliance.length > 0) {
+        return push.compliance.filter(c => !!c.differences).some(c => c.differences.length > 0);
     }
     return false;
 }
