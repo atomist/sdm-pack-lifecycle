@@ -30,10 +30,12 @@ import { ConfigureDirectMessageUserPreferences } from "./handlers/command/prefer
 import { ConfigureLifecyclePreferences } from "./handlers/command/preferences/ConfigureLifecyclePreferences";
 import { SetTeamPreference } from "./handlers/command/preferences/SetTeamPreference";
 import { SetUserPreference } from "./handlers/command/preferences/SetUserPreference";
+import { applyTargetCommand } from "./handlers/command/sdm/applyTarget";
 import {
     discardComplianceReview,
     openComplianceReview,
 } from "./handlers/command/sdm/compliance";
+import { setTargetCommand } from "./handlers/command/sdm/setTarget";
 import { toggleGoalSetsSubscription } from "./handlers/command/sdm/SubscribeToGoalSets";
 import { UpdateSdmGoalDisplayState } from "./handlers/command/sdm/UpdateSdmGoalDisplayState";
 import { UpdateSdmGoalState } from "./handlers/command/sdm/UpdateSdmGoalState";
@@ -450,6 +452,8 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addCommand(toggleGoalSetsSubscription(sdm, false));
             sdm.addCommand(openComplianceReview());
             sdm.addCommand(discardComplianceReview());
+            sdm.addCommand(applyTargetCommand());
+            sdm.addCommand(setTargetCommand());
 
             // Job
             sdm.addEvent(updateOnJobTask(sdm));

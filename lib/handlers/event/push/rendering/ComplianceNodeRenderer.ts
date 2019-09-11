@@ -62,20 +62,20 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
         if (differencesCount > 0) {
             const targetCount = _.sum(complianceData.filter(c => !!c.targets).map(c => c.targets.length));
             const compliance = ((1 - (differencesCount) / targetCount) * 100).toFixed(0);
-            const attachment: Attachment = {
-                author_name: `${differencesCount} target ${pluralize("difference")} detected`,
-                author_icon: `https://images.atomist.com/rug/info.png`,
-                color: "B5B5B5",
-                footer: `compliance ${compliance}% \u00B7 ${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${pluralize("target", targetCount, true)} set`)}`,
-                fallback: "Target differences detected",
-                actions: [
-                    buttonForCommand(
-                        { text: "Review \u02C3" },
-                        "OpenComplianceReview",
-                        { owner: push.repo.owner, repo: push.repo.name, branch: push.branch, sha: push.after.sha },
-                    ),
-                ],
-            };
+            const attachment: Attachment = slackWarningMessage(
+                `${differencesCount} Target ${pluralize("Difference")}`,
+                undefined,
+                context.context,
+                {
+                    actions: [
+                        buttonForCommand(
+                            { text: "Review \u02C3" },
+                            "OpenComplianceReview",
+                            { owner: push.repo.owner, repo: push.repo.name, branch: push.branch, sha: push.after.sha },
+                        ),
+                    ],
+                }).attachments[0];
+            attachment.footer = `compliance ${compliance}% \u00B7 ${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${pluralize("target", targetCount, true)} set`)}`;
             msg.attachments.push(attachment);
         }
         return msg;
@@ -104,9 +104,9 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
 
         const complianceData = push.compliance;
         if (!!complianceData && complianceData.length > 0) {
-
+            const differencesCount = _.sum(complianceData.filter(c => !!c.differences).map(c => c.differences.length));
             const msg = slackWarningMessage(
-                "Target Differences",
+                `${differencesCount} Target ${pluralize("Difference")}`,
                 `The following target differences were detected:`,
                 context.context,
             );
@@ -140,21 +140,35 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                                 text: "Apply Target",
                                 options: v.map(d => ({
                                     text: d.displayName,
-                                    value: `${d.type}::${d.name}::${d.sha}`,
+                                    value: JSON.stringify({ type: d.type, name: d.name, sha: d.sha, aspectOwner: compliance.owner }),
                                 })),
-                            }, "ApplyFingerprint", "fingerprint", {}),
+                            }, "ApplyTarget", "data", {
+                                owner: push.repo.owner,
+                                repo: push.repo.name,
+                                branch: push.branch,
+                                apiUrl: push.repo.org.provider.apiUrl,
+                            }),
                             menuForCommand({
                                 text: "Set Target",
                                 options: v.map(d => ({
-                                    text: d.displayName,
-                                    value: `${d.type}::${d.name}::${d.sha}`,
+                                    text: `${d.displayName} ${d.displayValue}`,
+                                    value: JSON.stringify({ type: d.type, name: d.name, sha: d.sha, aspectOwner: compliance.owner }),
                                 })),
-                            }, "SetTarget", "fingerprint", {}),
+                            }, "SetTarget", "data"),
                         ];
                     } else {
+                        const diff = v[0];
                         typeAttachments.slice(-1)[0].actions = [
-                            buttonForCommand({ text: "Apply Target" }, "ApplyFingerprint", {}),
-                            buttonForCommand({ text: "Set Target" }, "SetTarget", {}),
+                            buttonForCommand({ text: "Apply Target" }, "ApplyTarget", {
+                                owner: push.repo.owner,
+                                repo: push.repo.name,
+                                branch: push.branch,
+                                apiUrl: push.repo.org.provider.apiUrl,
+                                data: JSON.stringify({ type: diff.type, name: diff.name, sha: diff.sha, aspectOwner: compliance.owner }),
+                            }),
+                            buttonForCommand({ text: "Set Target" }, "SetTarget", {
+                                data: JSON.stringify({ type: diff.type, name: diff.name, sha: diff.sha, aspectOwner: compliance.owner }),
+                            }),
                         ];
                     }
 
@@ -166,6 +180,10 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                     footer: compliance.owner,
                     ts: Date.now(),
                     actions: [
+                        ...(compliance.differences.length > 1 ? [buttonForCommand(
+                            { text: "Apply All" },
+                            "DiscardComplianceReview",
+                            { owner: push.repo.owner, repo: push.repo.name, branch: push.branch, sha: push.after.sha })] : []),
                         buttonForCommand(
                             { text: "\u02C2 Back" },
                             "DiscardComplianceReview",
