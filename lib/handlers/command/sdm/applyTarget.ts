@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { guid } from "@atomist/automation-client";
 import {
     CommandHandlerRegistration,
     createJob,
@@ -54,6 +55,7 @@ export function applyTargetCommand(): CommandHandlerRegistration<ApplyTargetPara
                         repo: ci.parameters.repo,
                         branch: ci.parameters.branch,
                         apiUrl: ci.parameters.apiUrl,
+                        msgId: guid(),
                     },
                     // "job.name": ci.parameters.title,
                     // "job.description": ci.parameters.description,

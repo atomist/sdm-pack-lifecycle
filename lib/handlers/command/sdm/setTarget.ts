@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { guid } from "@atomist/automation-client";
 import {
     CommandHandlerRegistration,
     createJob,
@@ -40,6 +41,7 @@ export function setTargetCommand(): CommandHandlerRegistration<SetTargetParamete
                     broadcast: false,
                     sha: data.sha,
                     targetfingerprint: `${data.type}::${data.name}`,
+                    msgId: guid(),
                 }],
             }, ci.context);
         },

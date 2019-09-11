@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+import { guid } from "@atomist/automation-client";
 import {
     CommandHandlerRegistration,
     createJob,
 } from "@atomist/sdm";
 
-interface ApplyTargetParameters {
+interface ApplyAllTargetParameters {
     owner: string;
     repo: string;
     branch: string;
@@ -28,7 +29,7 @@ interface ApplyTargetParameters {
     data: string;
 }
 
-export function applyAllTargetsCommand(): CommandHandlerRegistration<ApplyTargetParameters> {
+export function applyAllTargetsCommand(): CommandHandlerRegistration<ApplyAllTargetParameters> {
     return {
         name: "ApplyAllTargets",
         description: "Broadcast a try target job",
@@ -53,6 +54,7 @@ export function applyAllTargetsCommand(): CommandHandlerRegistration<ApplyTarget
                         repo: ci.parameters.repo,
                         branch: ci.parameters.branch,
                         apiUrl: ci.parameters.apiUrl,
+                        msgId: guid(),
                     },
                     // "job.name": ci.parameters.title,
                     // "job.description": ci.parameters.description,
