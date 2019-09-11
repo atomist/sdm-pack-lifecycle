@@ -137,6 +137,10 @@ import {
     releaseToPushCardLifecycle,
     releaseToPushLifecycle,
 } from "./handlers/event/push/ReleaseToPushLifecycle";
+import {
+    ComplianceNodeRenderer,
+    ComplianceSummaryNodeRenderer,
+} from "./handlers/event/push/rendering/ComplianceNodeRenderer";
 import * as pc from "./handlers/event/push/rendering/PushCardNodeRenderers";
 import * as pr from "./handlers/event/push/rendering/PushNodeRenderers";
 import * as sr from "./handlers/event/push/rendering/StatusesNodeRenderer";
@@ -178,10 +182,6 @@ import {
     PushToPushLifecycle,
     ReviewToReviewLifecycle,
 } from "./typings/types";
-import {
-    ComplianceNodeRenderer,
-    ComplianceSummaryNodeRenderer,
-} from "./handlers/event/push/rendering/ComplianceNodeRenderer";
 
 export type RendererFactory<T, M, A> = (event: T) => Array<NodeRenderer<any, M, A>>;
 export type ActionFactory<T, A> = (event: T) => Array<ActionContributor<any, A>>;
