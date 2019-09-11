@@ -1,0 +1,7 @@
+subscription policyComplianceToPushLifecycle {
+    PolicyCompliance {
+        push {
+            ...PushFields
+        }
+    }
+}

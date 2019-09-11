@@ -4,8 +4,9 @@ query ComplianceOnPush($branch: String, $sha: String) {
             sha
         }
         compliance @required {
-            id
             owner
+            _branch
+            _sha
             targets {
                 type
                 name

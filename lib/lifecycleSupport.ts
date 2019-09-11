@@ -123,6 +123,7 @@ import {
     k8PodToPushLifecycle,
 } from "./handlers/event/push/K8PodToPushLifecycle";
 import { notifyReviewerOnPush } from "./handlers/event/push/NotifyReviewerOnPush";
+import { policyComplianceToPushLifecycle } from "./handlers/event/push/PolicyComplianceToPushLifecycle";
 import {
     pushToPushCardLifecycle,
     pushToPushLifecycle,
@@ -409,6 +410,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(buildToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(issueToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(k8PodToPushLifecycle(optsToUse.push.chat));
+            sdm.addEvent(policyComplianceToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(pushToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(releaseToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(sdmGoalDisplayToPushLifecycle(optsToUse.push.chat));
