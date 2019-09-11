@@ -78,7 +78,7 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
                         buttonForCommand(
                             { text: "Review \u02C3" },
                             "OpenComplianceReview",
-                            { owner: push.repo.owner, repo: push.repo.name, branch: push.branch, sha: push.after.sha },
+                            { id: push.id },
                         ),
                     ],
                 }).attachments[0];
@@ -220,7 +220,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                         buttonForCommand(
                             { text: "\u02C2 Back" },
                             "DiscardComplianceReview",
-                            { owner: push.repo.owner, repo: push.repo.name, branch: push.branch, sha: push.after.sha }),
+                            { id: push.id }),
                     ],
                 });
                 message.attachments.push(...msg.attachments);

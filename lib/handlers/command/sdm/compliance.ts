@@ -25,23 +25,19 @@ import {
     PolicyCompliaceState,
 } from "../../../typings/types";
 
-export function openComplianceReview(): CommandHandlerRegistration<{ owner: string, repo: string, branch: string, sha: string }> {
+export function openComplianceReview(): CommandHandlerRegistration<{ id: string }> {
     return {
         name: "OpenComplianceReview",
         description: "Render compliance review messages in chat",
         parameters: {
-            owner: {},
-            repo: {},
-            branch: {},
-            sha: {},
+            id: {},
         },
         listener: async ci => {
 
             const push = await ci.context.graphClient.query<ComplianceOnPush.Query, ComplianceOnPush.Variables>({
                 name: "ComplianceOnPush",
                 variables: {
-                    branch: ci.parameters.branch,
-                    sha: ci.parameters.sha,
+                    id: ci.parameters.id,
                 },
                 options: QueryNoCacheOptions,
             });
@@ -61,23 +57,19 @@ export function openComplianceReview(): CommandHandlerRegistration<{ owner: stri
     };
 }
 
-export function discardComplianceReview(): CommandHandlerRegistration<{ owner: string, repo: string, branch: string, sha: string }> {
+export function discardComplianceReview(): CommandHandlerRegistration<{ id: string }> {
     return {
         name: "DiscardComplianceReview",
         description: "Render compliance review messages in chat",
         parameters: {
-            owner: {},
-            repo: {},
-            branch: {},
-            sha: {},
+            id: {},
         },
         listener: async ci => {
 
             const push = await ci.context.graphClient.query<ComplianceOnPush.Query, ComplianceOnPush.Variables>({
                 name: "ComplianceOnPush",
                 variables: {
-                    branch: ci.parameters.branch,
-                    sha: ci.parameters.sha,
+                    id: ci.parameters.id,
                 },
                 options: QueryNoCacheOptions,
             });

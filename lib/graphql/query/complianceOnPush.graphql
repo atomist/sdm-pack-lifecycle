@@ -1,6 +1,7 @@
-query ComplianceOnPush($branch: String, $sha: String) {
-    Push(branch: $branch) {
-        after(sha: $sha) @required {
+query ComplianceOnPush($id: ID) {
+    Push(id: $id) {
+        id
+        after @required {
             sha
         }
         compliance @required {
