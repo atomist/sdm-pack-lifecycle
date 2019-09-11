@@ -47,8 +47,8 @@ export function applyAllTargetsCommand(): CommandHandlerRegistration<ApplyTarget
                 registration: data.aspectOwner,
                 command: "ApplyAllFingerprints",
                 parameters: [{
-                    "fingerprints": data.fingerprints,
-                    "targets": {
+                    fingerprints: data.fingerprints,
+                    targets: {
                         owner: ci.parameters.owner,
                         repo: ci.parameters.repo,
                         branch: ci.parameters.branch,
