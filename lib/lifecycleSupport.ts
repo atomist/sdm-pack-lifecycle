@@ -30,6 +30,7 @@ import { ConfigureDirectMessageUserPreferences } from "./handlers/command/prefer
 import { ConfigureLifecyclePreferences } from "./handlers/command/preferences/ConfigureLifecyclePreferences";
 import { SetTeamPreference } from "./handlers/command/preferences/SetTeamPreference";
 import { SetUserPreference } from "./handlers/command/preferences/SetUserPreference";
+import { applyAllTargetsCommand } from "./handlers/command/sdm/applyAllTargets";
 import { applyTargetCommand } from "./handlers/command/sdm/applyTarget";
 import {
     discardComplianceReview,
@@ -453,6 +454,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addCommand(openComplianceReview());
             sdm.addCommand(discardComplianceReview());
             sdm.addCommand(applyTargetCommand());
+            sdm.addCommand(applyAllTargetsCommand());
             sdm.addCommand(setTargetCommand());
 
             // Job

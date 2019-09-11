@@ -182,8 +182,14 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                     actions: [
                         ...(compliance.differences.length > 1 ? [buttonForCommand(
                             { text: "Apply All" },
-                            "DiscardComplianceReview",
-                            { owner: push.repo.owner, repo: push.repo.name, branch: push.branch, sha: push.after.sha })] : []),
+                            "ApplyAllTargets",
+                            {
+                                owner: push.repo.owner,
+                                repo: push.repo.name,
+                                branch: push.branch,
+                                sha: push.after.sha,
+                                data: JSON.stringify({ fingerprints: compliance.differences.map(d => `${d.type}::${d.name}`).join(","), aspectOwner: compliance.owner }),
+                            })] : []),
                         buttonForCommand(
                             { text: "\u02C2 Back" },
                             "DiscardComplianceReview",
