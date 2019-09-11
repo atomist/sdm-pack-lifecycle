@@ -30,7 +30,10 @@ import { ConfigureDirectMessageUserPreferences } from "./handlers/command/prefer
 import { ConfigureLifecyclePreferences } from "./handlers/command/preferences/ConfigureLifecyclePreferences";
 import { SetTeamPreference } from "./handlers/command/preferences/SetTeamPreference";
 import { SetUserPreference } from "./handlers/command/preferences/SetUserPreference";
-import { reviewComplianceCommand } from "./handlers/command/sdm/compliance";
+import {
+    discardComplianceReview,
+    openComplianceReview,
+} from "./handlers/command/sdm/compliance";
 import { toggleGoalSetsSubscription } from "./handlers/command/sdm/SubscribeToGoalSets";
 import { UpdateSdmGoalDisplayState } from "./handlers/command/sdm/UpdateSdmGoalDisplayState";
 import { UpdateSdmGoalState } from "./handlers/command/sdm/UpdateSdmGoalState";
@@ -175,6 +178,10 @@ import {
     PushToPushLifecycle,
     ReviewToReviewLifecycle,
 } from "./typings/types";
+import {
+    ComplianceNodeRenderer,
+    ComplianceSummaryNodeRenderer,
+} from "./handlers/event/push/rendering/ComplianceNodeRenderer";
 
 export type RendererFactory<T, M, A> = (event: T) => Array<NodeRenderer<any, M, A>>;
 export type ActionFactory<T, A> = (event: T) => Array<ActionContributor<any, A>>;
@@ -285,7 +292,8 @@ export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
             renderers: [() => [
                 new pr.PushNodeRenderer(),
                 new pr.CommitNodeRenderer(),
-                new sr.ComplianceNodeRenderer(),
+                new ComplianceNodeRenderer(),
+                new ComplianceSummaryNodeRenderer(),
                 new sr.GoalSetNodeRenderer(),
                 new sr.StatusesNodeRenderer(),
                 new WorkflowNodeRenderer(),
@@ -438,7 +446,8 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addCommand(cancelGoalSetsCommand(sdm));
             sdm.addCommand(toggleGoalSetsSubscription(sdm, true));
             sdm.addCommand(toggleGoalSetsSubscription(sdm, false));
-            sdm.addCommand(reviewComplianceCommand());
+            sdm.addCommand(openComplianceReview());
+            sdm.addCommand(discardComplianceReview());
 
             // Job
             sdm.addEvent(updateOnJobTask(sdm));

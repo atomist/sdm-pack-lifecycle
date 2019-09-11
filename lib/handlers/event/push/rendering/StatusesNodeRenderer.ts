@@ -54,53 +54,10 @@ import {
 } from "../../../../util/goals";
 import { LifecycleRendererPreferences } from "../../preferences";
 import { GoalSet } from "../PushLifecycle";
-import { EMOJI_SCHEME } from "./PushNodeRenderers";
-
-export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
-    implements SlackNodeRenderer<PushToPushLifecycle.Push> {
-
-    constructor() {
-        super("compliance");
-    }
-
-    public supports(node: PushToPushLifecycle.Push): boolean {
-        return !!node.compliance && node.compliance.length > 0;
-    }
-
-    public async render(push: PushToPushLifecycle.Push,
-                        actions: Action[],
-                        msg: SlackMessage,
-                        context: RendererContext): Promise<SlackMessage> {
-        const complianceData = push.compliance;
-        const differencesCount = _.sum(complianceData.filter(c => !!c.differences).map(c => c.differences.length));
-        if (differencesCount > 0) {
-            const targetCount = _.sum(complianceData.filter(c => !!c.targets).map(c => c.targets.length));
-            const compliance = ((1 - (differencesCount) / targetCount) * 100).toFixed(0);
-            const attachment: Attachment = {
-                author_name: `${differencesCount} target ${pluralize("difference")} detected`,
-                author_icon: `https://images.atomist.com/rug/info.png`,
-                color: "B5B5B5",
-                footer: `compliance ${compliance}% \u00B7 ${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${pluralize("target", targetCount, true)} set`)}`,
-                fallback: "Target differences detected",
-                actions: [
-                    buttonForCommand(
-                        { text: "Review \u02C3" },
-                        "ReviewCompliance",
-                        { owner: push.repo.owner, repo: push.repo.name, branch: push.branch, sha: push.after.sha },
-                    ),
-                ],
-            };
-
-            let present = 0;
-            if (context.has("attachment_count")) {
-                present = context.get("attachment_count");
-            }
-            context.set("attachment_count", present + msg.attachments.length);
-            msg.attachments = msg.attachments.concat(attachment);
-        }
-        return msg;
-    }
-}
+import {
+    EMOJI_SCHEME,
+    isComplianceReview,
+} from "./PushNodeRenderers";
 
 export class StatusesNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<PushToPushLifecycle.Push> {
@@ -129,6 +86,10 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
                   actions: Action[],
                   msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
+
+        if (isComplianceReview(push)) {
+            return Promise.resolve(msg);
+        }
 
         // List all the statuses on the after commit
         const commit = push.after;
@@ -278,10 +239,15 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                         msg: SlackMessage,
                         context: RendererContext): Promise<SlackMessage> {
 
+        const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
+
+        if (isComplianceReview(push)) {
+            return msg;
+        }
+
         let sortedGoals = [];
         const goalSets = context.lifecycle.extract("goalSets") as GoalSet[];
         const goalSetIndex = goalSets.findIndex(gs => gs.goalSetId === goalSet.goalSetId);
-        const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
         const displayState = _.get(push, "goalsDisplayState[0].state") || SdmGoalDisplayState.show_current;
 
         const shouldChannelExpand = context.lifecycle.renderers.some(

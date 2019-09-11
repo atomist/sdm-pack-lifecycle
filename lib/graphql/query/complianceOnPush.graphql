@@ -1,0 +1,29 @@
+query ComplianceOnPush($branch: String, $sha: String) {
+    Push(branch: $branch) {
+        after(sha: $sha) @required {
+            sha
+        }
+        compliance @required {
+            id
+            owner
+            targets {
+                type
+                name
+                sha
+                data
+                displayName
+                displayValue
+                aspectName
+            }
+            differences {
+                type
+                name
+                sha
+                data
+                displayName
+                displayValue
+                aspectName
+            }
+        }
+    }
+}

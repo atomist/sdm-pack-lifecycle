@@ -228,6 +228,7 @@ fragment PushFields on Push {
   compliance {
     id
     owner
+    state
     targets {
       type
       name
@@ -235,6 +236,7 @@ fragment PushFields on Push {
       data
       displayName
       displayValue
+      aspectName
     }
     differences {
       type
@@ -243,6 +245,7 @@ fragment PushFields on Push {
       data
       displayName
       displayValue
+      aspectName
     }
   }
 }

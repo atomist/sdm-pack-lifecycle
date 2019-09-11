@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-import { generateHash } from "@atomist/automation-client/lib/internal/util/string";
+import {
+    addressEvent,
+    QueryNoCacheOptions,
+} from "@atomist/automation-client";
 import { CommandHandlerRegistration } from "@atomist/sdm";
+import * as _ from "lodash";
+import {
+    ComplianceOnPush,
+    PolicyCompliaceState,
+} from "../../../typings/types";
 
-export function reviewComplianceCommand(): CommandHandlerRegistration<{ owner: string, repo: string, branch: string, sha: string }> {
+export function openComplianceReview(): CommandHandlerRegistration<{ owner: string, repo: string, branch: string, sha: string }> {
     return {
-        name: "ReviewCompliance",
+        name: "OpenComplianceReview",
         description: "Render compliance review messages in chat",
         parameters: {
             owner: {},
@@ -28,7 +36,63 @@ export function reviewComplianceCommand(): CommandHandlerRegistration<{ owner: s
             sha: {},
         },
         listener: async ci => {
-            await ci.context.messageClient.respond("test", { thread: true, id: generateHash(JSON.stringify(ci.parameters)) });
+
+            const push = await ci.context.graphClient.query<ComplianceOnPush.Query, ComplianceOnPush.Variables>({
+                name: "ComplianceOnPush",
+                variables: {
+                    branch: ci.parameters.branch,
+                    sha: ci.parameters.sha,
+                },
+                options: QueryNoCacheOptions,
+            });
+
+            const complianceData = _.get(push, "Push[0].compliance");
+            if (!!complianceData) {
+                for (const compliance of complianceData) {
+                    await ci.context.messageClient.send(
+                        {
+                            ...compliance,
+                            state: PolicyCompliaceState.in_review,
+                        },
+                        addressEvent("PolicyCompliance"));
+                }
+            }
+        },
+    };
+}
+
+export function discardComplianceReview(): CommandHandlerRegistration<{ owner: string, repo: string, branch: string, sha: string }> {
+    return {
+        name: "DiscardComplianceReview",
+        description: "Render compliance review messages in chat",
+        parameters: {
+            owner: {},
+            repo: {},
+            branch: {},
+            sha: {},
+        },
+        listener: async ci => {
+
+            const push = await ci.context.graphClient.query<ComplianceOnPush.Query, ComplianceOnPush.Variables>({
+                name: "ComplianceOnPush",
+                variables: {
+                    branch: ci.parameters.branch,
+                    sha: ci.parameters.sha,
+                },
+                options: QueryNoCacheOptions,
+            });
+
+            const complianceData = _.get(push, "Push[0].compliance");
+            if (!!complianceData) {
+                for (const compliance of complianceData) {
+                    await ci.context.messageClient.send(
+                        {
+                            ...compliance,
+                            state: PolicyCompliaceState.reviewed,
+                        },
+                        addressEvent("PolicyCompliance"));
+                }
+            }
         },
     };
 }

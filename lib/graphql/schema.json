@@ -11548,6 +11548,20 @@
                 "defaultValue": null
               },
               {
+                "name": "state",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "PolicyCompliaceState",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
                 "name": "ts",
                 "description": null,
                 "type": {
@@ -25055,6 +25069,20 @@
                 "defaultValue": null
               },
               {
+                "name": "state",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "PolicyCompliaceState",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
                 "name": "ts",
                 "description": null,
                 "type": {
@@ -26802,6 +26830,35 @@
         "possibleTypes": null
       },
       {
+        "kind": "ENUM",
+        "name": "PolicyCompliaceState",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "created",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "in_review",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "reviewed",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "PolicyCompliance",
         "description": null,
@@ -26871,6 +26928,18 @@
             "deprecationReason": null
           },
           {
+            "name": "state",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "PolicyCompliaceState",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "targets",
             "description": null,
             "args": [],
@@ -26921,6 +26990,18 @@
         "name": "PolicyComplianceFingerprint",
         "description": null,
         "fields": [
+          {
+            "name": "aspectName",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "data",
             "description": null,
@@ -34745,6 +34826,30 @@
         "fields": [
           {
             "name": "data",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "displayName",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "displayValue",
             "description": "",
             "args": [],
             "type": {
@@ -46381,6 +46486,26 @@
             "defaultValue": null
           },
           {
+            "name": "displayName",
+            "description": "Optional human readable string for this fingerprint",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "displayValue",
+            "description": "Optional human readable string for the value of this fingerprint",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "name",
             "description": "The unique name for this fingerprint, such as the name of a dependency",
             "type": {
@@ -56678,6 +56803,20 @@
                   "ofType": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "state",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "PolicyCompliaceState",
                     "ofType": null
                   }
                 },
