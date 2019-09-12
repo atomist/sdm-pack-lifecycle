@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { logger } from "@atomist/automation-client";
+import {
+    buttonForCommand,
+    logger,
+} from "@atomist/automation-client";
 import { formatDuration } from "@atomist/sdm-core/lib/util/misc/time";
 import {
     Action,
@@ -25,6 +28,7 @@ import {
     url,
 } from "@atomist/slack-messages";
 import * as _ from "lodash";
+import * as pluralize from "pluralize";
 import {
     Action as CardAction,
     CardMessage,
@@ -38,7 +42,6 @@ import {
     SlackNodeRenderer,
 } from "../../../../lifecycle/Lifecycle";
 import {
-    PushFields,
     PushToPushLifecycle,
     SdmGoalDisplayFormat,
     SdmGoalDisplayState,
@@ -51,41 +54,10 @@ import {
 } from "../../../../util/goals";
 import { LifecycleRendererPreferences } from "../../preferences";
 import { GoalSet } from "../PushLifecycle";
-import { EMOJI_SCHEME } from "./PushNodeRenderers";
-
-export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
-    implements SlackNodeRenderer<PushToPushLifecycle.Push> {
-
-    constructor() {
-        super("compliance");
-    }
-
-    public supports(node: any): boolean {
-        return !!node.after;
-    }
-
-    public async render(push: PushToPushLifecycle.Push,
-                        actions: Action[],
-                        msg: SlackMessage,
-                        context: RendererContext): Promise<SlackMessage> {
-        const complianceGoals = context.lifecycle.extract("compliance") as PushFields.Goals[];
-        if (!!complianceGoals && complianceGoals.length > 0) {
-            complianceGoals.forEach(g => {
-                const data = JSON.parse(g.data || "{}") as { policies: any[] };
-                const attachment: Attachment = {
-                    author_name: g.description,
-                    author_icon: `https://images.atomist.com/rug/info.png`,
-                    color: "B5B5B5",
-                    author_link: g.externalUrls[0].url,
-                    footer: `${g.phase.toLowerCase()} \u00B7 ${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${data.policies.length} ${data.policies.length === 1 ? "policy" : "policies"} set`)}`,
-                    fallback: g.description,
-                };
-                msg.attachments.push(attachment);
-            });
-        }
-        return msg;
-    }
-}
+import {
+    EMOJI_SCHEME,
+    isComplianceReview,
+} from "./PushNodeRenderers";
 
 export class StatusesNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<PushToPushLifecycle.Push> {
@@ -114,6 +86,10 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
                   actions: Action[],
                   msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
+
+        if (isComplianceReview(push)) {
+            return Promise.resolve(msg);
+        }
 
         // List all the statuses on the after commit
         const commit = push.after;
@@ -263,10 +239,15 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                         msg: SlackMessage,
                         context: RendererContext): Promise<SlackMessage> {
 
+        const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
+
+        if (isComplianceReview(push)) {
+            return msg;
+        }
+
         let sortedGoals = [];
         const goalSets = context.lifecycle.extract("goalSets") as GoalSet[];
         const goalSetIndex = goalSets.findIndex(gs => gs.goalSetId === goalSet.goalSetId);
-        const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
         const displayState = _.get(push, "goalsDisplayState[0].state") || SdmGoalDisplayState.show_current;
 
         const shouldChannelExpand = context.lifecycle.renderers.some(

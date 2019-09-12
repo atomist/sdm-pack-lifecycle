@@ -189,9 +189,6 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
                     } else if (type === "goalSets") {
                         return (push.goalSets || []).sort((g1, g2) => g2.ts - g1.ts)
                             .filter(gs => !(gs.tags || []).some(t => t.name === "@atomist/sdm/internal"));
-                    } else if (type === "compliance") {
-                        return (push.goals || []).sort((g1, g2) => g2.ts - g1.ts)
-                            .filter(g => g.uniqueName === "atomist#policy").filter(g => g.state === SdmGoalState.failure);
                     }
                     return null;
                 },

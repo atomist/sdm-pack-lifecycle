@@ -30,6 +30,13 @@ import { ConfigureDirectMessageUserPreferences } from "./handlers/command/prefer
 import { ConfigureLifecyclePreferences } from "./handlers/command/preferences/ConfigureLifecyclePreferences";
 import { SetTeamPreference } from "./handlers/command/preferences/SetTeamPreference";
 import { SetUserPreference } from "./handlers/command/preferences/SetUserPreference";
+import { applyAllTargetsCommand } from "./handlers/command/sdm/applyAllTargets";
+import { applyTargetCommand } from "./handlers/command/sdm/applyTarget";
+import {
+    discardComplianceReview,
+    openComplianceReview,
+} from "./handlers/command/sdm/compliance";
+import { setTargetCommand } from "./handlers/command/sdm/setTarget";
 import { toggleGoalSetsSubscription } from "./handlers/command/sdm/SubscribeToGoalSets";
 import { UpdateSdmGoalDisplayState } from "./handlers/command/sdm/UpdateSdmGoalDisplayState";
 import { UpdateSdmGoalState } from "./handlers/command/sdm/UpdateSdmGoalState";
@@ -119,6 +126,7 @@ import {
     k8PodToPushLifecycle,
 } from "./handlers/event/push/K8PodToPushLifecycle";
 import { notifyReviewerOnPush } from "./handlers/event/push/NotifyReviewerOnPush";
+import { policyComplianceToPushLifecycle } from "./handlers/event/push/PolicyComplianceToPushLifecycle";
 import {
     pushToPushCardLifecycle,
     pushToPushLifecycle,
@@ -133,6 +141,10 @@ import {
     releaseToPushCardLifecycle,
     releaseToPushLifecycle,
 } from "./handlers/event/push/ReleaseToPushLifecycle";
+import {
+    ComplianceNodeRenderer,
+    ComplianceSummaryNodeRenderer,
+} from "./handlers/event/push/rendering/ComplianceNodeRenderer";
 import * as pc from "./handlers/event/push/rendering/PushCardNodeRenderers";
 import * as pr from "./handlers/event/push/rendering/PushNodeRenderers";
 import * as sr from "./handlers/event/push/rendering/StatusesNodeRenderer";
@@ -284,8 +296,9 @@ export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
             renderers: [() => [
                 new pr.PushNodeRenderer(),
                 new pr.CommitNodeRenderer(),
+                new ComplianceNodeRenderer(),
+                new ComplianceSummaryNodeRenderer(),
                 new sr.GoalSetNodeRenderer(),
-                new sr.ComplianceNodeRenderer(),
                 new sr.StatusesNodeRenderer(),
                 new WorkflowNodeRenderer(),
                 new pr.IssueNodeRenderer(),
@@ -400,6 +413,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(buildToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(issueToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(k8PodToPushLifecycle(optsToUse.push.chat));
+            sdm.addEvent(policyComplianceToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(pushToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(releaseToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(sdmGoalDisplayToPushLifecycle(optsToUse.push.chat));
@@ -437,6 +451,11 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addCommand(cancelGoalSetsCommand(sdm));
             sdm.addCommand(toggleGoalSetsSubscription(sdm, true));
             sdm.addCommand(toggleGoalSetsSubscription(sdm, false));
+            sdm.addCommand(openComplianceReview());
+            sdm.addCommand(discardComplianceReview());
+            sdm.addCommand(applyTargetCommand());
+            sdm.addCommand(applyAllTargetsCommand());
+            sdm.addCommand(setTargetCommand());
 
             // Job
             sdm.addEvent(updateOnJobTask(sdm));

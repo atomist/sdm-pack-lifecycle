@@ -57,6 +57,11 @@ export function updateOnJobTask(sdm: SoftwareDeliveryMachine): EventHandlerRegis
                 return Success;
             }
 
+            // Don't show progress for single task job
+            if (job.jobTasks.length <= 1) {
+                return Success;
+            }
+
             const owner = job.owner;
             const totalCount = job.jobCount;
             const count = job.completedCount;

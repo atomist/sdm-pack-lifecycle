@@ -31,6 +31,7 @@ import {
 import * as _ from "lodash";
 import {
     AbstractIdentifiableContribution,
+    lifecycle,
     LifecycleConfiguration,
     RendererContext,
     SlackNodeRenderer,
@@ -38,6 +39,7 @@ import {
 import * as graphql from "../../../../typings/types";
 import {
     CommitIssueRelationshipBySha,
+    PolicyCompliaceState,
     PushToPushLifecycle,
     SdmGoalDisplayFormat,
     SdmVersionByCommit,
@@ -253,7 +255,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
             lastAttachment.ts = Math.floor(Date.parse(push.timestamp) / 1000);
         }
 
-        let present = 0;
+        let present = hasTargetDifferences(push) ? 1 : 0;
         if (context.has("attachment_count")) {
             present = context.get("attachment_count");
         }
@@ -381,6 +383,10 @@ export class TagNodeRenderer extends AbstractIdentifiableContribution
         const repo = context.lifecycle.extract("repo");
         const push = context.lifecycle.extract("push");
 
+        if (isComplianceReview(push)) {
+            return Promise.resolve(msg);
+        }
+
         const first = sortTagsByName(push.after.tags)
             .indexOf(tag) === 0;
 
@@ -428,6 +434,12 @@ export class ApplicationNodeRenderer extends AbstractIdentifiableContribution
 
     public render(domain: Domain, actions: Action[], msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
+
+        const push = context.lifecycle.extract("push");
+
+        if (isComplianceReview(push)) {
+            return Promise.resolve(msg);
+        }
 
         const domains = context.lifecycle.extract("domains") as Domain[];
         const running = domain.apps.filter(a => a.state === "started" || a.state === "healthy").length;
@@ -483,6 +495,10 @@ export class K8PodNodeRenderer extends AbstractIdentifiableContribution
 
     public render(push: graphql.K8PodToPushLifecycle.Pushes, actions: Action[],
                   msg: SlackMessage, context: RendererContext): Promise<SlackMessage> {
+
+        if (isComplianceReview(push)) {
+            return Promise.resolve(msg);
+        }
 
         const images = push.after.images;
         let isInitialEnv = true;
@@ -552,6 +568,10 @@ export class IssueNodeRenderer extends AbstractIdentifiableContribution
                         actions: Action[],
                         msg: SlackMessage,
                         context: RendererContext): Promise<SlackMessage> {
+
+        if (isComplianceReview(push)) {
+            return Promise.resolve(msg);
+        }
 
         const repo = context.lifecycle.extract("repo");
         const issues: any[] = [];
@@ -629,6 +649,10 @@ export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
     public render(node: graphql.PushToPushLifecycle.Push, actions: Action[],
                   msg: SlackMessage, context: RendererContext): Promise<SlackMessage> {
 
+        if (isComplianceReview(node)) {
+            return Promise.resolve(msg);
+        }
+
         const repo = context.lifecycle.extract("repo") as graphql.PushFields.Repo;
 
         // Make sure we only attempt to render PR for non-default branch pushes
@@ -684,6 +708,10 @@ export class BlackDuckFingerprintNodeRenderer extends AbstractIdentifiableContri
     public render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
 
+        if (isComplianceReview(push)) {
+            return Promise.resolve(msg);
+        }
+
         const riskProfileFingerprint = push.after.fingerprints.find(f => f.name === "BlackDuckRiskProfile");
         if (riskProfileFingerprint) {
             const riskProfile = JSON.parse(riskProfileFingerprint.data);
@@ -731,11 +759,18 @@ export class ExpandAttachmentsNodeRenderer extends AbstractIdentifiableContribut
     public async render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
                         context: RendererContext): Promise<SlackMessage> {
 
+        if (isComplianceReview(push)) {
+            return Promise.resolve(msg);
+        }
+
         if (!isFullRenderingEnabled(this.renderingStyle, context)) {
             if (context.has("attachment_count")) {
                 const count = context.get("attachment_count");
-                if (msg.attachments.length === count && (!push.goalSets || push.goalSets.length === 0)) {
-                    return msg;
+                if (msg.attachments.length === count) {
+                    const goalSetCount = (context.lifecycle.extract("goalSets") || []).length;
+                    if (goalSetCount === 0) {
+                        return msg;
+                    }
                 } else {
                     msg.attachments = msg.attachments.slice(0, count);
                 }
@@ -770,6 +805,20 @@ export class ExpandNodeRenderer extends AbstractIdentifiableContribution
                         context: RendererContext): Promise<SlackMessage> {
         return msg;
     }
+}
+
+export function isComplianceReview(push: graphql.PushToPushLifecycle.Push): boolean {
+    if (!!push && !!push.compliance && push.compliance.length > 0) {
+        return push.compliance.some(c => c.state === PolicyCompliaceState.in_review);
+    }
+    return false;
+}
+
+export function hasTargetDifferences(push: graphql.PushToPushLifecycle.Push): boolean {
+    if (!!push && !!push.compliance && push.compliance.length > 0) {
+        return push.compliance.filter(c => !!c.differences).some(c => c.differences.length > 0);
+    }
+    return false;
 }
 
 export function isFullRenderingEnabled(goalStyle: SdmGoalDisplayFormat, context: RendererContext): boolean {

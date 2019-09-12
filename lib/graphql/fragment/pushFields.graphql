@@ -1,4 +1,5 @@
 fragment PushFields on Push {
+  id
   _id
   builds {
     buildId
@@ -224,5 +225,28 @@ fragment PushFields on Push {
   goalsDisplayState {
     state
     format
+  }
+  compliance {
+    id
+    owner
+    state
+    targets {
+      type
+      name
+      sha
+      data
+      displayName
+      displayValue
+      aspectName
+    }
+    differences {
+      type
+      name
+      sha
+      data
+      displayName
+      displayValue
+      aspectName
+    }
   }
 }

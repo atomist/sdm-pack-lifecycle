@@ -1,0 +1,31 @@
+query ComplianceOnPush($id: ID) {
+    Push(id: $id) {
+        id
+        after @required {
+            sha
+        }
+        compliance @required {
+            owner
+            _branch
+            _sha
+            targets {
+                type
+                name
+                sha
+                data
+                displayName
+                displayValue
+                aspectName
+            }
+            differences {
+                type
+                name
+                sha
+                data
+                displayName
+                displayValue
+                aspectName
+            }
+        }
+    }
+}
