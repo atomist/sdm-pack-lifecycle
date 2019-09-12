@@ -32,6 +32,7 @@ import {
 } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as pluralize from "pluralize";
+import { diff } from "semver";
 import {
     AbstractIdentifiableContribution,
     RendererContext,
@@ -70,7 +71,7 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
             const targetCount = _.sum(complianceData.filter(c => !!c.targets).map(c => c.targets.length));
             const compliance = ((1 - (differencesCount) / targetCount) * 100).toFixed(0);
             const attachment: Attachment = slackWarningMessage(
-                `${differencesCount} Target ${pluralize("Difference", differencesCount)}`,
+                `${differencesCount} ${pluralize("Aspect", differencesCount)} with drift`,
                 undefined,
                 context.context,
                 {
@@ -123,8 +124,8 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
 
             const differencesCount = _.sum(complianceData.filter(c => !!c.differences).map(c => c.differences.length));
             const msg = slackWarningMessage(
-                `${differencesCount} Target ${pluralize("Difference", differencesCount)}`,
-                `The following target differences were detected:`,
+                `${differencesCount} ${pluralize("Aspect", differencesCount)} with drift`,
+                `The following ${pluralize("aspect", differencesCount)} ${differencesCount === 1 ? "is" : "are"} different from workspace targets:`,
                 context.context,
             );
             msg.attachments[0].footer = undefined;
@@ -158,7 +159,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                         if (v.length > 1) {
                             typeAttachments.slice(-1)[0].actions = [
                                 menuForCommand({
-                                    text: "Apply Target",
+                                    text: "Accept Target",
                                     options: targets.map(d => ({
                                         text: `${d.displayName} ${d.displayValue}`,
                                         value: JSON.stringify({ type: d.type, name: d.name, sha: d.sha, aspectOwner: compliance.owner }),
@@ -170,7 +171,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                                     apiUrl: push.repo.org.provider.apiUrl,
                                 }),
                                 menuForCommand({
-                                    text: "Set Target",
+                                    text: "Set as Target",
                                     options: v.map(d => ({
                                         text: `${d.displayName} ${d.displayValue}`,
                                         value: JSON.stringify({ type: d.type, name: d.name, sha: d.sha, aspectOwner: compliance.owner }),
@@ -181,14 +182,14 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                             const fp = v[0];
                             const target = targets[0];
                             typeAttachments.slice(-1)[0].actions = [
-                                buttonForCommand({ text: "Apply Target" }, "ApplyTarget", {
+                                buttonForCommand({ text: "Accept Target" }, "ApplyTarget", {
                                     owner: push.repo.owner,
                                     repo: push.repo.name,
                                     branch: push.branch,
                                     apiUrl: push.repo.org.provider.apiUrl,
                                     data: JSON.stringify({ type: target.type, name: target.name, sha: target.sha, aspectOwner: compliance.owner }),
                                 }),
-                                buttonForCommand({ text: "Set Target" }, "SetTarget", {
+                                buttonForCommand({ text: "Set as Target" }, "SetTarget", {
                                     data: JSON.stringify({ type: fp.type, name: fp.name, sha: fp.sha, aspectOwner: compliance.owner }),
                                 }),
                             ];
@@ -204,7 +205,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                     ts: slackTs(),
                     actions: [
                         ...(isTipOfBranch && compliance.differences.length > 1 ? [buttonForCommand(
-                            { text: "Apply All" },
+                            { text: "Accept All" },
                             "ApplyAllTargets",
                             {
                                 owner: push.repo.owner,
@@ -218,7 +219,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                                 }),
                             })] : []),
                         buttonForCommand(
-                            { text: "\u02C2 Back" },
+                            { text: "\u02C2 Close" },
                             "DiscardComplianceReview",
                             { id: push.id }),
                     ],
