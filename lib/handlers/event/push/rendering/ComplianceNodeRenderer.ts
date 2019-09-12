@@ -150,8 +150,8 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                         const target = compliance.targets.find(p => p.type === d.type && p.name === d.name);
                         targets.push(target);
                         return {
-                            text: `${italic(d.displayName)} ${codeLine(d.displayValue)} > ${codeLine(target.displayValue)}`,
-                            fallback: `${d.displayName} ${d.displayValue} > ${target.displayValue}`,
+                            text: `${italic(d.displayName)} ${codeLine(d.displayValue)} \u00B7 target ${codeLine(target.displayValue)}`,
+                            fallback: `${d.displayName} ${d.displayValue} \u00B7 target ${target.displayValue}`,
                         };
                     }));
 
