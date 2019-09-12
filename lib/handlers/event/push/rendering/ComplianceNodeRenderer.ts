@@ -82,7 +82,7 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
                         ),
                     ],
                 }).attachments[0];
-            attachment.footer = `compliance ${compliance}% \u00B7 ${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${pluralize("target", targetCount, true)} set`)}`;
+            attachment.footer = `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${pluralize("target", targetCount, true)} set`)}  \u00B7 compliance ${compliance}%`;
             msg.attachments.push(attachment);
         }
         return msg;
@@ -131,15 +131,15 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
             msg.attachments[0].ts = undefined;
 
             for (const compliance of complianceData) {
-                const attachments = _.map(_.groupBy(compliance.differences, "type"), (_v, k) => {
-                    const v = _.sortBy(_v, "displayName");
+                const attachments = _.map(_.groupBy(compliance.differences, "type"), (diffs, k) => {
+                    const v = _.sortBy(diffs, "displayName");
                     const allTargets = compliance.targets.filter(p => p.type === k);
                     const targetCount = allTargets.length;
                     const typeAttachments: Attachment[] = [];
 
                     typeAttachments.push({
                         title: allTargets[0].aspectName,
-                        footer: `${targetCount} ${targetCount === 1 ? "target" : "targets"} set \u00B7 compliance ${((1 - (v.length / targetCount)) * 100).toFixed(0)}%`,
+                        footer: `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage?aspect=${encodeURIComponent(allTargets[0].aspectName)}`, `${targetCount} ${pluralize("target", targetCount)} set`)} \u00B7 compliance ${((1 - (v.length / targetCount)) * 100).toFixed(0)}%`,
                         fallback: allTargets[0].aspectName,
                         color: "#20344A",
                     });
