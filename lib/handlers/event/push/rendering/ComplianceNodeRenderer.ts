@@ -66,12 +66,13 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
         }
 
         const complianceData = push.compliance;
-        const differencesCount = _.sum(complianceData.filter(c => !!c.differences).map(c => c.differences.length));
+        const aspectDifferenceCount = _.uniq(_.flatten(complianceData.filter(c => !!c.differences).map(c => c.differences)).map(c => c.type)).length;
+        const differencesCount = _.sum(complianceData.filter(c => !!c.differences).map(c => c.differences);
         if (differencesCount > 0) {
             const targetCount = _.sum(complianceData.filter(c => !!c.targets).map(c => c.targets.length));
             const compliance = ((1 - (differencesCount) / targetCount) * 100).toFixed(0);
             const attachment: Attachment = slackWarningMessage(
-                `${differencesCount} ${pluralize("Aspect", differencesCount)} with drift`,
+                `${aspectDifferenceCount} ${pluralize("Aspect", aspectDifferenceCount)} with drift`,
                 undefined,
                 context.context,
                 {
@@ -83,7 +84,7 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
                         ),
                     ],
                 }).attachments[0];
-            attachment.footer = `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${pluralize("target", targetCount, true)} set`)}  \u00B7 compliance ${compliance}%`;
+            attachment.footer = `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${pluralize("target", targetCount, true)} set`)}  \u00B7 ${pluralize("violation", differencesCount, true)} \u00B7 compliance ${compliance}%`;
             msg.attachments.push(attachment);
         }
         return msg;
@@ -122,10 +123,11 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
             });
             const isTipOfBranch = (_.get(lastCommit, "Repo[0].branches[0].commit.sha") || push.after.sha) === push.after.sha;
 
+            const aspectDifferenceCount = _.uniq(_.flatten(complianceData.filter(c => !!c.differences).map(c => c.differences)).map(c => c.type)).length;
             const differencesCount = _.sum(complianceData.filter(c => !!c.differences).map(c => c.differences.length));
             const msg = slackWarningMessage(
-                `${differencesCount} ${pluralize("Aspect", differencesCount)} with drift`,
-                `The following ${pluralize("aspect", differencesCount)} ${differencesCount === 1 ? "is" : "are"} different from workspace targets:`,
+                `${aspectDifferenceCount} ${pluralize("Aspect", aspectDifferenceCount)} with drift`,
+                `The following ${pluralize("aspect", aspectDifferenceCount)} ${aspectDifferenceCount === 1 ? "is" : "are"} different from workspace targets:`,
                 context.context,
             );
             msg.attachments[0].footer = undefined;
