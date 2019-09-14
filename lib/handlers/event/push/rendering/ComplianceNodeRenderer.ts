@@ -67,7 +67,7 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
 
         const complianceData = push.compliance;
         const aspectDifferenceCount = _.uniq(_.flatten(complianceData.filter(c => !!c.differences).map(c => c.differences)).map(c => c.type)).length;
-        const differencesCount = _.sum(complianceData.filter(c => !!c.differences).map(c => c.differences);
+        const differencesCount = _.sum(complianceData.filter(c => !!c.differences).map(c => c.differences.length));
         if (differencesCount > 0) {
             const targetCount = _.sum(complianceData.filter(c => !!c.targets).map(c => c.targets.length));
             const compliance = ((1 - (differencesCount) / targetCount) * 100).toFixed(0);
@@ -124,7 +124,6 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
             const isTipOfBranch = (_.get(lastCommit, "Repo[0].branches[0].commit.sha") || push.after.sha) === push.after.sha;
 
             const aspectDifferenceCount = _.uniq(_.flatten(complianceData.filter(c => !!c.differences).map(c => c.differences)).map(c => c.type)).length;
-            const differencesCount = _.sum(complianceData.filter(c => !!c.differences).map(c => c.differences.length));
             const msg = slackWarningMessage(
                 `${aspectDifferenceCount} ${pluralize("Aspect", aspectDifferenceCount)} with drift`,
                 `The following ${pluralize("aspect", aspectDifferenceCount)} ${aspectDifferenceCount === 1 ? "is" : "are"} different from workspace targets:`,
