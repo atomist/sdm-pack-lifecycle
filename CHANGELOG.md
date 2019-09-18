@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Add unlink intent to command. [#7](https://github.com/atomist/sdm-pack-lifecycle/issues/7)
 -   Provide data in card for rendering in web-app dialogs. [#10](https://github.com/atomist/sdm-pack-lifecycle/issues/10)
 -   Render compliance data as part of push. [#22](https://github.com/atomist/sdm-pack-lifecycle/issues/22)
+-   Accept All button should close Aspects view. [#24](https://github.com/atomist/sdm-pack-lifecycle/issues/24)
 
 ### Changed
 
