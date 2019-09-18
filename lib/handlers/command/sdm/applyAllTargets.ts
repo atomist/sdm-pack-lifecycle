@@ -19,8 +19,10 @@ import {
     CommandHandlerRegistration,
     createJob,
 } from "@atomist/sdm";
+import { toggleComplianceReviewByPush } from "./compliance";
 
 interface ApplyAllTargetParameters {
+    id: string;
     owner: string;
     repo: string;
     branch: string;
@@ -34,6 +36,7 @@ export function applyAllTargetsCommand(): CommandHandlerRegistration<ApplyAllTar
         name: "ApplyAllTargets",
         description: "Broadcast a try target job",
         parameters: {
+            id: { required: false },
             owner: {},
             repo: {},
             branch: {},
@@ -60,6 +63,10 @@ export function applyAllTargetsCommand(): CommandHandlerRegistration<ApplyAllTar
                     // "job.description": ci.parameters.description,
                 }],
             }, ci.context);
+
+            if (!!ci.parameters.id) {
+                await toggleComplianceReviewByPush(ci.parameters.id, false, ci.context);
+            }
         },
     };
 }

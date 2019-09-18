@@ -16,6 +16,7 @@
 
 import {
     addressEvent,
+    HandlerContext,
     QueryNoCacheOptions,
 } from "@atomist/automation-client";
 import { CommandHandlerRegistration } from "@atomist/sdm";
@@ -33,26 +34,7 @@ export function openComplianceReview(): CommandHandlerRegistration<{ id: string 
             id: {},
         },
         listener: async ci => {
-
-            const push = await ci.context.graphClient.query<ComplianceOnPush.Query, ComplianceOnPush.Variables>({
-                name: "ComplianceOnPush",
-                variables: {
-                    id: ci.parameters.id,
-                },
-                options: QueryNoCacheOptions,
-            });
-
-            const complianceData = _.get(push, "Push[0].compliance");
-            if (!!complianceData) {
-                for (const compliance of complianceData) {
-                    await ci.context.messageClient.send(
-                        {
-                            ...compliance,
-                            state: PolicyCompliaceState.in_review,
-                        },
-                        addressEvent("PolicyCompliance"));
-                }
-            }
+            await toggleComplianceReviewByPush(ci.parameters.id, true, ci.context);
         },
     };
 }
@@ -60,31 +42,34 @@ export function openComplianceReview(): CommandHandlerRegistration<{ id: string 
 export function discardComplianceReview(): CommandHandlerRegistration<{ id: string }> {
     return {
         name: "DiscardComplianceReview",
-        description: "Render compliance review messages in chat",
+        description: "Discard compliance review messages in chat",
         parameters: {
             id: {},
         },
         listener: async ci => {
-
-            const push = await ci.context.graphClient.query<ComplianceOnPush.Query, ComplianceOnPush.Variables>({
-                name: "ComplianceOnPush",
-                variables: {
-                    id: ci.parameters.id,
-                },
-                options: QueryNoCacheOptions,
-            });
-
-            const complianceData = _.get(push, "Push[0].compliance");
-            if (!!complianceData) {
-                for (const compliance of complianceData) {
-                    await ci.context.messageClient.send(
-                        {
-                            ...compliance,
-                            state: PolicyCompliaceState.reviewed,
-                        },
-                        addressEvent("PolicyCompliance"));
-                }
-            }
+            await toggleComplianceReviewByPush(ci.parameters.id, false, ci.context);
         },
     };
+}
+
+export async function toggleComplianceReviewByPush(id: string, enable: boolean, ctx: HandlerContext): Promise<void> {
+    const push = await ctx.graphClient.query<ComplianceOnPush.Query, ComplianceOnPush.Variables>({
+        name: "ComplianceOnPush",
+        variables: {
+            id,
+        },
+        options: QueryNoCacheOptions,
+    });
+
+    const complianceData = _.get(push, "Push[0].compliance");
+    if (!!complianceData) {
+        for (const compliance of complianceData) {
+            await ctx.messageClient.send(
+                {
+                    ...compliance,
+                    state: enable ? PolicyCompliaceState.in_review : PolicyCompliaceState.reviewed,
+                },
+                addressEvent("PolicyCompliance"));
+        }
+    }
 }

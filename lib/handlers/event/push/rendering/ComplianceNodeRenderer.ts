@@ -209,6 +209,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                             { text: "Accept All" },
                             "ApplyAllTargets",
                             {
+                                id: push.id,
                                 owner: push.repo.owner,
                                 repo: push.repo.name,
                                 branch: push.branch,
