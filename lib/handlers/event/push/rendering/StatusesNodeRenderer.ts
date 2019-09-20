@@ -600,7 +600,7 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
                 gs.push({
                     name: s.name,
                     description: `${s.description}${details}`,
-                    state: s.state,
+                    state: s.state as any,
                     environment: sg.environment,
                     ts: s.ts,
                     link: s.url,
