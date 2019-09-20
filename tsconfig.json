@@ -9,13 +9,13 @@
     "declarationMap": true,
     "sourceMap": true,
     "lib": [
-      "dom",
-      "es2017",
-      "dom.iterable",
-      "scripthost",
+      "DOM",
+      "ES2017",
+      "DOM.Iterable",
+      "ScriptHost",
       "esnext.asynciterable"
     ],
-    "strict": false,
+    "strict": true,
     "strictNullChecks": false,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
