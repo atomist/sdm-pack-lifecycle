@@ -63,10 +63,12 @@ query lastCommitOnBranch($name: String!, $owner: String!, $branch: String!) {
           }
           timestamp
         }
-        fingerprints {
+        analysis {
+          type
           name
           sha
-          data
+          displayName
+          displayValue
         }
         timestamp
       }

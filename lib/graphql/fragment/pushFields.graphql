@@ -29,6 +29,13 @@ fragment PushFields on Push {
   }
   before {
     sha
+    analysis {
+      type
+      name
+      sha
+      displayName
+      displayValue
+    }
   }
   after {
     sha
@@ -105,10 +112,12 @@ fragment PushFields on Push {
       }
       timestamp
     }
-    fingerprints {
+    analysis {
+      type
       name
       sha
-      data
+      displayName
+      displayValue
     }
   }
   repo {

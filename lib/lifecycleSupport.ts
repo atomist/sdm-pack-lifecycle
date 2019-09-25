@@ -308,7 +308,6 @@ export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
                 new pr.BuildNodeRenderer(),
                 new pr.ApplicationNodeRenderer(),
                 new pr.K8PodNodeRenderer(),
-                new pr.BlackDuckFingerprintNodeRenderer(),
                 new pr.ExpandAttachmentsNodeRenderer(),
                 new pr.ExpandNodeRenderer(),
             ]],

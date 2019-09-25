@@ -694,51 +694,6 @@ export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
     }
 }
 
-export class BlackDuckFingerprintNodeRenderer extends AbstractIdentifiableContribution
-    implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
-
-    constructor() {
-        super("blackduck");
-    }
-
-    public supports(node: any): boolean {
-        return node.after && node.after.fingerprints && node.after.fingerprints.length > 0;
-    }
-
-    public render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
-                  context: RendererContext): Promise<SlackMessage> {
-
-        if (isComplianceReview(push)) {
-            return Promise.resolve(msg);
-        }
-
-        const riskProfileFingerprint = push.after.fingerprints.find(f => f.name === "BlackDuckRiskProfile");
-        if (riskProfileFingerprint) {
-            const riskProfile = JSON.parse(riskProfileFingerprint.data);
-            const v = riskProfile.categories.VULNERABILITY;
-            const rpMsg = `Security Risks \u00B7 ${v.HIGH} High, ${v.MEDIUM} Medium, ${v.LOW} Low`;
-            const attachment: Attachment = {
-                author_name: `Black Duck`,
-                author_icon: `https://images.atomist.com/rug/blackduck.jpg`,
-                text: escape(rpMsg),
-                fallback: escape(rpMsg),
-                mrkdwn_in: ["text"],
-                actions,
-            };
-            const blackDuckStatus = push.after.statuses.find(s => s.context === "black-duck/hub-detect");
-            if (blackDuckStatus) {
-                const refUrl = riskProfile._meta.href;
-                const matches = refUrl.match(/\/versions\/(.*)\/risk-profile/);
-                const versionId = matches[1];
-                const bdLink = `${blackDuckStatus.targetUrl}/ui/versions/id:${versionId}/view:bom`;
-                attachment.author_link = bdLink;
-            }
-            msg.attachments.push(attachment);
-        }
-        return Promise.resolve(msg);
-    }
-}
-
 export class ExpandAttachmentsNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
 

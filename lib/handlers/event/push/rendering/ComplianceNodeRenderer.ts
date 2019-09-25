@@ -19,6 +19,7 @@ import {
     menuForCommand,
 } from "@atomist/automation-client";
 import {
+    slackInfoMessage,
     slackTs,
     slackWarningMessage,
 } from "@atomist/sdm";
@@ -32,7 +33,6 @@ import {
 } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as pluralize from "pluralize";
-import { diff } from "semver";
 import {
     AbstractIdentifiableContribution,
     RendererContext,
@@ -42,6 +42,7 @@ import {
     LastCommitOnBranch,
     PolicyComplianceFingerprint,
     PushToPushLifecycle,
+    SourceFingerprint,
 } from "../../../../typings/types";
 import { isComplianceReview } from "./PushNodeRenderers";
 
@@ -68,8 +69,9 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
         const complianceData = push.compliance;
         const aspectDifferenceCount = _.uniq(_.flatten(complianceData.filter(c => !!c.differences).map(c => c.differences)).map(c => c.type)).length;
         const differencesCount = _.sum(complianceData.filter(c => !!c.differences).map(c => c.differences.length));
+        const targetCount = _.sum(complianceData.filter(c => !!c.targets).map(c => c.targets.length));
+        const diffs = fingerprintDifferences(push);
         if (differencesCount > 0) {
-            const targetCount = _.sum(complianceData.filter(c => !!c.targets).map(c => c.targets.length));
             const compliance = ((1 - (differencesCount) / targetCount) * 100).toFixed(0);
             const attachment: Attachment = slackWarningMessage(
                 `${aspectDifferenceCount} ${pluralize("Aspect", aspectDifferenceCount)} with drift`,
@@ -84,7 +86,26 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
                         ),
                     ],
                 }).attachments[0];
-            attachment.footer = `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${pluralize("target", targetCount, true)} set`)}  \u00B7 ${pluralize("violation", differencesCount, true)} \u00B7 compliance ${compliance}%`;
+            attachment.footer = `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${pluralize("target", targetCount, true)} set`)} \u00B7 ${pluralize("violation", differencesCount, true)} \u00B7 compliance ${compliance}%`;
+            msg.attachments.push(attachment);
+        } else if (diffs.changes.length > 0 || diffs.removals.length > 0 || diffs.additions.length > 0) {
+            const changeCount = _.uniq([
+                ...diffs.changes.map(v => v.to.type),
+                ...diffs.additions.map(v => v.type),
+                ...diffs.removals.map(v => v.type)]).length;
+
+            const attachment = slackInfoMessage(
+                `${pluralize("Aspect", changeCount, true)} changed`,
+                undefined, {
+                    actions: [
+                        buttonForCommand(
+                            { text: "Review \u02C3" },
+                            "OpenComplianceReview",
+                            { id: push.id },
+                        ),
+                    ],
+                }).attachments[0];
+            attachment.footer = `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${pluralize("target", targetCount, true)} set`)} \u00B7 ${pluralize("violation", differencesCount, true)} \u00B7 compliance ${100}%`;
             msg.attachments.push(attachment);
         }
         return msg;
@@ -141,20 +162,22 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
 
                     typeAttachments.push({
                         title: allTargets[0].aspectName,
-                        footer: `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage?aspect=${encodeURIComponent(allTargets[0].aspectName)}`, `${targetCount} ${pluralize("target", targetCount)} set`)} \u00B7 compliance ${((1 - (v.length / targetCount)) * 100).toFixed(0)}%`,
+                        footer: `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage?aspect=${encodeURIComponent(allTargets[0].aspectName)}`, `${targetCount} ${pluralize("target", targetCount)} set`)} \u00B7 ${pluralize("violation", v.length, true)} \u00B7 compliance ${((1 - (v.length / targetCount)) * 100).toFixed(0)}%`,
                         fallback: allTargets[0].aspectName,
                         color: "#20344A",
                     });
 
                     const targets: PolicyComplianceFingerprint[] = [];
-                    typeAttachments.push(...v.map(d => {
+                    const lines = v.map(d => {
                         const target = compliance.targets.find(p => p.type === d.type && p.name === d.name);
                         targets.push(target);
-                        return {
-                            text: `${italic(d.displayName)} ${codeLine(d.displayValue)} \u00B7 target ${codeLine(target.displayValue)}`,
-                            fallback: `${d.displayName} ${d.displayValue} \u00B7 target ${target.displayValue}`,
-                        };
-                    }));
+                        return `${italic(d.displayName)} ${codeLine(d.displayValue)} \u00B7 target ${codeLine(target.displayValue)}`;
+                    });
+
+                    typeAttachments.push({
+                        text: lines.join("\n"),
+                        fallback: "Target violations",
+                    });
 
                     if (isTipOfBranch) {
                         if (v.length > 1) {
@@ -227,9 +250,78 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                     ],
                 });
                 message.attachments.push(...msg.attachments);
+
+                // Render fingerprint differences for this push
+                if (!!push.before && !!push.before.analysis && push.before.analysis.length > 0) {
+                    const diffs = fingerprintDifferences(push);
+                    const changeCount = _.uniq([
+                        ...diffs.changes.map(v => v.to.type),
+                        ...diffs.additions.map(v => v.type),
+                        ...diffs.removals.map(v => v.type)]).length;
+
+                    const diffAttachment = slackInfoMessage(
+                        `${pluralize("Aspect", changeCount, true)} changed`,
+                        `The following ${pluralize("aspect", changeCount)} ${changeCount !== 1 ? "have" : "has"} changed with this push:`).attachments[0];
+                    diffAttachment.footer = undefined;
+                    diffAttachment.ts = undefined;
+
+                    msg.attachments.push(diffAttachment);
+
+                    const lines = [];
+                    if (diffs.changes.length > 0) {
+                        lines.push(diffs.changes.length > 1 ? italic("Changes") : italic("Change"));
+                        lines.push(...diffs.changes.map(d => `${italic(d.to.displayName)} ${codeLine(d.from.displayValue)} > ${codeLine(d.to.displayValue)}`));
+                    }
+                    if (diffs.additions.length > 0) {
+                        lines.push(diffs.additions.length > 1 ? italic("Additions") : italic("Addition"));
+                        lines.push(...diffs.additions.map(d => `${italic(d.displayName)} ${codeLine(d.displayValue)}`));
+                    }
+                    if (diffs.removals.length > 0) {
+                        lines.push(diffs.removals.length > 1 ? italic("Removals") : italic("Removal"));
+                        lines.push(...diffs.removals.map(d => `${italic(d.displayName)} ${codeLine(d.displayValue)}`));
+                    }
+
+                    msg.attachments.push({
+                        text: lines.join("\n"),
+                        fallback: lines.join("\n"),
+                    });
+                }
             }
 
         }
         return message;
     }
+}
+
+function fingerprintDifferences(push: PushToPushLifecycle.Push): { changes: Array<{ from: SourceFingerprint, to: SourceFingerprint }>, additions: SourceFingerprint[], removals: SourceFingerprint[] } {
+    if (!!push.before && !!push.before.analysis && push.before.analysis.length > 0) {
+        const changes: Array<{ from: SourceFingerprint, to: SourceFingerprint }> = [];
+        const additions: SourceFingerprint[] = [];
+        const removals: SourceFingerprint[] = [];
+
+        _.sortBy(push.after.analysis, "type", "name").forEach(a => {
+            const p = push.before.analysis.find(ba => ba.name === a.name && ba.type === a.type);
+            if (!p) {
+                additions.push(a as any);
+            } else if (p.sha !== a.sha) {
+                changes.push({ to: a as any, from: p as any });
+            }
+        });
+
+        _.sortBy(push.before.analysis, "type", "name").forEach(a => {
+            const p = push.after.analysis.find(ba => ba.name === a.name && ba.type === a.type);
+            if (!p) {
+                removals.push(a as any);
+            }
+        });
+
+        return {
+            changes,
+            additions,
+            removals,
+        };
+    }
+
+    // If there are no fingerprints on the before, assume no differences
+    return { additions: [], changes: [], removals: [] };
 }
