@@ -765,7 +765,7 @@ export class ExpandNodeRenderer extends AbstractIdentifiableContribution
 
 export function hasTargetDifferences(push: graphql.PushToPushLifecycle.Push): boolean {
     if (!!push && !!push.compliance && push.compliance.length > 0) {
-        if(push.compliance.filter(c => !!c.differences).some(c => c.differences.length > 0)) {
+        if (push.compliance.filter(c => !!c.differences).some(c => c.differences.length > 0)) {
             return true;
         }
     }
