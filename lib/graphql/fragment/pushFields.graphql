@@ -33,6 +33,7 @@ fragment PushFields on Push {
       type
       name
       sha
+      data
       displayName
       displayValue
     }
@@ -116,6 +117,7 @@ fragment PushFields on Push {
       type
       name
       sha
+      data
       displayName
       displayValue
     }

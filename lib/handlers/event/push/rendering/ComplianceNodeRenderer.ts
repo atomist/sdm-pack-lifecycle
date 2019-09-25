@@ -153,6 +153,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
             msg.attachments[0].footer = undefined;
             msg.attachments[0].ts = undefined;
 
+            let addCloseButton = false;
             for (const compliance of complianceData) {
                 const attachments = _.map(_.groupBy(compliance.differences, "type"), (diffs, k) => {
                     const v = _.sortBy(diffs, "displayName");
@@ -243,52 +244,57 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                                     aspectOwner: compliance.owner,
                                 }),
                             })] : []),
-                        buttonForCommand(
-                            { text: "\u02C2 Close" },
-                            "DiscardComplianceReview",
-                            { id: push.id }),
                     ],
                 });
                 message.attachments.push(...msg.attachments);
-
-                // Render fingerprint differences for this push
-                if (!!push.before && !!push.before.analysis && push.before.analysis.length > 0) {
-                    const diffs = fingerprintDifferences(push);
-                    const changeCount = _.uniq([
-                        ...diffs.changes.map(v => v.to.type),
-                        ...diffs.additions.map(v => v.type),
-                        ...diffs.removals.map(v => v.type)]).length;
-
-                    const diffAttachment = slackInfoMessage(
-                        `${pluralize("Aspect", changeCount, true)} changed`,
-                        `The following ${pluralize("aspect", changeCount)} ${changeCount !== 1 ? "have" : "has"} changed with this push:`).attachments[0];
-                    diffAttachment.footer = undefined;
-                    diffAttachment.ts = undefined;
-
-                    msg.attachments.push(diffAttachment);
-
-                    const lines = [];
-                    if (diffs.changes.length > 0) {
-                        lines.push(diffs.changes.length > 1 ? italic("Changes") : italic("Change"));
-                        lines.push(...diffs.changes.map(d => `${italic(d.to.displayName)} ${codeLine(d.from.displayValue)} > ${codeLine(d.to.displayValue)}`));
-                    }
-                    if (diffs.additions.length > 0) {
-                        lines.push(diffs.additions.length > 1 ? italic("Additions") : italic("Addition"));
-                        lines.push(...diffs.additions.map(d => `${italic(d.displayName)} ${codeLine(d.displayValue)}`));
-                    }
-                    if (diffs.removals.length > 0) {
-                        lines.push(diffs.removals.length > 1 ? italic("Removals") : italic("Removal"));
-                        lines.push(...diffs.removals.map(d => `${italic(d.displayName)} ${codeLine(d.displayValue)}`));
-                    }
-
-                    msg.attachments.push({
-                        text: lines.join("\n"),
-                        fallback: lines.join("\n"),
-                    });
-                }
             }
 
         }
+
+        // Render fingerprint differences for this push
+        if (!!push.before && !!push.before.analysis && push.before.analysis.length > 0) {
+            const diffs = fingerprintDifferences(push);
+            const changeCount = _.uniq([
+                ...diffs.changes.map(v => v.to.type),
+                ...diffs.additions.map(v => v.type),
+                ...diffs.removals.map(v => v.type)]).length;
+
+            const diffAttachment = slackInfoMessage(
+                `${pluralize("Aspect", changeCount, true)} changed`,
+                `The following ${pluralize("aspect", changeCount)} ${changeCount !== 1 ? "have" : "has"} changed with this push:`).attachments[0];
+            diffAttachment.footer = undefined;
+            diffAttachment.ts = undefined;
+
+            message.attachments.push(diffAttachment);
+
+            const lines = [];
+            if (diffs.changes.length > 0) {
+                lines.push(diffs.changes.length > 1 ? italic("Changes") : italic("Change"));
+                lines.push(...diffs.changes.map(d => `${italic(d.to.displayName)} ${codeLine(d.from.displayValue)} > ${codeLine(d.to.displayValue)}`));
+            }
+            if (diffs.additions.length > 0) {
+                lines.push(diffs.additions.length > 1 ? italic("Additions") : italic("Addition"));
+                lines.push(...diffs.additions.map(d => `${italic(d.displayName)} ${codeLine(d.displayValue)}`));
+            }
+            if (diffs.removals.length > 0) {
+                lines.push(diffs.removals.length > 1 ? italic("Removals") : italic("Removal"));
+                lines.push(...diffs.removals.map(d => `${italic(d.displayName)} ${codeLine(d.displayValue)}`));
+            }
+
+            message.attachments.push({
+                text: lines.join("\n"),
+                fallback: lines.join("\n"),
+            });
+        }
+
+        message.attachments.slice(-1)[0].actions = [
+            ...(message.attachments.slice(-1)[0].actions || []),
+            buttonForCommand(
+                { text: "\u02C2 Close" },
+                "DiscardComplianceReview",
+                { id: push.id }),
+        ];
+
         return message;
     }
 }

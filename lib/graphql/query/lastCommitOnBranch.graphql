@@ -67,6 +67,7 @@ query lastCommitOnBranch($name: String!, $owner: String!, $branch: String!) {
           type
           name
           sha
+          data
           displayName
           displayValue
         }
