@@ -153,7 +153,6 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
             msg.attachments[0].footer = undefined;
             msg.attachments[0].ts = undefined;
 
-            const addCloseButton = false;
             for (const compliance of complianceData) {
                 const attachments = _.map(_.groupBy(compliance.differences, "type"), (diffs, k) => {
                     const v = _.sortBy(diffs, "displayName");
