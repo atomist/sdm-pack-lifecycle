@@ -295,16 +295,16 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
 
 function fingerprintDifferences(push: PushToPushLifecycle.Push): { changes: Array<{ from: SourceFingerprint, to: SourceFingerprint }>, additions: SourceFingerprint[], removals: SourceFingerprint[] } {
     if (!!push.before && !!push.before.analysis && push.before.analysis.length > 0) {
-        const changes: Array<{ from: SourceFingerprint, to: SourceFingerprint }> = [];
-        const additions: SourceFingerprint[] = [];
-        const removals: SourceFingerprint[] = [];
+        const changes: Array<{ from: any, to: any }> = [];
+        const additions: any[] = [];
+        const removals: any[] = [];
 
         _.sortBy(push.after.analysis, "type", "name").forEach(a => {
             const p = push.before.analysis.find(ba => ba.name === a.name && ba.type === a.type);
             if (!p) {
                 additions.push(a);
             } else if (p.sha !== a.sha) {
-                changes.push({ to: a, from: p as any });
+                changes.push({ to: a, from: p });
             }
         });
 
