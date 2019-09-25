@@ -302,16 +302,16 @@ function fingerprintDifferences(push: PushToPushLifecycle.Push): { changes: Arra
         _.sortBy(push.after.analysis, "type", "name").forEach(a => {
             const p = push.before.analysis.find(ba => ba.name === a.name && ba.type === a.type);
             if (!p) {
-                additions.push(a as any);
+                additions.push(a);
             } else if (p.sha !== a.sha) {
-                changes.push({ to: a as any, from: p as any });
+                changes.push({ to: a, from: p as any });
             }
         });
 
         _.sortBy(push.before.analysis, "type", "name").forEach(a => {
             const p = push.after.analysis.find(ba => ba.name === a.name && ba.type === a.type);
             if (!p) {
-                removals.push(a as any);
+                removals.push(a);
             }
         });
 
