@@ -64,7 +64,10 @@ import {
     LifecycleRendererPreferences,
 } from "../../preferences";
 import { Domain } from "../PushLifecycle";
-import { fingerprintDifferences, isComplianceReview } from "./ComplianceNodeRenderer";
+import {
+    fingerprintDifferences,
+    isComplianceReview,
+} from "./ComplianceNodeRenderer";
 
 export const EMOJI_SCHEME: any = {
 
