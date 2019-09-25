@@ -28,7 +28,6 @@ import {
     url,
 } from "@atomist/slack-messages";
 import * as _ from "lodash";
-import * as pluralize from "pluralize";
 import {
     Action as CardAction,
     CardMessage,

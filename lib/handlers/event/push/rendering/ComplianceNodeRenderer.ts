@@ -146,107 +146,116 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
             const isTipOfBranch = (_.get(lastCommit, "Repo[0].branches[0].commit.sha") || push.after.sha) === push.after.sha;
 
             const aspectDifferenceCount = _.uniq(_.flatten(complianceData.filter(c => !!c.differences).map(c => c.differences)).map(c => c.type)).length;
-            const msg = slackWarningMessage(
-                `${aspectDifferenceCount} ${pluralize("Aspect", aspectDifferenceCount)} with drift`,
-                `The following ${pluralize("aspect", aspectDifferenceCount)} ${aspectDifferenceCount === 1 ? "is" : "are"} different from workspace targets:`,
-                context.context,
-            );
-            msg.attachments[0].footer = undefined;
-            msg.attachments[0].ts = undefined;
 
-            for (const compliance of complianceData) {
-                const attachments = _.map(_.groupBy(compliance.differences, "type"), (diffs, k) => {
-                    const v = _.sortBy(diffs, "displayName");
-                    const allTargets = compliance.targets.filter(p => p.type === k);
-                    const targetCount = allTargets.length;
-                    const typeAttachments: Attachment[] = [];
+            if (aspectDifferenceCount > 0) {
 
-                    typeAttachments.push({
-                        title: allTargets[0].aspectName,
-                        footer: `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage?aspect=${encodeURIComponent(allTargets[0].aspectName)}`, `${targetCount} ${pluralize("target", targetCount)} set`)} \u00B7 ${pluralize("violation", v.length, true)} \u00B7 compliance ${((1 - (v.length / targetCount)) * 100).toFixed(0)}%`,
-                        fallback: allTargets[0].aspectName,
-                        color: "#20344A",
-                    });
+                const msg = slackWarningMessage(
+                    `${aspectDifferenceCount} ${pluralize("Aspect", aspectDifferenceCount)} with drift`,
+                    `The following ${pluralize("aspect", aspectDifferenceCount)} ${aspectDifferenceCount === 1 ? "is" : "are"} different from workspace targets:`,
+                    context.context,
+                );
+                msg.attachments[0].footer = undefined;
+                msg.attachments[0].ts = undefined;
 
-                    const targets: PolicyComplianceFingerprint[] = [];
-                    const lines = v.map(d => {
-                        const target = compliance.targets.find(p => p.type === d.type && p.name === d.name);
-                        targets.push(target);
-                        return `${italic(d.displayName)} ${codeLine(d.displayValue)} \u00B7 target ${codeLine(target.displayValue)}`;
-                    });
+                for (const compliance of complianceData) {
+                    const attachments = _.map(_.groupBy(compliance.differences, "type"), (diffs, k) => {
+                        const v = _.sortBy(diffs, "displayName");
+                        const allTargets = compliance.targets.filter(p => p.type === k);
+                        const targetCount = allTargets.length;
+                        const typeAttachments: Attachment[] = [];
 
-                    typeAttachments.push({
-                        text: lines.join("\n"),
-                        fallback: "Target violations",
-                    });
+                        typeAttachments.push({
+                            title: allTargets[0].aspectName,
+                            footer: `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage?aspect=${encodeURIComponent(allTargets[0].aspectName)}`, `${targetCount} ${pluralize("target", targetCount)} set`)} \u00B7 ${pluralize("violation", v.length, true)} \u00B7 compliance ${((1 - (v.length / targetCount)) * 100).toFixed(0)}%`,
+                            fallback: allTargets[0].aspectName,
+                            color: "#20344A",
+                        });
 
-                    if (isTipOfBranch) {
-                        if (v.length > 1) {
-                            typeAttachments.slice(-1)[0].actions = [
-                                menuForCommand({
-                                    text: "Accept Target",
-                                    options: targets.map(d => ({
-                                        text: `${d.displayName} ${d.displayValue}`,
-                                        value: JSON.stringify({ type: d.type, name: d.name, sha: d.sha, aspectOwner: compliance.owner }),
-                                    })),
-                                }, "ApplyTarget", "data", {
-                                    owner: push.repo.owner,
-                                    repo: push.repo.name,
-                                    branch: push.branch,
-                                    apiUrl: push.repo.org.provider.apiUrl,
-                                }),
-                                menuForCommand({
-                                    text: "Set as Target",
-                                    options: v.map(d => ({
-                                        text: `${d.displayName} ${d.displayValue}`,
-                                        value: JSON.stringify({ type: d.type, name: d.name, sha: d.sha, aspectOwner: compliance.owner }),
-                                    })),
-                                }, "SetTarget", "data"),
-                            ];
-                        } else {
-                            const fp = v[0];
-                            const target = targets[0];
-                            typeAttachments.slice(-1)[0].actions = [
-                                buttonForCommand({ text: "Accept Target" }, "ApplyTarget", {
-                                    owner: push.repo.owner,
-                                    repo: push.repo.name,
-                                    branch: push.branch,
-                                    apiUrl: push.repo.org.provider.apiUrl,
-                                    data: JSON.stringify({ type: target.type, name: target.name, sha: target.sha, aspectOwner: compliance.owner }),
-                                }),
-                                buttonForCommand({ text: "Set as Target" }, "SetTarget", {
-                                    data: JSON.stringify({ type: fp.type, name: fp.name, sha: fp.sha, aspectOwner: compliance.owner }),
-                                }),
-                            ];
+                        const targets: PolicyComplianceFingerprint[] = [];
+                        const lines = v.map(d => {
+                            const target = compliance.targets.find(p => p.type === d.type && p.name === d.name);
+                            targets.push(target);
+                            return `${italic(d.displayName)} ${codeLine(d.displayValue)} \u00B7 target ${codeLine(target.displayValue)}`;
+                        });
+
+                        typeAttachments.push({
+                            text: lines.join("\n"),
+                            fallback: "Target violations",
+                        });
+
+                        if (isTipOfBranch) {
+                            if (v.length > 1) {
+                                typeAttachments.slice(-1)[0].actions = [
+                                    menuForCommand({
+                                        text: "Accept Target",
+                                        options: targets.map(d => ({
+                                            text: `${d.displayName} ${d.displayValue}`,
+                                            value: JSON.stringify({ type: d.type, name: d.name, sha: d.sha, aspectOwner: compliance.owner }),
+                                        })),
+                                    }, "ApplyTarget", "data", {
+                                        owner: push.repo.owner,
+                                        repo: push.repo.name,
+                                        branch: push.branch,
+                                        apiUrl: push.repo.org.provider.apiUrl,
+                                    }),
+                                    menuForCommand({
+                                        text: "Set as Target",
+                                        options: v.map(d => ({
+                                            text: `${d.displayName} ${d.displayValue}`,
+                                            value: JSON.stringify({ type: d.type, name: d.name, sha: d.sha, aspectOwner: compliance.owner }),
+                                        })),
+                                    }, "SetTarget", "data"),
+                                ];
+                            } else {
+                                const fp = v[0];
+                                const target = targets[0];
+                                typeAttachments.slice(-1)[0].actions = [
+                                    buttonForCommand({ text: "Accept Target" }, "ApplyTarget", {
+                                        owner: push.repo.owner,
+                                        repo: push.repo.name,
+                                        branch: push.branch,
+                                        apiUrl: push.repo.org.provider.apiUrl,
+                                        data: JSON.stringify({
+                                            type: target.type,
+                                            name: target.name,
+                                            sha: target.sha,
+                                            aspectOwner: compliance.owner,
+                                        }),
+                                    }),
+                                    buttonForCommand({ text: "Set as Target" }, "SetTarget", {
+                                        data: JSON.stringify({ type: fp.type, name: fp.name, sha: fp.sha, aspectOwner: compliance.owner }),
+                                    }),
+                                ];
+                            }
                         }
-                    }
 
-                    return typeAttachments;
-                });
-                msg.attachments.push(..._.flatten(attachments));
-                msg.attachments.push({
-                    fallback: "Apply Targets",
-                    footer: compliance.owner,
-                    ts: slackTs(),
-                    actions: [
-                        ...(isTipOfBranch && compliance.differences.length > 1 ? [buttonForCommand(
-                            { text: "Accept All" },
-                            "ApplyAllTargets",
-                            {
-                                id: push.id,
-                                owner: push.repo.owner,
-                                repo: push.repo.name,
-                                branch: push.branch,
-                                sha: push.after.sha,
-                                apiUrl: push.repo.org.provider.apiUrl,
-                                data: JSON.stringify({
-                                    fingerprints: compliance.differences.map(d => `${d.type}::${d.name}`).join(","),
-                                    aspectOwner: compliance.owner,
-                                }),
-                            })] : []),
-                    ],
-                });
-                message.attachments.push(...msg.attachments);
+                        return typeAttachments;
+                    });
+                    msg.attachments.push(..._.flatten(attachments));
+                    msg.attachments.push({
+                        fallback: "Apply Targets",
+                        footer: compliance.owner,
+                        ts: slackTs(),
+                        actions: [
+                            ...(isTipOfBranch && compliance.differences.length > 1 ? [buttonForCommand(
+                                { text: "Accept All" },
+                                "ApplyAllTargets",
+                                {
+                                    id: push.id,
+                                    owner: push.repo.owner,
+                                    repo: push.repo.name,
+                                    branch: push.branch,
+                                    sha: push.after.sha,
+                                    apiUrl: push.repo.org.provider.apiUrl,
+                                    data: JSON.stringify({
+                                        fingerprints: compliance.differences.map(d => `${d.type}::${d.name}`).join(","),
+                                        aspectOwner: compliance.owner,
+                                    }),
+                                })] : []),
+                        ],
+                    });
+                    message.attachments.push(...msg.attachments);
+                }
             }
 
         }
