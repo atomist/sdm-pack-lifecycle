@@ -54,9 +54,9 @@ import {
 } from "../../../../util/goals";
 import { LifecycleRendererPreferences } from "../../preferences";
 import { GoalSet } from "../PushLifecycle";
+import { isComplianceReview } from "./ComplianceNodeRenderer";
 import {
     EMOJI_SCHEME,
-    isComplianceReview,
 } from "./PushNodeRenderers";
 
 export class StatusesNodeRenderer extends AbstractIdentifiableContribution
@@ -87,7 +87,8 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
                   msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
 
-        if (isComplianceReview(push)) {
+        if (isComplianceReview
+        (push)) {
             return Promise.resolve(msg);
         }
 

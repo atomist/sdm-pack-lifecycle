@@ -64,6 +64,7 @@ import {
     LifecycleRendererPreferences,
 } from "../../preferences";
 import { Domain } from "../PushLifecycle";
+import { fingerprintDifferences, isComplianceReview } from "./ComplianceNodeRenderer";
 
 export const EMOJI_SCHEME: any = {
 
@@ -762,18 +763,18 @@ export class ExpandNodeRenderer extends AbstractIdentifiableContribution
     }
 }
 
-export function isComplianceReview(push: graphql.PushToPushLifecycle.Push): boolean {
-    if (!!push && !!push.compliance && push.compliance.length > 0) {
-        return push.compliance.some(c => c.state === PolicyCompliaceState.in_review);
-    }
-    return false;
-}
-
 export function hasTargetDifferences(push: graphql.PushToPushLifecycle.Push): boolean {
     if (!!push && !!push.compliance && push.compliance.length > 0) {
-        return push.compliance.filter(c => !!c.differences).some(c => c.differences.length > 0);
+        if(push.compliance.filter(c => !!c.differences).some(c => c.differences.length > 0)) {
+            return true;
+        }
     }
-    return false;
+    const diffs = fingerprintDifferences(push);
+    const changeCount = _.uniq([
+        ...diffs.changes.map(v => v.to.type),
+        ...diffs.additions.map(v => v.type),
+        ...diffs.removals.map(v => v.type)]).length;
+    return changeCount > 0;
 }
 
 export function isFullRenderingEnabled(goalStyle: SdmGoalDisplayFormat, context: RendererContext): boolean {

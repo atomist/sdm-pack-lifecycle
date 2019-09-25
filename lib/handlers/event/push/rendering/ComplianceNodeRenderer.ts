@@ -26,6 +26,7 @@ import {
 import {
     Action,
     Attachment,
+    bold,
     codeLine,
     italic,
     SlackMessage,
@@ -40,11 +41,11 @@ import {
 } from "../../../../lifecycle/Lifecycle";
 import {
     LastCommitOnBranch,
+    PolicyCompliaceState,
     PolicyComplianceFingerprint,
     PushToPushLifecycle,
     SourceFingerprint,
 } from "../../../../typings/types";
-import { isComplianceReview } from "./PushNodeRenderers";
 
 export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<PushToPushLifecycle.Push> {
@@ -268,15 +269,15 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
 
             const lines = [];
             if (diffs.changes.length > 0) {
-                lines.push(diffs.changes.length > 1 ? italic("Changes") : italic("Change"));
+                lines.push(diffs.changes.length > 1 ? bold("Changes") : bold("Change"));
                 lines.push(...diffs.changes.map(d => `${italic(d.to.displayName)} ${codeLine(d.from.displayValue)} > ${codeLine(d.to.displayValue)}`));
             }
             if (diffs.additions.length > 0) {
-                lines.push(diffs.additions.length > 1 ? italic("Additions") : italic("Addition"));
+                lines.push(diffs.additions.length > 1 ? bold("Additions") : bold("Addition"));
                 lines.push(...diffs.additions.map(d => `${italic(d.displayName)} ${codeLine(d.displayValue)}`));
             }
             if (diffs.removals.length > 0) {
-                lines.push(diffs.removals.length > 1 ? italic("Removals") : italic("Removal"));
+                lines.push(diffs.removals.length > 1 ? bold("Removals") : bold("Removal"));
                 lines.push(...diffs.removals.map(d => `${italic(d.displayName)} ${codeLine(d.displayValue)}`));
             }
 
@@ -298,7 +299,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
     }
 }
 
-function fingerprintDifferences(push: PushToPushLifecycle.Push): { changes: Array<{ from: SourceFingerprint, to: SourceFingerprint }>, additions: SourceFingerprint[], removals: SourceFingerprint[] } {
+export function fingerprintDifferences(push: PushToPushLifecycle.Push): { changes: Array<{ from: SourceFingerprint, to: SourceFingerprint }>, additions: SourceFingerprint[], removals: SourceFingerprint[] } {
     if (!!push.before && !!push.before.analysis && push.before.analysis.length > 0) {
         const changes: Array<{ from: any, to: any }> = [];
         const additions: any[] = [];
@@ -329,4 +330,11 @@ function fingerprintDifferences(push: PushToPushLifecycle.Push): { changes: Arra
 
     // If there are no fingerprints on the before, assume no differences
     return { additions: [], changes: [], removals: [] };
+}
+
+export function isComplianceReview(push: PushToPushLifecycle.Push): boolean {
+    if (!!push && !!push.compliance && push.compliance.length > 0) {
+        return push.compliance.some(c => c.state === PolicyCompliaceState.in_review);
+    }
+    return false;
 }
