@@ -281,48 +281,51 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                     ...diffs.additions.map(v => v.type),
                     ...diffs.removals.map(v => v.type)]).length;
 
-                const diffAttachment = slackInfoMessage(
-                    `${pluralize("Aspect", changeCount, true)} changed`,
-                    `The following ${pluralize("aspect", changeCount)} ${changeCount !== 1 ? "have" : "has"} changed with this push:`).attachments[0];
-                diffAttachment.footer = undefined;
-                diffAttachment.ts = undefined;
+                if (changeCount > 0) {
 
-                message.attachments.push(diffAttachment);
+                    const diffAttachment = slackInfoMessage(
+                        `${pluralize("Aspect", changeCount, true)} changed`,
+                        `The following ${pluralize("aspect", changeCount)} ${changeCount !== 1 ? "have" : "has"} changed with this push:`).attachments[0];
+                    diffAttachment.footer = undefined;
+                    diffAttachment.ts = undefined;
 
-                const changesByType = _.groupBy(diffs.changes, v => v.to.type);
-                const additionsByType = _.groupBy(diffs.additions, "type");
-                const removalsByType = _.groupBy(diffs.removals, "type");
+                    message.attachments.push(diffAttachment);
 
-                const aspects = _.uniqBy(_.flatten(push.compliance.map(c => c.aspects)), "type");
+                    const changesByType = _.groupBy(diffs.changes, v => v.to.type);
+                    const additionsByType = _.groupBy(diffs.additions, "type");
+                    const removalsByType = _.groupBy(diffs.removals, "type");
 
-                for (const aspect of aspects) {
-                    const changes = changesByType[aspect.type] || [];
-                    const additions = additionsByType[aspect.type] || [];
-                    const removals = removalsByType[aspect.type] || [];
+                    const aspects = _.uniqBy(_.flatten(push.compliance.map(c => c.aspects)), "type");
 
-                    if (!_.isEmpty(changes) || !_.isEmpty(additions) || !_.isEmpty(removals)) {
-                        message.attachments.push({
-                            title: aspect.aspectName,
-                            fallback: aspect.aspectName,
-                            color: "#20344A",
-                        });
+                    for (const aspect of aspects) {
+                        const changes = changesByType[aspect.type] || [];
+                        const additions = additionsByType[aspect.type] || [];
+                        const removals = removalsByType[aspect.type] || [];
 
-                        const lines = [];
-                        if (changes.length > 0) {
-                            lines.push(...changes.map(d => `${codeLine("-")} ${italic(d.to.displayName)} ${codeLine(d.from.displayValue)}`));
-                            lines.push(...changes.map(d => `${codeLine("+")} ${italic(d.to.displayName)} ${codeLine(d.to.displayValue)}`));
+                        if (!_.isEmpty(changes) || !_.isEmpty(additions) || !_.isEmpty(removals)) {
+                            message.attachments.push({
+                                title: aspect.aspectName,
+                                fallback: aspect.aspectName,
+                                color: "#20344A",
+                            });
+
+                            const lines = [];
+                            if (changes.length > 0) {
+                                lines.push(...changes.map(d => `${codeLine("-")} ${italic(d.to.displayName)} ${codeLine(d.from.displayValue)}`));
+                                lines.push(...changes.map(d => `${codeLine("+")} ${italic(d.to.displayName)} ${codeLine(d.to.displayValue)}`));
+                            }
+                            if (additions.length > 0) {
+                                lines.push(...additions.map(d => `${codeLine("+")} ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
+                            }
+                            if (removals.length > 0) {
+                                lines.push(...removals.map(d => `${codeLine("-")} ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
+                            }
+
+                            message.attachments.push({
+                                text: lines.join("\n"),
+                                fallback: lines.join("\n"),
+                            });
                         }
-                        if (additions.length > 0) {
-                            lines.push(...additions.map(d => `${codeLine("+")} ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
-                        }
-                        if (removals.length > 0) {
-                            lines.push(...removals.map(d => `${codeLine("-")} ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
-                        }
-
-                        message.attachments.push({
-                            text: lines.join("\n"),
-                            fallback: lines.join("\n"),
-                        });
                     }
                 }
             }
