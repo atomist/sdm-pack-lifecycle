@@ -259,5 +259,9 @@ fragment PushFields on Push {
       displayValue
       aspectName
     }
+    aspects {
+      type
+      aspectName
+    }
   }
 }
