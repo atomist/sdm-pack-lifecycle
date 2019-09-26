@@ -26,6 +26,10 @@ query ComplianceOnPush($id: ID) {
                 displayValue
                 aspectName
             }
+            aspects {
+                type
+                aspectName
+            }
         }
     }
 }
