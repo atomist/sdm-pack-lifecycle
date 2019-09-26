@@ -93,9 +93,9 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
                 ...diffs.changes.map(v => v.to.type),
                 ...diffs.additions.map(v => v.type),
                 ...diffs.removals.map(v => v.type)]).length;
-            const changeCount = diffs.changes.map(v => v.to.type).length;
-            const additionCount = diffs.additions.map(v => v.type).length;
-            const removalCount = diffs.removals.map(v => v.type).length;
+            const changeCount = diffs.changes.length;
+            const additionCount = diffs.additions.length;
+            const removalCount = diffs.removals.length;
 
             const attachment = slackInfoMessage(
                 `${pluralize("Aspect", aspectChangeCount, true)} changed`,

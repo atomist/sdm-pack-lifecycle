@@ -31,7 +31,6 @@ import {
 import * as _ from "lodash";
 import {
     AbstractIdentifiableContribution,
-    lifecycle,
     LifecycleConfiguration,
     RendererContext,
     SlackNodeRenderer,
@@ -40,7 +39,6 @@ import { ReferencedIssuesNodeRenderer } from "../../../../lifecycle/rendering/Re
 import * as graphql from "../../../../typings/types";
 import {
     CommitIssueRelationshipBySha,
-    PolicyCompliaceState,
     PushToPushLifecycle,
     SdmGoalDisplayFormat,
     SdmVersionByCommit,
@@ -782,13 +780,14 @@ export function hasTargetDifferences(push: graphql.PushToPushLifecycle.Push): bo
         if (push.compliance.filter(c => !!c.differences).some(c => c.differences.length > 0)) {
             return true;
         }
+        const diffs = fingerprintDifferences(push);
+        const changeCount = _.uniq([
+            ...diffs.changes.map(v => v.to.type),
+            ...diffs.additions.map(v => v.type),
+            ...diffs.removals.map(v => v.type)]).length;
+        return changeCount > 0;
     }
-    const diffs = fingerprintDifferences(push);
-    const changeCount = _.uniq([
-        ...diffs.changes.map(v => v.to.type),
-        ...diffs.additions.map(v => v.type),
-        ...diffs.removals.map(v => v.type)]).length;
-    return changeCount > 0;
+    return false;
 }
 
 export function isFullRenderingEnabled(goalStyle: SdmGoalDisplayFormat, context: RendererContext): boolean {
