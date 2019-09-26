@@ -26,7 +26,6 @@ import {
 import {
     Action,
     Attachment,
-    bold,
     codeLine,
     italic,
     SlackMessage,
@@ -303,6 +302,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                         const removals = removalsByType[aspect.type] || [];
 
                         if (!_.isEmpty(changes) || !_.isEmpty(additions) || !_.isEmpty(removals)) {
+
                             message.attachments.push({
                                 title: aspect.aspectName,
                                 fallback: aspect.aspectName,
@@ -310,18 +310,13 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                             });
 
                             const lines = [];
-                            if (changes.length > 0) {
-                                changes.forEach(d => {
-                                    lines.push(`${codeLine("-")} ${italic(d.to.displayName)} ${codeLine(d.from.displayValue)}`);
-                                    lines.push(`${codeLine("+")} ${italic(d.to.displayName)} ${codeLine(d.to.displayValue)}`);
-                                });
-                            }
-                            if (additions.length > 0) {
-                                lines.push(...additions.map(d => `${codeLine("+")} ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
-                            }
-                            if (removals.length > 0) {
-                                lines.push(...removals.map(d => `${codeLine("-")} ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
-                            }
+
+                            changes.forEach(d => {
+                                lines.push(`${codeLine("-")} ${italic(d.to.displayName)} ${codeLine(d.from.displayValue)}`);
+                                lines.push(`${codeLine("+")} ${italic(d.to.displayName)} ${codeLine(d.to.displayValue)}`);
+                            });
+                            lines.push(...additions.map(d => `${codeLine("+")} ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
+                            lines.push(...removals.map(d => `${codeLine("-")} ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
 
                             message.attachments.push({
                                 text: lines.join("\n"),
