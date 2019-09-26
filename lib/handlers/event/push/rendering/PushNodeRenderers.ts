@@ -36,6 +36,7 @@ import {
     RendererContext,
     SlackNodeRenderer,
 } from "../../../../lifecycle/Lifecycle";
+import { ReferencedIssuesNodeRenderer } from "../../../../lifecycle/rendering/ReferencedIssuesNodeRenderer";
 import * as graphql from "../../../../typings/types";
 import {
     CommitIssueRelationshipBySha,
@@ -763,6 +764,16 @@ export class ExpandNodeRenderer extends AbstractIdentifiableContribution
     public async render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
                         context: RendererContext): Promise<SlackMessage> {
         return msg;
+    }
+}
+
+export class PushReferencedIssuesNodeRenderer extends ReferencedIssuesNodeRenderer {
+
+    public async render(node: any, actions: Action[], msg: SlackMessage, context: RendererContext): Promise<SlackMessage> {
+        if (isComplianceReview(node)) {
+            return Promise.resolve(msg);
+        }
+        return super.render(node, actions, msg, context);
     }
 }
 

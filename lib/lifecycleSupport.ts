@@ -303,7 +303,7 @@ export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
                 new WorkflowNodeRenderer(),
                 new pr.IssueNodeRenderer(),
                 new pr.PullRequestNodeRenderer(),
-                new ReferencedIssuesNodeRenderer(),
+                new pr.PushReferencedIssuesNodeRenderer(),
                 new pr.TagNodeRenderer(),
                 new pr.BuildNodeRenderer(),
                 new pr.ApplicationNodeRenderer(),
