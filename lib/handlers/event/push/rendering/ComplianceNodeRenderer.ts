@@ -311,8 +311,10 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
 
                             const lines = [];
                             if (changes.length > 0) {
-                                lines.push(...changes.map(d => `${codeLine("-")} ${italic(d.to.displayName)} ${codeLine(d.from.displayValue)}`));
-                                lines.push(...changes.map(d => `${codeLine("+")} ${italic(d.to.displayName)} ${codeLine(d.to.displayValue)}`));
+                                changes.forEach(d => {
+                                    lines.push(`${codeLine("-")} ${italic(d.to.displayName)} ${codeLine(d.from.displayValue)}`);
+                                    lines.push(`${codeLine("+")} ${italic(d.to.displayName)} ${codeLine(d.to.displayValue)}`);
+                                });
                             }
                             if (additions.length > 0) {
                                 lines.push(...additions.map(d => `${codeLine("+")} ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
