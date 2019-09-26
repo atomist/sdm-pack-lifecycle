@@ -365,9 +365,9 @@ export function fingerprintDifferences(push: PushToPushLifecycle.Push): { change
         const aspects = _.uniqBy(_.flatten(push.compliance.map(c => c.aspects)), "type");
 
         return {
-            changes: changes.filter(c => !!aspects[c.to.type]),
-            additions: additions.filter(a => !!aspects[a.type]),
-            removals: removals.filter(r => !!aspects[r.type]),
+            changes: changes.filter(c => aspects.some(a => a.type === c.to.type)),
+            additions: additions.filter(c => aspects.some(a => a.type === c.type)),
+            removals: removals.filter(c => aspects.some(a => a.type === c.type)),
         };
     }
 
