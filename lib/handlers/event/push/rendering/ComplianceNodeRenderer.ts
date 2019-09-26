@@ -109,7 +109,19 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
                         ),
                     ],
                 }).attachments[0];
-            attachment.footer = `${pluralize("change", changeCount, true)} \u00B7 ${pluralize("addition", additionCount, true)} \u00B7 ${pluralize("removal", removalCount, true)}`;
+
+            const footer = [];
+            if (changeCount > 0) {
+                footer.push(pluralize("change", changeCount, true));
+            }
+            if (additionCount > 0) {
+                footer.push(pluralize("addition", additionCount, true));
+            }
+            if (removalCount > 0) {
+                footer.push(pluralize("removal", removalCount, true));
+            }
+            attachment.footer = footer.join(" \u00B7 ");
+
             msg.attachments.push(attachment);
         }
         return msg;
@@ -288,7 +300,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                     const additions = additionsByType[aspect.type] || [];
                     const removals = removalsByType[aspect.type] || [];
 
-                    if (!!changes || !!additions || !!removals) {
+                    if (!_.isEmpty(changes) || !_.isEmpty(additions) || !_.isEmpty(removals)) {
                         message.attachments.push({
                             title: aspect.aspectName,
                             fallback: aspect.aspectName,
