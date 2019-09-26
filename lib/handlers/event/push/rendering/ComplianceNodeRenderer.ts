@@ -284,9 +284,9 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                 const aspects = _.uniqBy(_.flatten(push.compliance.map(c => c.aspects)), "type");
 
                 for (const aspect of aspects) {
-                    const changes = changesByType[aspect.type];
-                    const additions = additionsByType[aspect.type];
-                    const removals = removalsByType[aspect.type];
+                    const changes = changesByType[aspect.type] || [];
+                    const additions = additionsByType[aspect.type] || [];
+                    const removals = removalsByType[aspect.type] || [];
 
                     if (!!changes || !!additions || !!removals) {
                         message.attachments.push({
@@ -297,14 +297,14 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
 
                         const lines = [];
                         if (changes.length > 0) {
-                            lines.push(...changes.map(d => `- ${italic(d.to.displayName)} ${codeLine(d.from.displayValue)}`));
-                            lines.push(...changes.map(d => `+ ${italic(d.to.displayName)} ${codeLine(d.to.displayValue)}`));
+                            lines.push(...changes.map(d => `${codeLine("-")} ${italic(d.to.displayName)} ${codeLine(d.from.displayValue)}`));
+                            lines.push(...changes.map(d => `${codeLine("+")} ${italic(d.to.displayName)} ${codeLine(d.to.displayValue)}`));
                         }
                         if (additions.length > 0) {
-                            lines.push(...additions.map(d => `+ ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
+                            lines.push(...additions.map(d => `${codeLine("+")} ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
                         }
                         if (removals.length > 0) {
-                            lines.push(...removals.map(d => `- ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
+                            lines.push(...removals.map(d => `${codeLine("-")} ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
                         }
 
                         message.attachments.push({
