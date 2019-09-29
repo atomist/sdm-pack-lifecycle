@@ -197,50 +197,48 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                             fallback: "Target violations",
                         });
 
-                        if (isTipOfBranch) {
-                            if (v.length > 1) {
-                                typeAttachments.slice(-1)[0].actions = [
-                                    menuForCommand({
-                                        text: "Accept Target",
-                                        options: targets.map(d => ({
-                                            text: `${d.displayName} ${d.displayValue}`,
-                                            value: JSON.stringify({ type: d.type, name: d.name, sha: d.sha, aspectOwner: compliance.owner }),
-                                        })),
-                                    }, "ApplyTarget", "data", {
-                                        owner: push.repo.owner,
-                                        repo: push.repo.name,
-                                        branch: push.branch,
-                                        apiUrl: push.repo.org.provider.apiUrl,
+                        if (v.length > 1) {
+                            typeAttachments.slice(-1)[0].actions = [
+                                ...(isTipOfBranch ? [menuForCommand({
+                                    text: "Accept Target",
+                                    options: targets.map(d => ({
+                                        text: `${d.displayName} ${d.displayValue}`,
+                                        value: JSON.stringify({ type: d.type, name: d.name, sha: d.sha, aspectOwner: compliance.owner }),
+                                    })),
+                                }, "ApplyTarget", "data", {
+                                    owner: push.repo.owner,
+                                    repo: push.repo.name,
+                                    branch: push.branch,
+                                    apiUrl: push.repo.org.provider.apiUrl,
+                                })] : []),
+                                menuForCommand({
+                                    text: "Set as Target",
+                                    options: v.map(d => ({
+                                        text: `${d.displayName} ${d.displayValue}`,
+                                        value: JSON.stringify({ type: d.type, name: d.name, sha: d.sha, aspectOwner: compliance.owner }),
+                                    })),
+                                }, "SetTarget", "data"),
+                            ];
+                        } else {
+                            const fp = v[0];
+                            const target = targets[0];
+                            typeAttachments.slice(-1)[0].actions = [
+                                ...(isTipOfBranch ? [buttonForCommand({ text: "Accept Target" }, "ApplyTarget", {
+                                    owner: push.repo.owner,
+                                    repo: push.repo.name,
+                                    branch: push.branch,
+                                    apiUrl: push.repo.org.provider.apiUrl,
+                                    data: JSON.stringify({
+                                        type: target.type,
+                                        name: target.name,
+                                        sha: target.sha,
+                                        aspectOwner: compliance.owner,
                                     }),
-                                    menuForCommand({
-                                        text: "Set as Target",
-                                        options: v.map(d => ({
-                                            text: `${d.displayName} ${d.displayValue}`,
-                                            value: JSON.stringify({ type: d.type, name: d.name, sha: d.sha, aspectOwner: compliance.owner }),
-                                        })),
-                                    }, "SetTarget", "data"),
-                                ];
-                            } else {
-                                const fp = v[0];
-                                const target = targets[0];
-                                typeAttachments.slice(-1)[0].actions = [
-                                    buttonForCommand({ text: "Accept Target" }, "ApplyTarget", {
-                                        owner: push.repo.owner,
-                                        repo: push.repo.name,
-                                        branch: push.branch,
-                                        apiUrl: push.repo.org.provider.apiUrl,
-                                        data: JSON.stringify({
-                                            type: target.type,
-                                            name: target.name,
-                                            sha: target.sha,
-                                            aspectOwner: compliance.owner,
-                                        }),
-                                    }),
-                                    buttonForCommand({ text: "Set as Target" }, "SetTarget", {
-                                        data: JSON.stringify({ type: fp.type, name: fp.name, sha: fp.sha, aspectOwner: compliance.owner }),
-                                    }),
-                                ];
-                            }
+                                })] : []),
+                                buttonForCommand({ text: "Set as Target" }, "SetTarget", {
+                                    data: JSON.stringify({ type: fp.type, name: fp.name, sha: fp.sha, aspectOwner: compliance.owner }),
+                                }),
+                            ];
                         }
 
                         return typeAttachments;
@@ -302,7 +300,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                         const removals = removalsByType[aspect.type] || [];
 
                         if (!_.isEmpty(changes) || !_.isEmpty(additions) || !_.isEmpty(removals)) {
-
+                            const newTargets = [...changes.map(c => c.to), ...additions];
                             message.attachments.push({
                                 title: aspect.aspectName,
                                 fallback: aspect.aspectName,
@@ -321,6 +319,29 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                             message.attachments.push({
                                 text: lines.join("\n"),
                                 fallback: lines.join("\n"),
+                                actions: _.sortBy(newTargets, "displayName").length === 1 ? [
+                                    buttonForCommand({ text: "Set as Target" }, "SetTarget", {
+                                        data: JSON.stringify({
+                                            type: newTargets[0].type,
+                                            name: newTargets[0].name,
+                                            sha: newTargets[0].sha,
+                                            aspectOwner: getAspectOwner(push, newTargets[0].type),
+                                        }),
+                                    }),
+                                ] : [
+                                    menuForCommand({
+                                        text: "Set as Target",
+                                        options: newTargets.map(d => ({
+                                            text: `${d.displayName} ${d.displayValue}`,
+                                            value: JSON.stringify({
+                                                type: d.type,
+                                                name: d.name,
+                                                sha: d.sha,
+                                                aspectOwner: getAspectOwner(push, d.type),
+                                            }),
+                                        })),
+                                    }, "SetTarget", "data"),
+                                ],
                             });
                         }
                     }
@@ -380,4 +401,14 @@ export function isComplianceReview(push: PushToPushLifecycle.Push): boolean {
         return push.compliance.some(c => c.state === PolicyCompliaceState.in_review);
     }
     return false;
+}
+
+function getAspectOwner(push: PushToPushLifecycle.Push, type: string): string | undefined {
+    if (!!push && !!push.compliance) {
+        const compliance = push.compliance.find(c => (c.aspects || []).some(a => a.type === type));
+        if (!!compliance) {
+            return compliance.owner;
+        }
+    }
+    return undefined;
 }
