@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
-import { guid } from "@atomist/automation-client";
+import {
+    buttonForCommand,
+    guid,
+} from "@atomist/automation-client";
 import {
     CommandHandlerRegistration,
     createJob,
+    slackQuestionMessage,
 } from "@atomist/sdm";
+import {
+    codeLine,
+    italic,
+} from "@atomist/slack-messages";
 
 interface SetTargetParameters {
     data: string;
+    raisePr?: string;
 }
 
 export function setTargetCommand(): CommandHandlerRegistration<SetTargetParameters> {
@@ -30,20 +39,42 @@ export function setTargetCommand(): CommandHandlerRegistration<SetTargetParamete
         description: "Broadcast a set new target job",
         parameters: {
             data: {},
+            raisePr: { required: false },
         },
         listener: async ci => {
+            const msgId = guid();
             const data = JSON.parse(ci.parameters.data);
 
-            await createJob({
-                registration: data.aspectOwner,
-                command: "RegisterTargetFingerprint",
-                parameters: [{
-                    broadcast: false,
-                    sha: data.sha,
-                    targetfingerprint: `${data.type}::${data.name}`,
-                    msgId: guid(),
-                }],
-            }, ci.context);
+            if (ci.parameters.raisePr === undefined) {
+                await ci.context.messageClient.respond(
+                    slackQuestionMessage(
+                        "Set as Target",
+                        `Do you want to raise pull requests for new target ${italic(data.displayName)} ${codeLine(data.displayValue)} on all affected repositories?`, {
+                            actions: [
+                                buttonForCommand({ text: "Yes",
+                                    confirm: {
+                                        title: "Raise Pull Requests",
+                                        text: `Are you sure that you want to raise pull requests for new target ${data.displayName} ${data.displayValue} on all affected repositories?`,
+                                        ok_text: "Yes",
+                                        dismiss_text: "Cancel",
+                                    },
+                                }, "SetTarget", { ...ci.parameters, raisePr: "true" }),
+                                buttonForCommand({ text: "No" }, "SetTarget", { ...ci.parameters, raisePr: "false" }),
+                            ],
+                        }),
+                    { id: msgId });
+            } else {
+                await createJob({
+                    registration: data.aspectOwner,
+                    command: "RegisterTargetFingerprint",
+                    parameters: [{
+                        sha: data.sha,
+                        targetfingerprint: `${data.type}::${data.name}`,
+                        msgId,
+                        broadcast: !!ci.parameters.raisePr,
+                    }],
+                }, ci.context);
+            }
         },
     };
 }

@@ -215,7 +215,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                                     text: "Set as Target",
                                     options: v.map(d => ({
                                         text: `${d.displayName} ${d.displayValue}`,
-                                        value: JSON.stringify({ type: d.type, name: d.name, sha: d.sha, aspectOwner: compliance.owner }),
+                                        value: JSON.stringify({ ...d, aspectOwner: compliance.owner }),
                                     })),
                                 }, "SetTarget", "data"),
                             ];
@@ -236,7 +236,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                                     }),
                                 })] : []),
                                 buttonForCommand({ text: "Set as Target" }, "SetTarget", {
-                                    data: JSON.stringify({ type: fp.type, name: fp.name, sha: fp.sha, aspectOwner: compliance.owner }),
+                                    data: JSON.stringify({ ...fp, aspectOwner: compliance.owner }),
                                 }),
                             ];
                         }
@@ -322,9 +322,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                                 actions: _.sortBy(newTargets, "displayName").length === 1 ? [
                                     buttonForCommand({ text: "Set as Target" }, "SetTarget", {
                                         data: JSON.stringify({
-                                            type: newTargets[0].type,
-                                            name: newTargets[0].name,
-                                            sha: newTargets[0].sha,
+                                            ...newTargets[0],
                                             aspectOwner: getAspectOwner(push, newTargets[0].type),
                                         }),
                                     }),
@@ -334,9 +332,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                                         options: newTargets.map(d => ({
                                             text: `${d.displayName} ${d.displayValue}`,
                                             value: JSON.stringify({
-                                                type: d.type,
-                                                name: d.name,
-                                                sha: d.sha,
+                                                ...d,
                                                 aspectOwner: getAspectOwner(push, d.type),
                                             }),
                                         })),
