@@ -294,12 +294,12 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                     const removalsByType = _.groupBy(diffs.removals, "type");
 
                     for (const type of types) {
-                        const changes = changesByType[type.type] || [];
-                        const additions = additionsByType[type.type] || [];
-                        const removals = removalsByType[type.type] || [];
+                        const changes = _.sortBy(changesByType[type.type] || [], v => v.to.displayName);
+                        const additions = _.sortBy(additionsByType[type.type] || [], "displayName");
+                        const removals = _.sortBy(removalsByType[type.type] || [], "displayName");
 
                         if (!_.isEmpty(changes) || !_.isEmpty(additions) || !_.isEmpty(removals)) {
-                            const newTargets = [...changes.map(c => c.to), ...additions];
+                            const newTargets = _.sortBy([...changes.map(c => c.to), ...additions], "displayName");
                             message.attachments.push({
                                 title: type.displayType,
                                 fallback: type.displayType,
@@ -318,7 +318,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                             message.attachments.push({
                                 text: lines.join("\n"),
                                 fallback: lines.join("\n"),
-                                actions: _.sortBy(newTargets, "displayName").length === 1 ? [
+                                actions: _.uniqBy(newTargets, "displayName").length === 1 ? [
                                     buttonForCommand({ text: "Set as Target" }, "SetTarget", {
                                         data: JSON.stringify({
                                             ...newTargets[0],
