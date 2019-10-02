@@ -15,7 +15,7 @@ query ComplianceOnPush($id: ID) {
                 data
                 displayName
                 displayValue
-                aspectName
+                displayType
             }
             differences {
                 type
@@ -24,11 +24,11 @@ query ComplianceOnPush($id: ID) {
                 data
                 displayName
                 displayValue
-                aspectName
+                displayType
             }
             aspects {
                 type
-                aspectName
+                displayType
             }
         }
     }

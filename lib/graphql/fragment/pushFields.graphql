@@ -36,6 +36,7 @@ fragment PushFields on Push {
       data
       displayName
       displayValue
+      displayType
     }
   }
   after {
@@ -120,6 +121,7 @@ fragment PushFields on Push {
       data
       displayName
       displayValue
+      displayType
     }
   }
   repo {
@@ -248,7 +250,7 @@ fragment PushFields on Push {
       data
       displayName
       displayValue
-      aspectName
+      displayType
     }
     differences {
       type
@@ -257,11 +259,11 @@ fragment PushFields on Push {
       data
       displayName
       displayValue
-      aspectName
+      displayType
     }
     aspects {
       type
-      aspectName
+      displayType
     }
   }
 }

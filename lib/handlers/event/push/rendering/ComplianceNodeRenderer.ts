@@ -179,9 +179,9 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                         const typeAttachments: Attachment[] = [];
 
                         typeAttachments.push({
-                            title: allTargets[0].aspectName,
-                            footer: `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage?aspect=${encodeURIComponent(allTargets[0].aspectName)}`, `${targetCount} ${pluralize("target", targetCount)} set`)} \u00B7 ${pluralize("violation", v.length, true)} \u00B7 compliance ${((1 - (v.length / targetCount)) * 100).toFixed(0)}%`,
-                            fallback: allTargets[0].aspectName,
+                            title: allTargets[0].displayType,
+                            footer: `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage?aspect=${encodeURIComponent(allTargets[0].displayType)}`, `${targetCount} ${pluralize("target", targetCount)} set`)} \u00B7 ${pluralize("violation", v.length, true)} \u00B7 compliance ${((1 - (v.length / targetCount)) * 100).toFixed(0)}%`,
+                            fallback: allTargets[0].displayType,
                             color: "#20344A",
                         });
 
@@ -273,10 +273,11 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
             // Render fingerprint differences for this push
             if (!!push.before && !!push.before.analysis && push.before.analysis.length > 0) {
                 const diffs = fingerprintDifferences(push);
-                const changeCount = _.uniq([
-                    ...diffs.changes.map(v => v.to.type),
-                    ...diffs.additions.map(v => v.type),
-                    ...diffs.removals.map(v => v.type)]).length;
+                const types = _.uniqBy([
+                    ...diffs.changes.map(v => ({ type: v.to.type, displayType: v.to.displayType })),
+                    ...diffs.additions.map(v => ({ type: v.type, displayType: v.displayType })),
+                    ...diffs.removals.map(v => ({ type: v.type, displayType: v.displayType }))], "type");
+                const changeCount = types.length;
 
                 if (changeCount > 0) {
 
@@ -292,18 +293,16 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                     const additionsByType = _.groupBy(diffs.additions, "type");
                     const removalsByType = _.groupBy(diffs.removals, "type");
 
-                    const aspects = _.uniqBy(_.flatten(push.compliance.map(c => c.aspects)), "type");
-
-                    for (const aspect of aspects) {
-                        const changes = changesByType[aspect.type] || [];
-                        const additions = additionsByType[aspect.type] || [];
-                        const removals = removalsByType[aspect.type] || [];
+                    for (const type of types) {
+                        const changes = changesByType[type.type] || [];
+                        const additions = additionsByType[type.type] || [];
+                        const removals = removalsByType[type.type] || [];
 
                         if (!_.isEmpty(changes) || !_.isEmpty(additions) || !_.isEmpty(removals)) {
                             const newTargets = [...changes.map(c => c.to), ...additions];
                             message.attachments.push({
-                                title: aspect.aspectName,
-                                fallback: aspect.aspectName,
+                                title: type.displayType,
+                                fallback: type.displayType,
                                 color: "#20344A",
                             });
 
@@ -379,12 +378,10 @@ export function fingerprintDifferences(push: PushToPushLifecycle.Push): { change
             }
         });
 
-        const aspects = _.uniqBy(_.flatten(push.compliance.map(c => c.aspects)), "type");
-
         return {
-            changes: changes.filter(c => aspects.some(a => a.type === c.to.type)),
-            additions: additions.filter(c => aspects.some(a => a.type === c.type)),
-            removals: removals.filter(c => aspects.some(a => a.type === c.type)),
+            changes,
+            additions,
+            removals,
         };
     }
 
