@@ -164,7 +164,8 @@ export function avatarUrl(repo: any, login: string, url?: string): string {
     if (isGitHubCom(repo)) {
         return `https://avatars.githubusercontent.com/${login}`;
     } else if (isGitHub(repo)) {
-        return `${htmlUrl(repo)}/avatars/${login}`;
+        // return `${htmlUrl(repo)}/avatars/${login}`;
+        return "https://images.atomist.com/rug/person.png";
     } else if (isGitlab(repo) && url) {
         return url;
     } else if (isBitBucket(repo)) {
