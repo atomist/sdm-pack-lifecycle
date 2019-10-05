@@ -366,7 +366,7 @@ export function fingerprintDifferences(push: PushToPushLifecycle.Push): { change
             const p = push.before.analysis.find(ba => ba.name === a.name && ba.type === a.type);
             if (!p) {
                 additions.push(a);
-            } else if (p.sha !== a.sha) {
+            } else if (p.sha !== a.sha && p.displayValue !== a.displayValue) {
                 changes.push({ to: a, from: p });
             }
         });
