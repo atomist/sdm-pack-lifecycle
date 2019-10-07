@@ -8,6 +8,8 @@ query ComplianceOnPush($id: ID) {
             owner
             _branch
             _sha
+            _owner
+            _repo
             targets {
                 type
                 name
@@ -30,6 +32,7 @@ query ComplianceOnPush($id: ID) {
                 type
                 displayType
             }
+            ts
         }
     }
 }
