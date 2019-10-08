@@ -26,6 +26,7 @@ import {
 import {
     Action,
     Attachment,
+    codeBlock,
     codeLine,
     italic,
     SlackMessage,
@@ -189,7 +190,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                         const lines = v.map(d => {
                             const target = compliance.targets.find(p => p.type === d.type && p.name === d.name);
                             targets.push(target);
-                            return `${italic(d.displayName)} ${codeLine(d.displayValue)} \u00B7 target ${codeLine(target.displayValue)}`;
+                            return `${italic(d.displayName)} ${renderDisplayValue(d)} \u00B7 target ${renderDisplayValue(target)}`;
                         });
 
                         typeAttachments.push({
@@ -309,11 +310,11 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                             const lines = [];
 
                             changes.forEach(d => {
-                                lines.push(`${codeLine("-")} ${italic(d.to.displayName)} ${codeLine(d.from.displayValue)}`);
-                                lines.push(`${codeLine("+")} ${italic(d.to.displayName)} ${codeLine(d.to.displayValue)}`);
+                                lines.push(`${codeLine("-")} ${italic(d.to.displayName)} ${renderDisplayValue(d.from)}`);
+                                lines.push(`${codeLine("+")} ${italic(d.to.displayName)} ${renderDisplayValue(d.to)}`);
                             });
-                            lines.push(...additions.map(d => `${codeLine("+")} ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
-                            lines.push(...removals.map(d => `${codeLine("-")} ${italic(d.displayName)} ${codeLine(d.displayValue)}`));
+                            lines.push(...additions.map(d => `${codeLine("+")} ${italic(d.displayName)} ${renderDisplayValue(d)}`));
+                            lines.push(...removals.map(d => `${codeLine("-")} ${italic(d.displayName)} ${renderDisplayValue(d)}`));
 
                             message.attachments.push({
                                 text: lines.join("\n"),
@@ -410,8 +411,18 @@ function isManageable(push: PushToPushLifecycle.Push, type: string): boolean {
     if (!!push && !!push.compliance) {
         const aspect = _.flatten(push.compliance.map(c => c.aspects)).find(a => a.type === type);
         if (!!aspect) {
-            return aspect.manageable;
+            return !!aspect.manageable;
         }
     }
     return false;
+}
+
+function renderDisplayValue(fp: { displayValue?: string }): string {
+    if (!!fp.displayValue) {
+        const lines = fp.displayValue.split("\n");
+        if (lines.length > 1) {
+            return `\n${codeBlock(fp.displayValue)}`;
+        }
+    }
+    return codeLine(fp.displayValue);
 }
