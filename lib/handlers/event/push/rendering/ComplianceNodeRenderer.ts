@@ -328,7 +328,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                                 ] : [
                                     menuForCommand({
                                         text: "Set as Target",
-                                        options: newTargets.map(d => ({
+                                        options: newTargets.filter(t => isManageable(push, t.type)).map(d => ({
                                             text: `${d.displayName} ${d.displayValue}`,
                                             value: JSON.stringify({
                                                 ...d,
@@ -404,4 +404,14 @@ function getAspectOwner(push: PushToPushLifecycle.Push, type: string): string | 
         }
     }
     return undefined;
+}
+
+function isManageable(push: PushToPushLifecycle.Push, type: string): boolean {
+    if (!!push && !!push.compliance) {
+        const aspect = _.flatten(push.compliance.map(c => c.aspects)).find(a => a.type === type);
+        if (!!aspect) {
+            return aspect.manageable;
+        }
+    }
+    return false;
 }

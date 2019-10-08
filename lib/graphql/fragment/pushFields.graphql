@@ -264,6 +264,7 @@ fragment PushFields on Push {
     aspects {
       type
       displayType
+      manageable
     }
   }
 }
