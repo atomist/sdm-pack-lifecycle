@@ -406,7 +406,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
 
             // Push
             sdm.addEvent(notifyReviewerOnPush());
-            sdm.addEvent(pushToUnmappedRepo());
+            // sdm.addEvent(pushToUnmappedRepo());
 
             sdm.addEvent(applicationToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(buildToPushLifecycle(optsToUse.push.chat));
