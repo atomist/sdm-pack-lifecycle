@@ -319,25 +319,26 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                             message.attachments.push({
                                 text: lines.join("\n"),
                                 fallback: lines.join("\n"),
-                                actions: _.uniqBy(newTargets, "displayName").length === 1 ? [
-                                    buttonForCommand({ text: "Set as Target" }, "SetTarget", {
-                                        data: JSON.stringify({
-                                            ...newTargets[0],
-                                            aspectOwner: getAspectOwner(push, newTargets[0].type),
-                                        }),
-                                    }),
-                                ] : [
-                                    menuForCommand({
-                                        text: "Set as Target",
-                                        options: newTargets.filter(t => isManageable(push, t.type)).map(d => ({
-                                            text: `${d.displayName} ${d.displayValue}`,
-                                            value: JSON.stringify({
-                                                ...d,
-                                                aspectOwner: getAspectOwner(push, d.type),
+                                actions: _.uniqBy(newTargets, "displayName").length === 1 ?
+                                    [
+                                        ...(isManageable(push, newTargets[0].type) ? [buttonForCommand({ text: "Set as Target" }, "SetTarget", {
+                                            data: JSON.stringify({
+                                                ...newTargets[0],
+                                                aspectOwner: getAspectOwner(push, newTargets[0].type),
                                             }),
-                                        })),
-                                    }, "SetTarget", "data"),
-                                ],
+                                        })] : []),
+                                    ] : [
+                                        menuForCommand({
+                                            text: "Set as Target",
+                                            options: newTargets.filter(t => isManageable(push, t.type)).map(d => ({
+                                                text: `${d.displayName} ${d.displayValue}`,
+                                                value: JSON.stringify({
+                                                    ...d,
+                                                    aspectOwner: getAspectOwner(push, d.type),
+                                                }),
+                                            })),
+                                        }, "SetTarget", "data"),
+                                    ],
                             });
                         }
                     }
