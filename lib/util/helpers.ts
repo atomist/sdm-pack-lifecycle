@@ -161,7 +161,9 @@ export function userUrl(repo: any, login: string): string {
 }
 
 export function avatarUrl(repo: any, login: string, url?: string): string {
-    if (isGitHubCom(repo)) {
+    if (login === "atomist[bot]") {
+        return `https://images.atomist.com/rug/atomist.png`;
+    } else if (isGitHubCom(repo)) {
         return `https://avatars.githubusercontent.com/${login}`;
     } else if (isGitHub(repo)) {
         // return `${htmlUrl(repo)}/avatars/${login}`;
