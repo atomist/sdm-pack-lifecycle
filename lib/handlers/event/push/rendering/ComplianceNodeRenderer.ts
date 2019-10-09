@@ -87,7 +87,7 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
                         ),
                     ],
                 }).attachments[0];
-            attachment.footer = `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage`, 
+            attachment.footer = `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage`,
                 `${pluralize("target", targetCount, true)} set`)} \u00B7 ${pluralize("violation", differencesCount, true)} \u00B7 compliance ${compliance}%`;
             msg.attachments.push(attachment);
 
@@ -183,7 +183,7 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
 
                         typeAttachments.push({
                             title: allTargets[0].displayType,
-                            footer: `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage?types=${encodeURIComponent(allTargets[0].type)}`, 
+                            footer: `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage?types=${encodeURIComponent(allTargets[0].type)}`,
                                 `${targetCount} ${pluralize("target", targetCount)} set`)} \u00B7 ${pluralize("violation", v.length, true)} \u00B7 compliance ${((1 - (v.length / targetCount)) * 100).toFixed(0)}%`,
                             fallback: allTargets[0].displayType,
                             color: "#20344A",
