@@ -87,8 +87,10 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
                         ),
                     ],
                 }).attachments[0];
-            attachment.footer = `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis`, `${pluralize("target", targetCount, true)} set`)} \u00B7 ${pluralize("violation", differencesCount, true)} \u00B7 compliance ${compliance}%`;
+            attachment.footer = `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage`, 
+                `${pluralize("target", targetCount, true)} set`)} \u00B7 ${pluralize("violation", differencesCount, true)} \u00B7 compliance ${compliance}%`;
             msg.attachments.push(attachment);
+
         } else if (diffs.changes.length > 0 || diffs.removals.length > 0 || diffs.additions.length > 0) {
             const aspectChangeCount = _.uniq([
                 ...diffs.changes.map(v => v.to.type),
@@ -181,7 +183,8 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
 
                         typeAttachments.push({
                             title: allTargets[0].displayType,
-                            footer: `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage?aspect=${encodeURIComponent(allTargets[0].displayType)}`, `${targetCount} ${pluralize("target", targetCount)} set`)} \u00B7 ${pluralize("violation", v.length, true)} \u00B7 compliance ${((1 - (v.length / targetCount)) * 100).toFixed(0)}%`,
+                            footer: `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage?types=${encodeURIComponent(allTargets[0].type)}`, 
+                                `${targetCount} ${pluralize("target", targetCount)} set`)} \u00B7 ${pluralize("violation", v.length, true)} \u00B7 compliance ${((1 - (v.length / targetCount)) * 100).toFixed(0)}%`,
                             fallback: allTargets[0].displayType,
                             color: "#20344A",
                         });
