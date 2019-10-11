@@ -62,6 +62,19 @@ query sdmGoalById($id: ID!) {
       userId
       channelId
     }
+    descriptions {
+      canceled
+      completed
+      failed
+      inProcess
+      planned
+      requested
+      stopped
+      skipped
+      waitingForApproval
+      waitingForPreApproval
+    }
+    parameters
     data
     version
   }
