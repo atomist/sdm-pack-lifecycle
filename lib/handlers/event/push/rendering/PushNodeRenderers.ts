@@ -52,6 +52,7 @@ import {
     issueUrl,
     loadIssueOrPullRequest,
     prUrl,
+    repoPageUrl,
     repoSlug,
     repoUrl,
     tagUrl,
@@ -251,9 +252,9 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
             lastAttachment.actions = actions;
             lastAttachment.footer_icon = commitIcon(repo);
             if (!!lastAttachment.footer) {
-                lastAttachment.footer = `${url(repoUrl(repo), repoSlug(repo))} \u00B7 ${lastAttachment.footer}${versionString}`;
+                lastAttachment.footer = `${url(repoPageUrl(repo, context.context.workspaceId), repoSlug(repo))} \u00B7 ${lastAttachment.footer}${versionString}`;
             } else {
-                lastAttachment.footer = `${url(repoUrl(repo), repoSlug(repo))}${versionString}`;
+                lastAttachment.footer = `${url(repoPageUrl(repo, context.context.workspaceId), repoSlug(repo))}${versionString}`;
             }
             lastAttachment.ts = Math.floor(Date.parse(push.timestamp) / 1000);
         }

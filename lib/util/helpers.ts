@@ -15,6 +15,7 @@
  */
 
 import {
+    automationClientInstance,
     HandlerContext,
     logger,
 } from "@atomist/automation-client";
@@ -144,6 +145,10 @@ export function repoUrl(repo: any): string {
     } else {
         return `${htmlUrl(repo)}/${repoSlug(repo)}`;
     }
+}
+
+export function repoPageUrl(repo: any, workspaceId: string): string {
+    return `https://app.atomist.com/workspace/${workspaceId}/repository/${repo.owner}/${repo.name}`;
 }
 
 export function repoSlackLink(repo: any): string {
