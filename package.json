@@ -44,9 +44,9 @@
     "toposort": "^2.0.2"
   },
   "peerDependencies": {
-    "@atomist/automation-client": "1.8.0-master.20191009152926",
-    "@atomist/sdm": "^1.7.0",
-    "@atomist/sdm-core": "^1.7.0",
+    "@atomist/automation-client": "1.8.0-master.20191011094832",
+    "@atomist/sdm": "1.8.0-master.20191011091613",
+    "@atomist/sdm-core": "1.8.0-master.20191009161512",
     "@atomist/slack-messages": "^1.1.1"
   },
   "devDependencies": {
