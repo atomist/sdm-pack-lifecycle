@@ -19,9 +19,9 @@ import {
     menuForCommand,
 } from "@atomist/automation-client";
 import {
+    all,
     slackInfoMessage,
     slackTs,
-    slackWarningMessage,
 } from "@atomist/sdm";
 import {
     Action,
@@ -74,10 +74,10 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
         const diffs = fingerprintDifferences(push);
         if (differencesCount > 0) {
             const compliance = ((1 - (differencesCount) / targetCount) * 100).toFixed(0);
-            const attachment: Attachment = slackWarningMessage(
+            const delta = calculateComplianceDelta(push, compliance);
+            const attachment: Attachment = slackInfoMessage(
                 `${aspectDifferenceCount} ${pluralize("Aspect", aspectDifferenceCount)} with drift`,
                 undefined,
-                context.context,
                 {
                     actions: [
                         buttonForCommand(
@@ -88,7 +88,7 @@ export class ComplianceSummaryNodeRenderer extends AbstractIdentifiableContribut
                     ],
                 }).attachments[0];
             attachment.footer = `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage`,
-                `${pluralize("target", targetCount, true)} set`)} \u00B7 ${pluralize("violation", differencesCount, true)} \u00B7 compliance ${compliance}%`;
+                `${pluralize("target", targetCount, true)} set`)} \u00B7 ${pluralize("violation", differencesCount, true)} \u00B7 compliance ${compliance}% ${delta}`;
             msg.attachments.push(attachment);
 
         } else if (diffs.changes.length > 0 || diffs.removals.length > 0 || diffs.additions.length > 0) {
@@ -166,10 +166,9 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
 
             if (aspectDifferenceCount > 0) {
 
-                const msg = slackWarningMessage(
+                const msg = slackInfoMessage(
                     `${aspectDifferenceCount} ${pluralize("Aspect", aspectDifferenceCount)} with drift`,
                     `The following ${pluralize("aspect", aspectDifferenceCount)} ${aspectDifferenceCount === 1 ? "is" : "are"} different from workspace targets:`,
-                    context.context,
                 );
                 msg.attachments[0].footer = undefined;
                 msg.attachments[0].ts = undefined;
@@ -180,11 +179,12 @@ export class ComplianceNodeRenderer extends AbstractIdentifiableContribution
                         const allTargets = compliance.targets.filter(p => p.type === k);
                         const targetCount = allTargets.length;
                         const typeAttachments: Attachment[] = [];
-
+                        const c = ((1 - (v.length / targetCount)) * 100).toFixed(0);
+                        const delta = calculateComplianceDelta(push, c, allTargets[0].type);
                         typeAttachments.push({
                             title: allTargets[0].displayType,
                             footer: `${url(`https://app.atomist.com/workspace/${context.context.workspaceId}/analysis/manage?types=${encodeURIComponent(allTargets[0].type)}`,
-                                `${targetCount} ${pluralize("target", targetCount)} set`)} \u00B7 ${pluralize("violation", v.length, true)} \u00B7 compliance ${((1 - (v.length / targetCount)) * 100).toFixed(0)}%`,
+                                `${targetCount} ${pluralize("target", targetCount)} set`)} \u00B7 ${pluralize("violation", v.length, true)} \u00B7 compliance ${c}% ${delta}`,
                             fallback: allTargets[0].displayType,
                             color: "#20344A",
                         });
@@ -429,4 +429,25 @@ function renderDisplayValue(fp: { displayValue?: string }): string {
         }
     }
     return codeLine(fp.displayValue);
+}
+
+function calculateComplianceDelta(push: PushToPushLifecycle.Push, compliance: string, type?: string): string {
+    if (!!push.compliance && !!push.before.analysis) {
+        const allTargets = _.flatten(push.compliance.map(c => c.targets)).filter(t => !type || type === t.type);
+        const relevantTargets = allTargets.filter(t => push.before.analysis.some(a => a.type === t.type && a.name && t.name));
+        const diffs = push.before.analysis.filter(a => allTargets.some(t => t.type === a.type && t.name === a.name && t.sha !== a.sha));
+        let beforeCompliance = "100";
+        if (relevantTargets.length > 0) {
+            beforeCompliance = ((1 - (diffs.length) / relevantTargets.length) * 100).toFixed(0);
+        }
+        const delta = +compliance - +beforeCompliance;
+        if (delta < 0) {
+            return `\u00B7 -${delta}%`;
+        } else if (delta === 0) {
+            return "\u00B7 ±0%";
+        } else {
+            return `\u00B7 +${delta}%`;
+        }
+    }
+    return "";
 }
