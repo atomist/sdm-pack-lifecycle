@@ -17,7 +17,6 @@
 import {
     Action,
     codeLine,
-    emoji,
     italic,
     SlackMessage,
     url,
@@ -32,6 +31,7 @@ import {
 import {
     PushToPushLifecycle,
     SdmGoalFieldsFragment,
+    SdmGoalSet,
     SdmGoalState,
 } from "../../../../typings/types";
 import { lastGoalSet } from "../../../../util/goals";
@@ -40,7 +40,6 @@ import {
     commitIcon,
     commitUrl,
     repoSlug,
-    repoUrl,
     truncateCommitMessage,
     userUrl,
 } from "../../../../util/helpers";
@@ -66,7 +65,7 @@ export class SimplePushNodeRenderer extends AbstractIdentifiableContribution
     public async render(push: PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
                         context: RendererContext): Promise<SlackMessage> {
         const repo = context.lifecycle.extract("repo");
-        const goalSets = context.lifecycle.extract("goalSets");
+        const goalSets = context.lifecycle.extract("goalSets") as SdmGoalSet[];
 
         let text = `${url(userUrl(repo, push.after.author.login), push.after.author.login)} pushed ${
             codeLine(url(commitUrl(repo, push.after), push.after.sha.slice(0, 7)))} ${italic(truncateCommitMessage(push.after.message, repo))}`;
@@ -75,7 +74,7 @@ export class SimplePushNodeRenderer extends AbstractIdentifiableContribution
         }
 
         let color;
-        const allGoals = (push.goals || []).filter(g => goalSets.some((gs: any) => gs.id === g.goalSetId));
+        const allGoals = (push.goals || []).filter(g => goalSets.some(gs => gs.goalSetId === g.goalSetId));
         if (allGoals.length > 0) {
             const last = lastGoalSet(allGoals);
             const link = `https://app.atomist.com/workspace/${context.context.workspaceId}/goalset/${last[0].goalSetId}`;
