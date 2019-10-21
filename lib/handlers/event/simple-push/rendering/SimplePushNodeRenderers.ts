@@ -103,7 +103,7 @@ export class SimplePushNodeRenderer extends AbstractIdentifiableContribution
             color,
             footer_icon: commitIcon(repo),
             footer: url(branchUrl(repo, push.branch), `${repoSlug(repo)}/${push.branch}`),
-            ts: Math.floor(Date.parse(context.lifecycle.timestamp) / 1000),
+            ts: Math.floor(new Date(context.lifecycle.timestamp).getTime() / 1000),
         });
 
         return msg;
