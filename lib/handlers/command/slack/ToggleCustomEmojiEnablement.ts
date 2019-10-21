@@ -67,6 +67,7 @@ export class ToggleCustomEmojiEnablement implements HandleCommand {
                 const enabled: string = preferencesState.enabled ? "default" : "atomist";
 
                 _.set(preferences, "push.configuration['emoji-style']", enabled);
+                _.set(preferences, "simple_push.configuration['emoji-style']", enabled);
                 _.set(preferences, "pull_request.configuration['emoji-style']", enabled);
 
                 return ctx.graphClient.mutate<graphql.SetChatTeamPreference.Mutation,
