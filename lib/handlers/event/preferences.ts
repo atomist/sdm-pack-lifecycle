@@ -24,6 +24,12 @@ export const LifecyclePreferences: any = {
         description: "Lifecycle messages for GitHub pushes, including builds, status etc",
         enabled: true,
     },
+    simple_push: {
+        id: "simple_push",
+        name: "Simple Push Lifecycle",
+        description: "Simple Lifecycle messages for GitHub pushes, including builds, status etc",
+        enabled: false,
+    },
     issue: {
         id: "issue",
         name: "Issue Lifecycle",

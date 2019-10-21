@@ -117,7 +117,8 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
 
     constructor(private readonly extractNodes: (event: EventFired<R>) => PushToPushLifecycle.Push[],
                 private readonly ep: (event: EventFired<R>) => { [teamId: string]: Preferences[] },
-                private readonly contributors: Contributions) {
+                private readonly contributors: Contributions,
+                private readonly id: string = LifecyclePreferences.push.id) {
         super();
     }
 
@@ -172,7 +173,7 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
             }
 
             const configuration: Lifecycle = {
-                name: LifecyclePreferences.push.id,
+                name: this.id,
                 nodes,
                 renderers: _.flatten((this.contributors.renderers || []).map(r => r(push))),
                 contributors: _.flatten((this.contributors.actions || []).map(a => a(push))),

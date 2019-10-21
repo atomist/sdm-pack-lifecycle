@@ -131,7 +131,6 @@ import {
     pushToPushCardLifecycle,
     pushToPushLifecycle,
 } from "./handlers/event/push/PushToPushLifecycle";
-import { pushToUnmappedRepo } from "./handlers/event/push/PushToUnmappedRepo";
 import {
     PullRequestCommentCreator,
     PullRequestCommentUpdater,
@@ -166,6 +165,9 @@ import { notifyAuthorOnReview } from "./handlers/event/review/NotifyAuthorOnRevi
 import { pullRequestToReviewLifecycle } from "./handlers/event/review/PullRequestToReviewLifecycle";
 import * as rr from "./handlers/event/review/rendering/ReviewNodeRenderers";
 import { reviewToReviewLifecycle } from "./handlers/event/review/ReviewToReviewLifecycle";
+import { pushToSimplePushLifecycle } from "./handlers/event/simple-push/PushToSimplePushLifecycle";
+import { SimplePushNodeRenderer } from "./handlers/event/simple-push/rendering/SimplePushNodeRenderers";
+import { sdmGoalToSimplePushLifecycle } from "./handlers/event/simple-push/SdmGoalToSimplePushLifecycle";
 import {
     Action as CardAction,
     CardMessage,
@@ -217,6 +219,9 @@ export interface LifecycleOptions {
     push?: {
         chat?: Contributions<PushToPushLifecycle.Push, SlackMessage, Action>;
         web?: Contributions<PushToPushLifecycle.Push, CardMessage, CardAction>;
+    };
+    simplePush?: {
+        chat?: Contributions<PushToPushLifecycle.Push, SlackMessage, Action>;
     };
     review?: {
         chat?: Contributions<ReviewToReviewLifecycle.Repo, SlackMessage, Action>;
@@ -329,6 +334,13 @@ export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
             ]],
         },
     },
+    simplePush: {
+        chat: {
+            renderers: [() => [
+                new SimplePushNodeRenderer(),
+            ]],
+        },
+    },
     review: {
         chat: {
             renderers: [() => [
@@ -431,6 +443,10 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(tagToPushCardLifecycle(optsToUse.push.web));
 
             sdm.addEvent(rebaseOnPush(optsToUse.pullRequest.rebase));
+
+            // Simple push
+            sdm.addEvent(pushToSimplePushLifecycle(optsToUse.simplePush.chat));
+            sdm.addEvent(sdmGoalToSimplePushLifecycle(optsToUse.simplePush.chat));
 
             // Review
             sdm.addEvent(notifyAuthorOnReview());

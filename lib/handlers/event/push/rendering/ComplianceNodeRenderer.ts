@@ -19,7 +19,6 @@ import {
     menuForCommand,
 } from "@atomist/automation-client";
 import {
-    all,
     slackInfoMessage,
     slackTs,
 } from "@atomist/sdm";
