@@ -36,6 +36,7 @@ import {
 } from "../../../../typings/types";
 import { lastGoalSet } from "../../../../util/goals";
 import {
+    branchUrl,
     commitIcon,
     commitUrl,
     repoSlug,
@@ -65,6 +66,7 @@ export class SimplePushNodeRenderer extends AbstractIdentifiableContribution
     public async render(push: PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
                         context: RendererContext): Promise<SlackMessage> {
         const repo = context.lifecycle.extract("repo");
+        const goalSets = context.lifecycle.extract("goalSets");
 
         let text = `${url(userUrl(repo, push.after.author.login), push.after.author.login)} pushed ${
             codeLine(url(commitUrl(repo, push.after), push.after.sha.slice(0, 7)))} ${italic(truncateCommitMessage(push.after.message, repo))}`;
@@ -73,18 +75,18 @@ export class SimplePushNodeRenderer extends AbstractIdentifiableContribution
         }
 
         let color;
-        if (push.goals.length > 0) {
-            const last = lastGoalSet(push.goals);
+        const allGoals = (push.goals || []).filter(g => goalSets.some((gs: any) => gs.id === g.goalSetId));
+        if (allGoals.length > 0) {
+            const last = lastGoalSet(allGoals);
             const link = `https://app.atomist.com/workspace/${context.context.workspaceId}/goalset/${last[0].goalSetId}`;
 
-            const allGoals = push.goals;
             const state = getOverallState(allGoals);
             const icon = getOverallEmoji(state, this.emojiStyle);
             const label = getStateLabel(state);
             color = getOverallColor(allGoals);
             const goals = allGoals.filter(g => g.state === state);
 
-            let goalText = ` \u00B7 ${emoji(icon)} `;
+            let goalText = ` \u00B7 ${icon} `;
             if (goals.length > 2) {
                 goalText += url(link, `${pluralize("goal", goals.length, true)} ${label}`);
             } else {
@@ -100,7 +102,7 @@ export class SimplePushNodeRenderer extends AbstractIdentifiableContribution
             fallback: "",
             color,
             footer_icon: commitIcon(repo),
-            footer: url(repoUrl(repo), repoSlug(repo)),
+            footer: url(branchUrl(repo, push.branch), `${repoSlug(repo)}/${push.branch}`),
             ts: Math.floor(Date.parse(context.lifecycle.timestamp) / 1000),
         });
 
