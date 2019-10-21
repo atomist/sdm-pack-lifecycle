@@ -437,6 +437,11 @@ export const LifecycleDefaultConfiguration: any = {
                 },
             },
         },
+        simple_push: {
+            configuration: {
+                "emoji-style": "default",
+            },
+        },
         pull_request: {
             configuration: {
                 "emoji-style": "default",

@@ -29,8 +29,8 @@ import {
     RendererContext,
     SlackNodeRenderer,
 } from "../../../../lifecycle/Lifecycle";
-import * as graphql from "../../../../typings/types";
 import {
+    PushToPushLifecycle,
     SdmGoalFieldsFragment,
     SdmGoalState,
 } from "../../../../typings/types";
@@ -46,12 +46,12 @@ import {
 import { EMOJI_SCHEME } from "../../push/rendering/PushNodeRenderers";
 
 export class SimplePushNodeRenderer extends AbstractIdentifiableContribution
-    implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
+    implements SlackNodeRenderer<PushToPushLifecycle.Push> {
 
     public emojiStyle: "default" | "atomist";
 
     constructor() {
-        super("simple-push");
+        super("simple_push");
     }
 
     public configure(configuration: LifecycleConfiguration) {
@@ -62,7 +62,7 @@ export class SimplePushNodeRenderer extends AbstractIdentifiableContribution
         return node.after;
     }
 
-    public async render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
+    public async render(push: PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
                         context: RendererContext): Promise<SlackMessage> {
         const repo = context.lifecycle.extract("repo");
 
