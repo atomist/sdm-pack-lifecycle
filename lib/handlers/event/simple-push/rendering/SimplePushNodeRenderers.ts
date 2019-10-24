@@ -82,7 +82,7 @@ export class SimplePushNodeRenderer extends AbstractIdentifiableContribution
             const state = getOverallState(allGoals);
             const icon = getOverallEmoji(state, this.emojiStyle);
             const label = getStateLabel(state);
-            color = getOverallColor(allGoals);
+            color = getOverallColor(state);
             const goals = allGoals.filter(g => g.state === state);
 
             let goalText = ` \u00B7 ${icon} `;
