@@ -113,6 +113,8 @@ function getOverallState(goals: SdmGoalFieldsFragment[]): SdmGoalState {
     let state: SdmGoalState;
     if (goals.some(g => g.state === SdmGoalState.failure)) {
         state = SdmGoalState.failure;
+    } else if (goals.some(g => g.state === SdmGoalState.in_process)) {
+        state = SdmGoalState.in_process;
     } else if (goals.some(g => g.state === SdmGoalState.waiting_for_approval)) {
         state = SdmGoalState.waiting_for_approval;
     } else if (goals.some(g => g.state === SdmGoalState.approved)) {
@@ -125,8 +127,6 @@ function getOverallState(goals: SdmGoalFieldsFragment[]): SdmGoalState {
         state = SdmGoalState.stopped;
     } else if (goals.some(g => g.state === SdmGoalState.canceled)) {
         state = SdmGoalState.canceled;
-    } else if (goals.some(g => g.state === SdmGoalState.in_process)) {
-        state = SdmGoalState.in_process;
     } else if (goals.some(g => g.state === SdmGoalState.requested)) {
         state = SdmGoalState.requested;
     } else if (goals.some(g => g.state === SdmGoalState.planned)) {
@@ -137,29 +137,29 @@ function getOverallState(goals: SdmGoalFieldsFragment[]): SdmGoalState {
     return state;
 }
 
-function getOverallColor(goals: SdmGoalFieldsFragment[]): string {
+function getOverallColor(state: SdmGoalState): string {
     let color;
-    if (goals.some(g => g.state === SdmGoalState.failure)) {
+    if (state === SdmGoalState.failure) {
         color = "#BC3D33";
-    } else if (goals.some(g => g.state === SdmGoalState.in_process)) {
+    } else if (state ===  SdmGoalState.in_process) {
         color = "#2A7D7D";
-    } else if (goals.some(g => g.state === SdmGoalState.requested)) {
+    } else if (state ===  SdmGoalState.requested) {
         color = "#D7B958";
-    } else if (goals.some(g => g.state === SdmGoalState.waiting_for_approval)) {
+    } else if (state ===  SdmGoalState.waiting_for_approval) {
         color = "#D7B958";
-    } else if (goals.some(g => g.state === SdmGoalState.approved)) {
+    } else if (state ===  SdmGoalState.approved) {
         color = "#D7B958";
-    } else if (goals.some(g => g.state === SdmGoalState.waiting_for_pre_approval)) {
+    } else if (state ===  SdmGoalState.waiting_for_pre_approval) {
         color = "#D7B958";
-    } else if (goals.some(g => g.state === SdmGoalState.pre_approved)) {
+    } else if (state ===  SdmGoalState.pre_approved) {
         color = "#D7B958";
-    } else if (goals.some(g => g.state === SdmGoalState.stopped)) {
+    } else if (state ===  SdmGoalState.stopped) {
         color = "#D7B958";
-    } else if (goals.some(g => g.state === SdmGoalState.canceled)) {
+    } else if (state ===  SdmGoalState.canceled) {
         color = "#B5B5B5";
-    } else if (goals.some(g => g.state === SdmGoalState.planned)) {
+    } else if (state ===  SdmGoalState.planned) {
         color = "#D7B958";
-    } else if (goals.some(g => g.state === SdmGoalState.success)) {
+    } else if (state ===  SdmGoalState.success) {
         color = "#37A745";
     }
     return color;
