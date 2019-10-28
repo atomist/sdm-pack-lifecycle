@@ -441,7 +441,7 @@ function calculateComplianceDelta(push: PushToPushLifecycle.Push, compliance: st
         }
         const delta = +compliance - +beforeCompliance;
         if (delta < 0) {
-            return `\u00B7 -${delta}%`;
+            return `\u00B7 ${delta}%`;
         } else if (delta === 0) {
             return "\u00B7 ±0%";
         } else {
