@@ -70,7 +70,7 @@ export class SimplePushNodeRenderer extends AbstractIdentifiableContribution
         let text = `${url(userUrl(repo, push.after.author.login), push.after.author.login)} pushed ${
             codeLine(url(commitUrl(repo, push.after), push.after.sha.slice(0, 7)))} ${italic(truncateCommitMessage(push.after.message, repo))}`;
         if (push.commits.length > 1) {
-            text += `and ${pluralize("commit", push.commits.length - 1, true)}`;
+            text += ` and ${pluralize("commit", push.commits.length - 1, true)}`;
         }
 
         let color;
