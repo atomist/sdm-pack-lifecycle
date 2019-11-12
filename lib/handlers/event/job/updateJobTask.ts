@@ -58,7 +58,7 @@ export function updateOnJobTask(sdm: SoftwareDeliveryMachine): EventHandlerRegis
             }
 
             // Don't show progress for single task job
-            if (job.jobTasks.length <= 1) {
+            if (job.jobCount <= 1) {
                 return Success;
             }
 
