@@ -19,7 +19,6 @@ import {
     menuForCommand,
 } from "@atomist/automation-client";
 import {
-    all,
     slackInfoMessage,
     slackTs,
 } from "@atomist/sdm";
@@ -432,7 +431,7 @@ function renderDisplayValue(fp: { displayValue?: string }): string {
 }
 
 function calculateComplianceDelta(push: PushToPushLifecycle.Push, compliance: string, type?: string): string {
-    if (!!push.compliance && !!push.before.analysis) {
+    if (!!push.compliance && !!push.before && !!push.before.analysis) {
         const allTargets = _.flatten(push.compliance.map(c => c.targets)).filter(t => !type || type === t.type);
         const relevantTargets = allTargets.filter(t => push.before.analysis.some(a => a.type === t.type && a.name && t.name));
         const diffs = push.before.analysis.filter(a => allTargets.some(t => t.type === a.type && t.name === a.name && t.sha !== a.sha));
@@ -442,7 +441,7 @@ function calculateComplianceDelta(push: PushToPushLifecycle.Push, compliance: st
         }
         const delta = +compliance - +beforeCompliance;
         if (delta < 0) {
-            return `\u00B7 -${delta}%`;
+            return `\u00B7 ${delta}%`;
         } else if (delta === 0) {
             return "\u00B7 ±0%";
         } else {
