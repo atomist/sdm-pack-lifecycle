@@ -69,7 +69,6 @@ export function updateOnJobTask(sdm: SoftwareDeliveryMachine): EventHandlerRegis
             const description = job.description;
             const createdAt = new Date(job.createdAt).getTime();
             const updatedAt = new Date(job.updatedAt).getTime();
-            const failedTasks = job.jobTasks.filter(t => t.state === AtmJobTaskState.failed);
 
             let state;
             switch (job.state) {
@@ -82,25 +81,17 @@ export function updateOnJobTask(sdm: SoftwareDeliveryMachine): EventHandlerRegis
             }
             const url = `https://badge.atomist.com/v2/progress/${state}/${count}/${totalCount}`;
 
-            let body = "";
-            if (failedTasks.length > 0) {
-                body = `
-
-${failedTasks.length} ${failedTasks.length === 1 ? "task" : "tasks"} of ${totalCount} failed:
-${failedTasks.map(ft => ft.message).filter(m => !!m && m.length > 0).map(codeBlock).join("\n")}`;
-            }
-
             let msg: SlackMessage;
             let color: string;
             if (job.state === "running") {
                 msg = slackInfoMessage(
                     "Job Progress",
-                    `${description}${body}`);
+                    description);
                 color = "#2A7D7D";
             } else {
                 msg = slackSuccessMessage(
                     "Job Summary",
-                    `${description}${body}`);
+                    description);
                 color = "#37A745";
             }
 

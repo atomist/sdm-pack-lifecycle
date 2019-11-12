@@ -12,10 +12,6 @@ subscription UpdateOnJobTask {
             completedAt
             jobCount
             completedCount
-            jobTasks {
-                state
-                message
-            }
         }
     }
 }
