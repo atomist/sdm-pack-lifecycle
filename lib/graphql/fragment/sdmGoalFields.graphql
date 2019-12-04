@@ -12,6 +12,7 @@ fragment SdmGoalFields on SdmGoal {
   fulfillment {
     method
     name
+    registration
   }
   description
   url

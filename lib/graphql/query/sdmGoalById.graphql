@@ -16,6 +16,7 @@ query sdmGoalById($id: ID!) {
     fulfillment {
       method
       name
+      registration
     }
     description
     url
