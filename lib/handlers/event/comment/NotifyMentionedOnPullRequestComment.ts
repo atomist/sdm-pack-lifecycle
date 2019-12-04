@@ -35,8 +35,8 @@ export function notifyMentionedOnPullRequestComment(): EventHandlerRegistration<
 
             if (pr) {
                 return prNotification(`${pr.number}/${comment._id}`, "New mention in comment on pull request",
-                    comment.body, comment.by, pr, pr.repo, ctx, [])
-                    .then(_ => Success, failure);
+                    comment.body, comment.by, pr as any, pr.repo as any, ctx, [])
+                    .then(() => Success, failure);
             } else {
                 return Promise.resolve(Success);
             }

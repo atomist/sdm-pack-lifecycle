@@ -340,7 +340,7 @@ describe("BotJoinedChannel", () => {
                 },
             };
             const h = botJoinedChannel().listener;
-            h(event, ctx, {} as any)
+            h(event as any, ctx, {} as any)
                 .then(() => {
                     assert(sent);
                 })

@@ -89,7 +89,7 @@ describe("PushToUnmappedRepo", () => {
                         providerId: "Introduce_Yerself",
                     },
                 },
-            };
+            } as any;
             assert(repoString(repo) === "Introduce_Yerself:gord-downie:first-person");
         });
 

@@ -34,7 +34,7 @@ export function notifyMentionedOnIssueComment(): EventHandlerRegistration<Notify
             const issue = comment.issue;
 
             if (issue) {
-                const repo = issue.repo;
+                const repo = issue.repo as any;
                 return issueNotification(`${issue.number}/${comment._id}`, "New mention in comment on issue",
                     comment.body, comment.by.login, issue, repo, ctx, [])
                     .then(() => Success, failure);

@@ -87,7 +87,7 @@ describe("ChannelLinkCreated", () => {
             },
         };
 
-        handler(event, ctx, {})
+        handler(event as any, ctx, {})
             .then(result => {
                 assert(result.code === 0);
                 assert(messageSend);
