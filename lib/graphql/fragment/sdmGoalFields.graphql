@@ -1,6 +1,7 @@
 fragment SdmGoalFields on SdmGoal {
   id
   goalSet
+  registration
   goalSetId
   environment
   name

@@ -9699,6 +9699,20 @@
                 "defaultValue": null
               },
               {
+                "name": "registration",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
                 "name": "retryFeasible",
                 "description": null,
                 "type": {
@@ -26421,6 +26435,20 @@
                 "defaultValue": null
               },
               {
+                "name": "registration",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
                 "name": "retryFeasible",
                 "description": null,
                 "type": {
@@ -27567,6 +27595,20 @@
                   }
                 },
                 "defaultValue": null
+              },
+              {
+                "name": "registration",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
               }
             ],
             "type": {
@@ -27715,6 +27757,18 @@
             "type": {
               "kind": "OBJECT",
               "name": "Push",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "registration",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "isDeprecated": false,
@@ -53729,6 +53783,16 @@
             "defaultValue": null
           },
           {
+            "name": "registration",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "repo",
             "description": null,
             "type": {
@@ -66702,6 +66766,20 @@
                   "ofType": {
                     "kind": "SCALAR",
                     "name": "Boolean",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "registration",
+                "description": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
                     "ofType": null
                   }
                 },

@@ -2,6 +2,7 @@ query sdmGoalById($id: ID!) {
   SdmGoal(id: $id) {
     id
     goalSet
+    registration
     goalSetId
     environment
     uniqueName

@@ -5,6 +5,7 @@ query sdmGoalsByCommit($sha: [String!], $branch: [String!]) {
     state
     description
     goalSet
+    registration
     goalSetId
     url
     uniqueName
