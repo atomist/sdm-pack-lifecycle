@@ -15,20 +15,22 @@
  */
 
 import {
-    failure,
-    guid,
-    HandlerContext,
-    HandlerResult,
-    logger,
+    CommandHandler,
     MappedParameter,
     MappedParameters,
     Parameter,
-    QueryNoCacheOptions,
-    Success,
     Tags,
-} from "@atomist/automation-client";
-import { CommandHandler } from "@atomist/automation-client/lib/decorators";
+} from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import {
+    failure,
+    HandlerResult,
+    Success,
+} from "@atomist/automation-client/lib/HandlerResult";
+import { guid } from "@atomist/automation-client/lib/internal/util/string";
+import { QueryNoCacheOptions } from "@atomist/automation-client/lib/spi/graph/GraphClient";
+import { logger } from "@atomist/automation-client/lib/util/logger";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";

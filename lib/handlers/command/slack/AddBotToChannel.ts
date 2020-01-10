@@ -15,16 +15,18 @@
  */
 
 import {
-    failure,
-    HandlerContext,
-    HandlerResult,
+    CommandHandler,
     MappedParameter,
     MappedParameters,
-    Success,
     Tags,
-} from "@atomist/automation-client";
-import { CommandHandler } from "@atomist/automation-client/lib/decorators";
+} from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import {
+    failure,
+    HandlerResult,
+    Success,
+} from "@atomist/automation-client/lib/HandlerResult";
 import * as slack from "@atomist/slack-messages";
 
 import { AddBotToSlackChannel } from "../../../typings/types";

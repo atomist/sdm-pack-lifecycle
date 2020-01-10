@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-import {
-    addressWeb,
-    GraphQL,
-    SourceDestination,
-    Success,
-} from "@atomist/automation-client";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { Success } from "@atomist/automation-client/lib/HandlerResult";
 import { Source } from "@atomist/automation-client/lib/internal/transport/RequestProcessor";
 import {
-    EventHandlerRegistration,
-    SdmGoalState,
+    addressWeb,
+    SourceDestination,
+} from "@atomist/automation-client/lib/spi/message/MessageClient";
+import { formatDuration } from "@atomist/sdm-core/lib/util/misc/time";
+import {
     slackInfoMessage,
     slackSuccessMessage,
-    SoftwareDeliveryMachine,
-} from "@atomist/sdm";
-import { formatDuration } from "@atomist/sdm-core/lib/util/misc/time";
+} from "@atomist/sdm/lib/api-helper/misc/slack/messages";
+import { SoftwareDeliveryMachine } from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachine";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import {
     codeBlock,
     SlackMessage,
@@ -36,6 +35,7 @@ import {
 import * as _ from "lodash";
 import {
     AtmJobTaskState,
+    SdmGoalState,
     UpdateOnJobTask,
 } from "../../../typings/types";
 
@@ -43,7 +43,7 @@ export function updateOnJobTask(sdm: SoftwareDeliveryMachine): EventHandlerRegis
     return {
         name: "UpdateOnJobTask",
         description: "Update a summary message on any job task update",
-        subscription: GraphQL.subscription({
+        subscription: subscription({
             name: "UpdateOnJobTask",
         }),
         listener: async (e, ctx) => {

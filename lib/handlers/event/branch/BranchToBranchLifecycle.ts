@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { GraphQL } from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as _ from "lodash";
 import {
     lifecycle,
@@ -37,7 +37,7 @@ export function branchToBranchLifecycle(contributions: Contributions)
         description: "Send a branch lifecycle message on Branch events",
         tags: ["lifecycle", "branch"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("branchToBranchLifecycle"),
+        subscription: subscription("branchToBranchLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.BranchToBranchLifecycle.Subscription>(
                 e,

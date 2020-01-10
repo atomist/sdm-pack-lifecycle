@@ -15,17 +15,19 @@
  */
 
 import {
-    failure,
-    HandlerContext,
-    HandlerResult,
+    ConfigurableCommandHandler,
     MappedParameter,
     MappedParameters,
     Parameter,
-    Success,
     Tags,
-} from "@atomist/automation-client";
-import { ConfigurableCommandHandler } from "@atomist/automation-client/lib/decorators";
+} from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import {
+    failure,
+    HandlerResult,
+    Success,
+} from "@atomist/automation-client/lib/HandlerResult";
 import * as slack from "@atomist/slack-messages";
 import { LinkSlackChannelToRepo } from "../../../typings/types";
 import {

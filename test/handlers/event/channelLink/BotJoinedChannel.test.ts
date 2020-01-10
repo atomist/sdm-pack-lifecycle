@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
+import "mocha";
 import {
     Destination,
     MessageOptions,
-} from "@atomist/automation-client";
-import "mocha";
+} from "@atomist/automation-client/lib/spi/message/MessageClient";
 import * as assert from "power-assert";
 import {
     RepoProvider,

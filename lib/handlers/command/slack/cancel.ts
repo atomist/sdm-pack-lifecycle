@@ -15,14 +15,16 @@
  */
 
 import {
-    failure,
-    HandlerContext,
-    HandlerResult,
     Parameter,
     Parameters,
-    Success,
-} from "@atomist/automation-client";
+} from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import {
+    failure,
+    HandlerResult,
+    Success,
+} from "@atomist/automation-client/lib/HandlerResult";
 import { commandHandlerFrom } from "@atomist/automation-client/lib/onCommand";
 import { success } from "../../../util/messages";
 

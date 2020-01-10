@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-import {
-    automationClientInstance,
-    HandlerContext,
-    logger,
-} from "@atomist/automation-client";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import { logger } from "@atomist/automation-client/lib/util/logger";
 import * as slack from "@atomist/slack-messages";
 import * as _ from "lodash";
 import { DirectMessagePreferences } from "../handlers/event/preferences";

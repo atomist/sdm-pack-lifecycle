@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { configurationValue } from "@atomist/automation-client";
-import { PreferenceStoreFactory } from "@atomist/sdm";
+import { configurationValue } from "@atomist/automation-client/lib/configuration";
+import { PreferenceStoreFactory } from "@atomist/sdm/lib/api/context/preferenceStore";
 import {
     Action,
     Attachment,

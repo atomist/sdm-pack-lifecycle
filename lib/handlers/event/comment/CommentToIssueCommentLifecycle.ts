@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { GraphQL } from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as _ from "lodash";
 import {
     lifecycle,
@@ -37,7 +37,7 @@ export function commentToIssueCommentLifecycle(contributions: Contributions)
         description: "Send an issue comment lifecycle message on Comment events",
         tags: ["lifecycle", "issue comment", "comment"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("commentToIssueCommentLifecycle"),
+        subscription: subscription("commentToIssueCommentLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.CommentToIssueCommentLifecycle.Subscription>(
                 e,

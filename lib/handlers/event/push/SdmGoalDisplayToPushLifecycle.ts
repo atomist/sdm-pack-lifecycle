@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { GraphQL } from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as _ from "lodash";
 import {
     lifecycle,
@@ -37,7 +37,7 @@ export function sdmGoalDisplayToPushLifecycle(contributions: Contributions)
         description: "Send a push lifecycle message on SdmGoalDisplay events",
         tags: ["lifecycle", "push", "sdm goal display"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("sdmGoalDisplayToPushLifecycle"),
+        subscription: subscription("sdmGoalDisplayToPushLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.SdmGoalDisplayToPushLifecycle.Subscription>(
                 e,

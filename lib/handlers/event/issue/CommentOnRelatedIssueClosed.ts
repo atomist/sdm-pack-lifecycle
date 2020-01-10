@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
 import {
-    addressEvent,
     failure,
-    GraphQL,
-    QueryNoCacheOptions,
     success,
     Success,
-    TokenCredentials,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+} from "@atomist/automation-client/lib/HandlerResult";
+import { TokenCredentials } from "@atomist/automation-client/lib/operations/common/ProjectOperationCredentials";
+import { QueryNoCacheOptions } from "@atomist/automation-client/lib/spi/graph/GraphClient";
+import { addressEvent } from "@atomist/automation-client/lib/spi/message/MessageClient";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as _ from "lodash";
 import {
     LifecycleParameters,
@@ -62,7 +62,7 @@ export function commentOnRelatedIssueClosed(): EventHandlerRegistration<CommentO
         description: "Create a comment if a related issue is closed",
         tags: ["lifecycle", "issue"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("commentOnRelatedIssueClosed"),
+        subscription: subscription("commentOnRelatedIssueClosed"),
         listener: async (e, ctx, params) => {
             const creds = await resolveEventHandlerCredentials(e, params, ctx);
 

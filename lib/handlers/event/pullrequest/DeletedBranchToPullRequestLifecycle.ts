@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { GraphQL } from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as _ from "lodash";
 import {
     lifecycle,
@@ -40,7 +40,7 @@ export function deletedBranchToPullRequestLifecycle(contributions: Contributions
         description: "Send a PR lifecycle message on DeletedBranch events",
         tags: ["lifecycle", "pr", "deleted branch"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("deletedBranchToPullRequestLifecycle"),
+        subscription: subscription("deletedBranchToPullRequestLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.DeletedBranchToPullRequestLifecycle.Subscription>(
                 e,
@@ -70,7 +70,7 @@ export function deletedBranchToPullRequestCardLifecycle(contributions: Contribut
         description: "Send a pr lifecycle card on DeletedBranch events",
         tags: ["lifecycle", "pr", "deleted branch"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("deletedBranchToPullRequestLifecycle"),
+        subscription: subscription("deletedBranchToPullRequestLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.DeletedBranchToPullRequestLifecycle.Subscription>(
                 e,

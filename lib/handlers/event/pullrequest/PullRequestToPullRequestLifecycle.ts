@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import {
-    GraphQL,
-    Maker,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { Maker } from "@atomist/automation-client/lib/util/constructionUtils";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as _ from "lodash";
 import {
     lifecycle,
@@ -53,7 +51,7 @@ export function pullRequestToPullRequestLifecycle(contributions: Contributions,
         description: "Send a PR lifecycle message on PullRequest events",
         tags: ["lifecycle", "pr"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("pullRequestToPullRequestLifecycle"),
+        subscription: subscription("pullRequestToPullRequestLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.PullRequestToPullRequestLifecycle.Subscription>(
                 e,
@@ -75,7 +73,7 @@ export function pullRequestToPullRequestCardLifecycle(contributions: Contributio
         description: "Send a pr lifecycle card on PullRequest events",
         tags: ["lifecycle", "pr"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("pullRequestToPullRequestLifecycle"),
+        subscription: subscription("pullRequestToPullRequestLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.PullRequestToPullRequestLifecycle.Subscription>(
                 e,

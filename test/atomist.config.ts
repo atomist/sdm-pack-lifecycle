@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { configure } from "@atomist/sdm-core";
+import { configure } from "@atomist/sdm-core/lib/machine/configure";
 import * as deepmerge from "deepmerge";
 import {
     DefaultLifecycleRenderingOptions,

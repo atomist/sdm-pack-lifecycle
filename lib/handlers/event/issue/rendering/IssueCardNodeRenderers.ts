@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import {
-    logger,
-    TokenCredentials,
-} from "@atomist/automation-client";
+import { TokenCredentials } from "@atomist/automation-client/lib/operations/common/ProjectOperationCredentials";
+import { logger } from "@atomist/automation-client/lib/util/logger";
 import {
     githubToSlack,
     url,

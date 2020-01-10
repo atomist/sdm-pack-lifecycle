@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-import {
-    GraphQL,
-    logger,
-    ProjectOperationCredentials,
-    QueryNoCacheOptions,
-    Success,
-} from "@atomist/automation-client";
-import {
-    EventHandlerRegistration,
-    execPromise,
-    isLazyProjectLoader,
-    ParametersDefinition,
-    resolveCredentialsPromise,
-    SoftwareDeliveryMachineOptions,
-} from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { Success } from "@atomist/automation-client/lib/HandlerResult";
+import { ProjectOperationCredentials } from "@atomist/automation-client/lib/operations/common/ProjectOperationCredentials";
+import { QueryNoCacheOptions } from "@atomist/automation-client/lib/spi/graph/GraphClient";
+import { logger } from "@atomist/automation-client/lib/util/logger";
+import { resolveCredentialsPromise } from "@atomist/sdm/lib/api-helper/machine/handlerRegistrations";
+import { execPromise } from "@atomist/sdm/lib/api-helper/misc/child_process";
+import { SoftwareDeliveryMachineOptions } from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachineOptions";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
+import { ParametersDefinition } from "@atomist/sdm/lib/api/registration/ParametersDefinition";
+import { isLazyProjectLoader } from "@atomist/sdm/lib/spi/project/LazyProjectLoader";
 import { codeLine } from "@atomist/slack-messages";
 import {
     LifecycleParameters,
@@ -65,7 +61,7 @@ export function rebaseOnPush<T>(options: { commentCreator?: PullRequestCommentCr
         description: "Auto rebase a PR branch when pushes to the base branch occur",
         tags: [],
         parameters: RebaseOnPushParameters,
-        subscription: GraphQL.subscription("pushToBranch"),
+        subscription: subscription("pushToBranch"),
         listener: async (e, ctx, params) => {
             const push = e.data.Push[0];
             // Check if there is an open PR against the branch this push is on

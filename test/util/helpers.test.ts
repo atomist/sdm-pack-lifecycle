@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { QueryOptions } from "@atomist/automation-client";
 import "mocha";
+import { QueryOptions } from "@atomist/automation-client/lib/spi/graph/GraphClient";
 import * as assert from "power-assert";
 
 import {

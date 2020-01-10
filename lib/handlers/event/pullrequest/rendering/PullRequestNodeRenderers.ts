@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { guid } from "@atomist/automation-client";
+import { guid } from "@atomist/automation-client/lib/internal/util/string";
 import {
     Action,
     Attachment,

@@ -44,15 +44,15 @@
     "toposort": "^2.0.2"
   },
   "peerDependencies": {
-    "@atomist/automation-client": "1.8.0-master.20191011121753",
-    "@atomist/sdm": "1.8.0-master.20191011095607",
-    "@atomist/sdm-core": "1.8.0-master.20191009161512",
+    "@atomist/automation-client": "2.0.0-remove-index.20200107155146",
+    "@atomist/sdm": "2.0.0-remove-index.20200107085713",
+    "@atomist/sdm-core": "2.0.0-remove-index.20200108081905",
     "@atomist/slack-messages": "^1.1.1"
   },
   "devDependencies": {
-    "@atomist/automation-client": "1.8.0-master.20191009152926",
-    "@atomist/sdm": "^1.7.0",
-    "@atomist/sdm-core": "^1.7.0",
+    "@atomist/automation-client": "2.0.0-remove-index.20200107155146",
+    "@atomist/sdm": "2.0.0-remove-index.20200107085713",
+    "@atomist/sdm-core": "2.0.0-remove-index.20200108081905",
     "@atomist/slack-messages": "^1.1.1",
     "@types/mocha": "^5.2.7",
     "@types/power-assert": "^1.5.0",
@@ -65,7 +65,7 @@
     "ts-node": "^8.4.1",
     "tslint": "^5.20.0",
     "typedoc": "^0.15.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.7.4"
   },
   "directories": {
     "test": "test"

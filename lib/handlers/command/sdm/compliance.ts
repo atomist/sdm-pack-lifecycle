@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-import {
-    addressEvent,
-    HandlerContext,
-    QueryNoCacheOptions,
-} from "@atomist/automation-client";
-import { CommandHandlerRegistration } from "@atomist/sdm";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import { QueryNoCacheOptions } from "@atomist/automation-client/lib/spi/graph/GraphClient";
+import { addressEvent } from "@atomist/automation-client/lib/spi/message/MessageClient";
+import { CommandHandlerRegistration } from "@atomist/sdm/lib/api/registration/CommandHandlerRegistration";
 import * as _ from "lodash";
 import {
     ComplianceOnPush,

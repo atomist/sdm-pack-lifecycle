@@ -14,35 +14,43 @@
  * limitations under the License.
  */
 
+import { configurationValue } from "@atomist/automation-client/lib/configuration";
+import {
+    Secret,
+    Secrets,
+} from "@atomist/automation-client/lib/decorators";
+import {
+    EventFired,
+    HandleEvent,
+} from "@atomist/automation-client/lib/HandleEvent";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import {
+    Failure,
+    failure,
+    HandlerResult,
+    Success,
+    SuccessPromise,
+} from "@atomist/automation-client/lib/HandlerResult";
+import { ProjectOperationCredentials } from "@atomist/automation-client/lib/operations/common/ProjectOperationCredentials";
 import {
     addressEvent,
     addressSlackChannels,
     CommandReferencingAction,
-    configurationValue,
-    EventFired,
-    failure,
-    Failure,
-    HandlerContext,
-    HandlerResult,
     isSlackMessage,
-    logger,
-    Maker,
     MessageClient,
     MessageOptions,
-    ProjectOperationCredentials,
-    Secret,
-    Secrets,
-    Success,
-    SuccessPromise,
-} from "@atomist/automation-client";
-import { HandleEvent } from "@atomist/automation-client/lib/HandleEvent";
-import { toFactory } from "@atomist/automation-client/lib/util/constructionUtils";
+} from "@atomist/automation-client/lib/spi/message/MessageClient";
 import {
-    CredentialsResolver,
+    Maker,
+    toFactory,
+} from "@atomist/automation-client/lib/util/constructionUtils";
+import { logger } from "@atomist/automation-client/lib/util/logger";
+import { resolveCredentialsPromise } from "@atomist/sdm/lib/api-helper/machine/handlerRegistrations";
+import {
     DeclarationType,
     ParametersDefinition,
-    resolveCredentialsPromise,
-} from "@atomist/sdm";
+} from "@atomist/sdm/lib/api/registration/ParametersDefinition";
+import { CredentialsResolver } from "@atomist/sdm/lib/spi/credentials/CredentialsResolver";
 import {
     Action,
     SlackMessage,

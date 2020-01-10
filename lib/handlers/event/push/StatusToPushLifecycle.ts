@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { GraphQL } from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as _ from "lodash";
 import {
     lifecycle,
@@ -40,7 +40,7 @@ export function statusToPushLifecycle(contributions: Contributions)
         description: "Send a push lifecycle message on Status events",
         tags: ["lifecycle", "push", "status"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("statusToPushLifecycle"),
+        subscription: subscription("statusToPushLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.StatusToPushLifecycle.Subscription>(
                 e,
@@ -67,7 +67,7 @@ export function statusToPushCardLifecycle(contributions: Contributions)
         description: "Send a push lifecycle card on Status events",
         tags: ["lifecycle", "push", "status"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("statusToPushLifecycle"),
+        subscription: subscription("statusToPushLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.StatusToPushLifecycle.Subscription>(
                 e,

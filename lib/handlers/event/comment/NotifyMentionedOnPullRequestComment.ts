@@ -16,19 +16,19 @@
 
 import {
     failure,
-    GraphQL,
     Success,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+} from "@atomist/automation-client/lib/HandlerResult";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import { NotifyMentionedOnPullRequestComment } from "../../../typings/types";
 import { prNotification } from "../../../util/notifications";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
 
 export function notifyMentionedOnPullRequestComment(): EventHandlerRegistration<NotifyMentionedOnPullRequestComment.Subscription> {
     return {
         name: "NotifyMentionedOnPullRequestComment",
         description: "Notify mentioned user in slack",
         tags: ["lifecycle", "pr comment", "notification"],
-        subscription: GraphQL.subscription("notifyMentionedOnPullRequestComment"),
+        subscription: subscription("notifyMentionedOnPullRequestComment"),
         listener: async (e, ctx) => {
             const comment = e.data.Comment[0];
             const pr = comment.pullRequest;

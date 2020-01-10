@@ -17,11 +17,11 @@
 import {
     buttonForCommand,
     menuForCommand,
-} from "@atomist/automation-client";
+} from "@atomist/automation-client/lib/spi/message/MessageClient";
 import {
     slackInfoMessage,
     slackTs,
-} from "@atomist/sdm";
+} from "@atomist/sdm/lib/api-helper/misc/slack/messages";
 import {
     Action,
     Attachment,

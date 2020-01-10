@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import {
-    addressSlackUsers,
-    HandlerContext,
-} from "@atomist/automation-client";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import { addressSlackUsers } from "@atomist/automation-client/lib/spi/message/MessageClient";
 import {
     Action,
     bold,

@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    HandlerContext,
-} from "@atomist/automation-client";
+import { EventFired } from "@atomist/automation-client/lib/HandleEvent";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {

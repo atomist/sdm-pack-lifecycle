@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import { guid } from "@atomist/automation-client";
-import {
-    CommandHandlerRegistration,
-    createJob,
-} from "@atomist/sdm";
+import { guid } from "@atomist/automation-client/lib/internal/util/string";
+import { createJob } from "@atomist/sdm/lib/api-helper/misc/job/createJob";
+import { CommandHandlerRegistration } from "@atomist/sdm/lib/api/registration/CommandHandlerRegistration";
 import { toggleComplianceReviewByPush } from "./compliance";
 
 interface ApplyAllTargetParameters {

@@ -15,16 +15,16 @@
  */
 
 import {
-    addressEvent,
-    HandlerContext,
-    HandlerResult,
+    CommandHandler,
     MappedParameter,
     MappedParameters,
     Parameter,
     Tags,
-} from "@atomist/automation-client";
-import { CommandHandler } from "@atomist/automation-client/lib/decorators";
+} from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import { HandlerResult } from "@atomist/automation-client/lib/HandlerResult";
+import { addressEvent } from "@atomist/automation-client/lib/spi/message/MessageClient";
 import {
     SdmGoalDisplayFormat,
     SdmGoalDisplayState,

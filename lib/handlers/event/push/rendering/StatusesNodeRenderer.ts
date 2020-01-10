@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-    buttonForCommand,
-    logger,
-} from "@atomist/automation-client";
+import { logger } from "@atomist/automation-client/lib/util/logger";
 import { formatDuration } from "@atomist/sdm-core/lib/util/misc/time";
 import {
     Action,

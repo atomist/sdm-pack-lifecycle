@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-import {
-    addressSlackChannels,
-    configurationValue,
-    EventFired,
-    HandlerContext,
-    logger,
-} from "@atomist/automation-client";
-import { PreferenceStoreFactory } from "@atomist/sdm";
+import { configurationValue } from "@atomist/automation-client/lib/configuration";
+import { EventFired } from "@atomist/automation-client/lib/HandleEvent";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import { addressSlackChannels } from "@atomist/automation-client/lib/spi/message/MessageClient";
+import { logger } from "@atomist/automation-client/lib/util/logger";
+import { PreferenceStoreFactory } from "@atomist/sdm/lib/api/context/preferenceStore";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {

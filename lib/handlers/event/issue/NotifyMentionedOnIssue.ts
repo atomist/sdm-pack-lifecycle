@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
 import {
     failure,
-    GraphQL,
     Success,
     SuccessPromise,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+} from "@atomist/automation-client/lib/HandlerResult";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import { NotifyMentionedOnIssue } from "../../../typings/types";
 import {
     issueAssigneeNotification,
@@ -32,7 +32,7 @@ export function notifyMentionedOnIssue(): EventHandlerRegistration<NotifyMention
         name: "NotifyMentionedOnIssue",
         description: "Notify mentioned user in slack",
         tags: ["lifecycle", "issue", "notification"],
-        subscription: GraphQL.subscription("notifyMentionedOnIssue"),
+        subscription: subscription("notifyMentionedOnIssue"),
         listener: async (e, ctx) => {
             const issue = e.data.Issue[0];
             const repo = issue.repo;
