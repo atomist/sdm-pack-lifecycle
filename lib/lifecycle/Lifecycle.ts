@@ -25,8 +25,8 @@ import {
 } from "@atomist/automation-client/lib/HandleEvent";
 import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
 import {
-    Failure,
     failure,
+    Failure,
     HandlerResult,
     Success,
     SuccessPromise,
