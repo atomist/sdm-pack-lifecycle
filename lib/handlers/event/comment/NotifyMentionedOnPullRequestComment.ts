@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
 import {
     failure,
     Success,
@@ -21,7 +22,6 @@ import {
 import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import { NotifyMentionedOnPullRequestComment } from "../../../typings/types";
 import { prNotification } from "../../../util/notifications";
-import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
 
 export function notifyMentionedOnPullRequestComment(): EventHandlerRegistration<NotifyMentionedOnPullRequestComment.Subscription> {
     return {

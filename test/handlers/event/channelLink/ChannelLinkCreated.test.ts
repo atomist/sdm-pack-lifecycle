@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import "mocha";
 import {
     Destination,
     MessageOptions,
     SlackDestination,
 } from "@atomist/automation-client/lib/spi/message/MessageClient";
 import { SlackMessage } from "@atomist/slack-messages";
+import "mocha";
 import assert = require("power-assert");
 import { channelLinkCreated } from "../../../../lib/handlers/event/channellink/ChannelLinkCreated";
 import * as graphql from "../../../../lib/typings/types";
