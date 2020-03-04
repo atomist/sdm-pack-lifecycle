@@ -125,6 +125,7 @@ fragment PushFields on Push {
     }
   }
   repo {
+    id
     owner
     name
     channels {
