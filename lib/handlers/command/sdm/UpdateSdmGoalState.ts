@@ -33,9 +33,9 @@ import {
 } from "@atomist/automation-client/lib/HandlerResult";
 import { QueryNoCacheOptions } from "@atomist/automation-client/lib/spi/graph/GraphClient";
 import { addressEvent } from "@atomist/automation-client/lib/spi/message/MessageClient";
-import { signGoal } from "@atomist/sdm-core/lib/internal/signing/goalSigning";
 import { slackErrorMessage } from "@atomist/sdm/lib/api-helper/misc/slack/messages";
 import { GoalSigningConfiguration } from "@atomist/sdm/lib/api/machine/SigningKeys";
+import { signGoal } from "@atomist/sdm/lib/core/signing/goalSigning";
 import * as _ from "lodash";
 import {
     SdmGoalById,

@@ -21,20 +21,16 @@ import {
     addressWeb,
     SourceDestination,
 } from "@atomist/automation-client/lib/spi/message/MessageClient";
-import { formatDuration } from "@atomist/sdm-core/lib/util/misc/time";
 import {
     slackInfoMessage,
     slackSuccessMessage,
 } from "@atomist/sdm/lib/api-helper/misc/slack/messages";
 import { SoftwareDeliveryMachine } from "@atomist/sdm/lib/api/machine/SoftwareDeliveryMachine";
 import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
-import {
-    codeBlock,
-    SlackMessage,
-} from "@atomist/slack-messages";
+import { formatDuration } from "@atomist/sdm/lib/core/util/misc/time";
+import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {
-    AtmJobTaskState,
     SdmGoalState,
     UpdateOnJobTask,
 } from "../../../typings/types";

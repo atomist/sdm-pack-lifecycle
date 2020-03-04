@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { cancelGoalSetsCommand } from "@atomist/sdm-core/lib/pack/goal-state/cancelGoals";
 import { adaptHandleCommand } from "@atomist/sdm/lib/api-helper/machine/adaptHandleCommand";
 import { metadata } from "@atomist/sdm/lib/api-helper/misc/extensionPack";
 import { ExtensionPack } from "@atomist/sdm/lib/api/machine/ExtensionPack";
 import { CommandHandlerRegistration } from "@atomist/sdm/lib/api/registration/CommandHandlerRegistration";
+import { cancelGoalSetsCommand } from "@atomist/sdm/lib/core/pack/goal-state/cancelGoals";
 import {
     Action,
     SlackMessage,

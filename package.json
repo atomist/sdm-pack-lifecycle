@@ -30,6 +30,7 @@
     "@octokit/rest": "^16.30.1",
     "@types/base64-js": "^1.2.5",
     "@types/deepmerge": "^2.2.0",
+    "@types/js-yaml": "^3.12.2",
     "@types/murmurhash3js": "^3.0.2",
     "@types/pluralize": "0.0.29",
     "@types/toposort": "^2.0.3",
@@ -44,15 +45,13 @@
     "toposort": "^2.0.2"
   },
   "peerDependencies": {
-    "@atomist/automation-client": "2.0.0-remove-index.20200107155146",
-    "@atomist/sdm": "2.0.0-remove-index.20200107085713",
-    "@atomist/sdm-core": "2.0.0-remove-index.20200108081905",
+    "@atomist/automation-client": "2.0.0-master.20200227093410",
+    "@atomist/sdm": "2.0.0-master.20200303103640",
     "@atomist/slack-messages": "^1.1.1"
   },
   "devDependencies": {
-    "@atomist/automation-client": "2.0.0-remove-index.20200107155146",
-    "@atomist/sdm": "2.0.0-remove-index.20200107085713",
-    "@atomist/sdm-core": "2.0.0-remove-index.20200108081905",
+    "@atomist/automation-client": "2.0.0-master.20200227093410",
+    "@atomist/sdm": "2.0.0-master.20200303103640",
     "@atomist/slack-messages": "^1.1.1",
     "@types/mocha": "^5.2.7",
     "@types/power-assert": "^1.5.0",

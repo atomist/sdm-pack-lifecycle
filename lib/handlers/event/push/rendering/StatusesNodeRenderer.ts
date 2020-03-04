@@ -15,7 +15,7 @@
  */
 
 import { logger } from "@atomist/automation-client/lib/util/logger";
-import { formatDuration } from "@atomist/sdm-core/lib/util/misc/time";
+import { formatDuration } from "@atomist/sdm/lib/core/util/misc/time";
 import {
     Action,
     Attachment,
