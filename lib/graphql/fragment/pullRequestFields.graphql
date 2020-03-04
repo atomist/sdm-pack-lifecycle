@@ -148,6 +148,7 @@ fragment PullRequestFields on PullRequest {
     body
   }
   repo {
+    id
     name
     owner
     channels {
