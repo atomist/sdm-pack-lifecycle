@@ -442,7 +442,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(statusToPushCardLifecycle(optsToUse.push.web));
             sdm.addEvent(tagToPushCardLifecycle(optsToUse.push.web));
 
-            sdm.addEvent(rebaseOnPush(optsToUse.pullRequest.rebase));
+            // sdm.addEvent(rebaseOnPush(optsToUse.pullRequest.rebase));
 
             // Simple push
             sdm.addEvent(pushToSimplePushLifecycle(optsToUse.simplePush.chat));
