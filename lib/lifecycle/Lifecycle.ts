@@ -134,72 +134,49 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
             return Promise.resolve({ code: 0, message: "No lifecycle created" });
         }
 
-        const results = lifecycles.map((lifecycle: any) => {
+        for (const lc of lifecycles) {
 
-            const channelResults = this.groupChannels(lifecycle, preferences).map(channels => {
-
+            const channelResults = this.groupChannels(lc, preferences);
+            for (const channels of channelResults) {
                 // Merge default and handler provided configuration
                 const configuration = deepmerge(
-                    this.defaultConfigurations[lifecycle.name] as LifecycleConfiguration,
-                    this.prepareConfiguration(lifecycle.name, channels, preferences));
+                    this.defaultConfigurations[lc.name] as LifecycleConfiguration,
+                    this.prepareConfiguration(lc.name, channels, preferences));
 
-                let lrenderes = [...lifecycle.renderers];
-                let lcontributors = [...lifecycle.contributors];
+                let lrenderes = [...lc.renderers];
+                let lcontributors = [...lc.contributors];
 
                 if (configuration) {
                     lrenderes = this.configureRenderers(lrenderes, configuration,
-                        lifecycle.name, channels, preferences);
+                        lc.name, channels, preferences);
                     lcontributors = this.configureContributors(lcontributors, configuration,
-                        lifecycle.name, channels, preferences);
+                        lc.name, channels, preferences);
                 }
 
-                const renderers: any[] = [];
                 const store = new Map<string, any>();
 
-                lifecycle = this.processLifecycle(lifecycle, store);
+                const nlc = this.processLifecycle(lc, store);
+                let msg = this.prepareMessage(nlc, ctx);
 
                 // Call all NodeRenderers and ActionContributors
-                lrenderes.forEach((r: any) => {
-                    lifecycle.nodes.filter((n: any) => r.supports(n)).forEach((n: any) => {
-                        // First collect all buttons/actions for the given node
+                for (const r of lrenderes) {
+                    const nodes = nlc.nodes.filter(n => r.supports(n));
+                    for (const n of nodes) {
                         const context = new RendererContext(
-                            r.id(), lifecycle, configuration, this.credentials, ctx, channels, store);
+                            r.id(), nlc, configuration, this.credentials, ctx, channels, store);
 
-                        // Second trigger rendering
-                        renderers.push((msg: any) => {
-                            return lcontributors.filter((c: any) => c.supports(n, context)).reduce((p: any, f: any) => {
-                                return p.then((actions: any) => {
-                                    return f.buttonsFor(n, context)
-                                        .then((buttons: any) => {
-                                            return f.menusFor(n, context)
-                                                .then((menus: any) => {
-                                                    return [...(actions || []), ...(buttons || []), ...(menus || [])];
-                                                });
-                                        });
-                                });
-                            }, Promise.resolve([]))
-                                .then((actions: any) => {
-                                    return r.render(n, actions, msg, context);
-                                });
-                        });
-                    });
-                });
-
-                return renderers.reduce((p, f) => p.then(f), this.prepareMessage(lifecycle, ctx))
-                    .then((msg: any) => {
-                        return this.createAndSendMessage(msg, lifecycle, channels, ctx);
-                    });
-            });
-
-            return Promise.all(channelResults);
-
-        });
-
-        return Promise.all(results)
-            .then(resolved => {
-                const error = resolved.some(r => r.some(ri => ri.code !== 0));
-                return error ? Failure : Success;
-            });
+                        const actions = [];
+                        for (const c of lcontributors.filter(cf => cf.supports(n, context))) {
+                            actions.push(...(await c.buttonsFor(n, context) || []));
+                            actions.push(...(await c.menusFor(n, context) || []));
+                        }
+                        msg = await r.render(n, actions, msg, context);
+                    }
+                }
+                this.createAndSendMessage(msg, nlc, channels, ctx);
+            }
+        }
+        return Success;
     }
 
     protected processLifecycle(lifecycle: Lifecycle, store: Map<string, any>): Lifecycle {
