@@ -134,22 +134,20 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
             return Promise.resolve({ code: 0, message: "No lifecycle created" });
         }
 
-        for (const lc of lifecycles) {
+        for (const olc of lifecycles) {
 
-            const channelResults = this.groupChannels(lc, preferences);
+            const channelResults = this.groupChannels(olc, preferences);
             for (const channels of channelResults) {
+                const lc = _.cloneDeep(olc);
                 // Merge default and handler provided configuration
                 const configuration = deepmerge(
                     this.defaultConfigurations[lc.name] as LifecycleConfiguration,
                     this.prepareConfiguration(lc.name, channels, preferences));
 
-                let lrenderes = [...lc.renderers];
-                let lcontributors = [...lc.contributors];
-
                 if (configuration) {
-                    lrenderes = this.configureRenderers(lrenderes, configuration,
+                    lc.renderers = this.configureRenderers(lc.renderers, configuration,
                         lc.name, channels, preferences);
-                    lcontributors = this.configureContributors(lcontributors, configuration,
+                    lc.contributors = this.configureContributors(lc.contributors, configuration,
                         lc.name, channels, preferences);
                 }
 
@@ -159,14 +157,14 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                 let msg = this.prepareMessage(nlc, ctx);
 
                 // Call all NodeRenderers and ActionContributors
-                for (const r of lrenderes) {
+                for (const r of lc.renderers) {
                     const nodes = nlc.nodes.filter(n => r.supports(n));
                     for (const n of nodes) {
                         const context = new RendererContext(
                             r.id(), nlc, configuration, this.credentials, ctx, channels, store);
 
                         const actions = [];
-                        for (const c of lcontributors.filter(cf => cf.supports(n, context))) {
+                        for (const c of lc.contributors.filter(cf => cf.supports(n, context))) {
                             actions.push(...(await c.buttonsFor(n, context) || []));
                             actions.push(...(await c.menusFor(n, context) || []));
                         }
