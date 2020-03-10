@@ -33,10 +33,6 @@ import {
     DefaultGitHubProviderId,
 } from "../../../util/gitHubApi";
 import {
-    isChannel,
-    isSlack,
-} from "../../../util/slack";
-import {
     checkRepo,
     noRepoMessage,
 } from "./AssociateRepo";
@@ -91,6 +87,9 @@ export class LinkRepo implements HandleCommand {
     @MappedParameter(MappedParameters.SlackChannelName)
     public channelName: string;
 
+    @MappedParameter("atomist://slack/channel_type")
+    public channelType: string;
+
     @MappedParameter(MappedParameters.GitHubOwnerWithUser)
     public owner: string;
 
@@ -115,7 +114,7 @@ export class LinkRepo implements HandleCommand {
             return ctx.messageClient.respond(err)
                 .then(() => Success, failure);
         }
-        if (!isChannel(this.channelId)) {
+        if (this.channelType !== "channel") {
             const err = "The Atomist Bot can only link repositories to public or private channels. " +
                 "Please try again in a public or private channel.";
             return ctx.messageClient.addressChannels(err, this.channelName)
