@@ -143,10 +143,13 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                     this.defaultConfigurations[lifecycle.name] as LifecycleConfiguration,
                     this.prepareConfiguration(lifecycle.name, channels, preferences));
 
+                let lrenderes = [...lifecycle.renderers];
+                let lcontributors = [...lifecycle.contributors];
+
                 if (configuration) {
-                    lifecycle.renderers = this.configureRenderers(lifecycle.renderers, configuration,
+                    lrenderes = this.configureRenderers(lrenderes, configuration,
                         lifecycle.name, channels, preferences);
-                    lifecycle.contributors = this.configureContributors(lifecycle.contributors, configuration,
+                    lcontributors = this.configureContributors(lcontributors, configuration,
                         lifecycle.name, channels, preferences);
                 }
 
@@ -156,7 +159,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                 lifecycle = this.processLifecycle(lifecycle, store);
 
                 // Call all NodeRenderers and ActionContributors
-                lifecycle.renderers.forEach((r: any) => {
+                lrenderes.forEach((r: any) => {
                     lifecycle.nodes.filter((n: any) => r.supports(n)).forEach((n: any) => {
                         // First collect all buttons/actions for the given node
                         const context = new RendererContext(
@@ -164,7 +167,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
 
                         // Second trigger rendering
                         renderers.push((msg: any) => {
-                            return lifecycle.contributors.filter((c: any) => c.supports(n, context)).reduce((p: any, f: any) => {
+                            return lcontributors.filter((c: any) => c.supports(n, context)).reduce((p: any, f: any) => {
                                 return p.then((actions: any) => {
                                     return f.buttonsFor(n, context)
                                         .then((buttons: any) => {
