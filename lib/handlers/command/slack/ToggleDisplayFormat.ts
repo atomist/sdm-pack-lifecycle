@@ -40,7 +40,7 @@ import { SdmGoalDisplayFormat } from "../../../typings/types";
 
 export const LifecyclePreferencesName = "lifecycle_preferences";
 
-@CommandHandler("Toggle the lifecycle rendering format")
+@CommandHandler("Toggle the GitHub Notifications rendering format")
 @Tags("slack")
 export class ToggleDisplayFormat implements HandleCommand {
 
@@ -82,7 +82,7 @@ export class ToggleDisplayFormat implements HandleCommand {
             })
             .then(preferencesState => {
                 const enabled = !preferencesState.enabled;
-                const text = bold(`'Compact Lifecycle Rendering Format' ${enabled ? "enabled" : "disabled"}`);
+                const text = bold(`'Compact GitHub Notifications Rendering Format' ${enabled ? "enabled" : "disabled"}`);
 
                 const msg: SlackMessage = {
                     attachments: [{

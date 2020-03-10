@@ -42,7 +42,7 @@ import { supportLink } from "../../../util/messages";
 
 export const LifecyclePreferencesName = "lifecycle_preferences";
 
-@CommandHandler("Toggle the enablement of the custom lifecycle emojis")
+@CommandHandler("Toggle the enablement of the custom GitHub Notifications emojis")
 @Tags("slack", "emoji")
 export class ToggleCustomEmojiEnablement implements HandleCommand {
 
@@ -85,7 +85,7 @@ export class ToggleCustomEmojiEnablement implements HandleCommand {
             })
             .then(preferencesState => {
                 const enabled = !preferencesState.enabled;
-                const fallback = `'Custom Lifecycle Emojis' ${enabled ? "enabled" : "disabled"}`;
+                const fallback = `'Custom GitHub Notifications Emojis' ${enabled ? "enabled" : "disabled"}`;
                 const text = bold(fallback);
 
                 const msg: SlackMessage = {
