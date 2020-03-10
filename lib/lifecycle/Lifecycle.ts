@@ -26,7 +26,6 @@ import {
 import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
 import {
     failure,
-    Failure,
     HandlerResult,
     Success,
     SuccessPromise,
@@ -154,7 +153,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                 const store = new Map<string, any>();
 
                 const nlc = this.processLifecycle(lc, store);
-                let msg = this.prepareMessage(nlc, ctx);
+                let msg = await this.prepareMessage(nlc, ctx);
 
                 // Call all NodeRenderers and ActionContributors
                 for (const r of lc.renderers) {
