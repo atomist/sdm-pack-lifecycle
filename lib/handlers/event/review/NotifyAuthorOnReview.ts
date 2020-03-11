@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
 import {
     Failure,
-    GraphQL,
     Success,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+} from "@atomist/automation-client/lib/HandlerResult";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import { NotifyAuthorOnReview } from "../../../typings/types";
 import { prAuthorReviewNotification } from "../../../util/notifications";
 
@@ -28,7 +28,7 @@ export function notifyAuthorOnReview(): EventHandlerRegistration<NotifyAuthorOnR
         name: "NotifyAuthorOnReview",
         description: "Notify pull request authors in slack",
         tags: ["lifecycle", "review", "notification"],
-        subscription: GraphQL.subscription("notifyAuthorOnReview"),
+        subscription: subscription("notifyAuthorOnReview"),
         listener: async (e, ctx) => {
             const review = e.data.Review[0];
             const pr = review.pullRequest;

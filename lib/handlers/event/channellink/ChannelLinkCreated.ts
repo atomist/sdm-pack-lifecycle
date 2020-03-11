@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import { Success } from "@atomist/automation-client/lib/HandlerResult";
+import { guid } from "@atomist/automation-client/lib/internal/util/string";
 import {
     addressSlackChannels,
     buttonForCommand,
-    GraphQL,
-    guid,
-    HandlerContext,
-    Success,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+} from "@atomist/automation-client/lib/spi/message/MessageClient";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import {
     Action,
     bold,
@@ -38,7 +38,7 @@ export function channelLinkCreated(): EventHandlerRegistration<ChannelLinkCreate
         name: "ChannelLinkCreated",
         description: "Display an unlink message when a channel is linked",
         tags: "enrollment",
-        subscription: GraphQL.subscription("channelLinkCreated"),
+        subscription: subscription("channelLinkCreated"),
         listener: async (e, ctx) => {
             const channelName = e.data.ChannelLink[0].channel.name || e.data.ChannelLink[0].channel.normalizedName;
             const teamId = e.data.ChannelLink[0].channel.team.id;

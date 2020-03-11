@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { GraphQL } from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as _ from "lodash";
 import {
     lifecycle,
@@ -40,7 +40,7 @@ export function reviewToPullRequestLifecycle(contributions: Contributions)
         description: "Send a PR lifecycle message on Review events",
         tags: ["lifecycle", "pr", "review"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("reviewToPullRequestLifecycle"),
+        subscription: subscription("reviewToPullRequestLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.ReviewToPullRequestLifecycle.Subscription>(
                 e,
@@ -70,7 +70,7 @@ export function reviewToPullRequestCardLifecycle(contributions: Contributions)
         description: "Send a pr lifecycle card on Review events",
         tags: ["lifecycle", "pr", "review"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("reviewToPullRequestLifecycle"),
+        subscription: subscription("reviewToPullRequestLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.ReviewToPullRequestLifecycle.Subscription>(
                 e,

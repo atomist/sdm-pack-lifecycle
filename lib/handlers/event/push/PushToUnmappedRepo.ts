@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import {
+    failure,
+    HandlerResult,
+    Success,
+} from "@atomist/automation-client/lib/HandlerResult";
 import {
     addressSlackUsers,
     buttonForCommand,
-    failure,
-    GraphQL,
-    HandlerContext,
-    HandlerResult,
-    logger,
     menuForCommand,
     MenuSpecification,
-    Success,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+} from "@atomist/automation-client/lib/spi/message/MessageClient";
+import { logger } from "@atomist/automation-client/lib/util/logger";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as slack from "@atomist/slack-messages";
 import * as _ from "lodash";
 import * as graphql from "../../../typings/types";
@@ -53,7 +55,7 @@ export function pushToUnmappedRepo(): EventHandlerRegistration<PushToUnmappedRep
         name: "PushToUnmappedRepo",
         description: "Suggest mapping a repo to committer on unmapped repo",
         tags: ["lifecycle", "push"],
-        subscription: GraphQL.subscription("pushToUnmappedRepo"),
+        subscription: subscription("pushToUnmappedRepo"),
         listener: async (e, ctx) => {
             return Promise.all(e.data.Push.map(p => {
                 if (p.repo && p.repo.channels && p.repo.channels.length > 0) {

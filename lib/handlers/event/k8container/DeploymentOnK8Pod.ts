@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import {
-    addressEvent,
-    GraphQL,
-    HandlerContext,
-    Success,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import { Success } from "@atomist/automation-client/lib/HandlerResult";
+import { addressEvent } from "@atomist/automation-client/lib/spi/message/MessageClient";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import {
     Deployment,
     DeploymentOnK8Pod,
@@ -31,7 +29,7 @@ export function deploymentOnK8Pod(): EventHandlerRegistration<DeploymentOnK8Pod.
         name: "DeploymentOnK8Pod",
         description: "Create a deployment on running K8 container events",
         tags: ["lifecycle", "k8s"],
-        subscription:   GraphQL.subscription("deploymentOnK8Pod"),
+        subscription: subscription("deploymentOnK8Pod"),
         listener: async (e, ctx) => {
             const pod = e.data.K8Pod[0];
             const containers = pod.containers;

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,26 @@
  */
 
 import {
-    buttonForCommand,
-    failure,
-    guid,
-    HandlerContext,
-    HandlerResult,
+    CommandHandler,
     MappedParameter,
     MappedParameters,
     Parameter,
-    QueryNoCacheOptions,
-    success,
     Tags,
-} from "@atomist/automation-client";
-import { CommandHandler } from "@atomist/automation-client/lib/decorators";
+} from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import {
+    failure,
+    HandlerResult,
+    success,
+} from "@atomist/automation-client/lib/HandlerResult";
+import { guid } from "@atomist/automation-client/lib/internal/util/string";
+import { QueryNoCacheOptions } from "@atomist/automation-client/lib/spi/graph/GraphClient";
+import { buttonForCommand } from "@atomist/automation-client/lib/spi/message/MessageClient";
 import {
     slackFooter,
     slackTs,
-} from "@atomist/sdm";
+} from "@atomist/sdm/lib/api-helper/misc/slack/messages";
 import {
     Action,
     Attachment,
@@ -59,7 +61,7 @@ import {
 /**
  * Configure DM preferences for the invoking user.
  */
-@CommandHandler("Configure lifecycle actions for the current channel", "configure lifecycle")
+@CommandHandler("Configure Notifications actions for the current channel", "configure lifecycle")
 @Tags("preferences", "configure")
 export class ConfigureLifecyclePreferences implements HandleCommand {
 
@@ -73,7 +75,7 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
     public teamId: string;
 
     @Parameter({
-        description: "lifecycle to configure", pattern: /^.*$/,
+        description: "notifications to configure", pattern: /^.*$/,
         required: false,
         displayable: false,
     })
@@ -104,7 +106,7 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
                 attachments: [{
                     author_icon: `https://images.atomist.com/rug/check-circle.gif?gif=${guid()}`,
                     author_name: "Configuration",
-                    title: "Lifecycle",
+                    title: "GitHub Notifications",
                     fallback: "Configuration",
                     color: "#37A745",
                 }],
@@ -141,8 +143,8 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
     private createMessage(preferences: any, emojisEnabled: boolean, compactGoalFormatEnabled: boolean): SlackMessage {
         const msg: SlackMessage = {
             attachments: [{
-                title: `Configure Lifecycle for channel ${channel(this.channelId)}:`,
-                fallback: `Configure Lifecycle for channel ${channel(this.channelId)}:`,
+                title: `Configure GitHub Notifications for channel ${channel(this.channelId)}:`,
+                fallback: `Configure GitHub Notifications for channel ${channel(this.channelId)}:`,
             }],
         };
 
@@ -187,17 +189,17 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
         }
 
         msg.attachments.push({
-            title: "Configure Lifecycle for Slack Workspace:",
-            fallback: "Configure Lifecycle for Slack Workspace:",
+            title: "Configure GitHub Notifications for Slack Workspace:",
+            fallback: "Configure GitHub Notifications for Slack Workspace:",
         });
 
         // Add the configuration for setting display style
         const goalFormatHandler = new ToggleDisplayFormat();
         goalFormatHandler.msgId = this.msgId;
         msg.attachments.push({
-            title: "Compact Lifecycle Rendering Format",
-            fallback: "Compact Lifecycle Rendering Format",
-            text: `Render lifecycle messages in a compact way. Provides a way to expand to the full rendering.`,
+            title: "Compact GitHub Notifications Rendering Format",
+            fallback: "Compact GitHub Notifications Rendering Format",
+            text: `Render GitHub Notifications messages in a compact way. Provides a way to expand to the full rendering.`,
             actions: [
                 buttonForCommand(
                     {
@@ -213,10 +215,10 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
         const emojiHandler = new ToggleCustomEmojiEnablement();
         emojiHandler.msgId = this.msgId;
         msg.attachments.push({
-            title: "Lifecycle Emojis",
-            fallback: "Configure Lifecycle Emojis",
+            title: "GitHub Notifications Emojis",
+            fallback: "Configure GitHub Notifications Emojis",
             // tslint:disable-next-line:max-line-length
-            text: `Lifecycle can be used with custom emojis. Examples can be seen ${url("https://the-composition.com/automation-story-graphql-schema-deployment-7893eb55ed18", "here")}.`,
+            text: `GitHub Notifications can be used with custom emojis. Examples can be seen ${url("https://the-composition.com/automation-story-graphql-schema-deployment-7893eb55ed18", "here")}.`,
             actions: [
                 buttonForCommand(
                     {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
 import {
     failure,
-    GraphQL,
     Success,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+} from "@atomist/automation-client/lib/HandlerResult";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import { NotifyMentionedOnPullRequestComment } from "../../../typings/types";
 import { prNotification } from "../../../util/notifications";
 
@@ -28,7 +28,7 @@ export function notifyMentionedOnPullRequestComment(): EventHandlerRegistration<
         name: "NotifyMentionedOnPullRequestComment",
         description: "Notify mentioned user in slack",
         tags: ["lifecycle", "pr comment", "notification"],
-        subscription: GraphQL.subscription("notifyMentionedOnPullRequestComment"),
+        subscription: subscription("notifyMentionedOnPullRequestComment"),
         listener: async (e, ctx) => {
             const comment = e.data.Comment[0];
             const pr = comment.pullRequest;

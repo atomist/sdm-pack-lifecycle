@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
 import {
     Failure,
-    GraphQL,
     Success,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+} from "@atomist/automation-client/lib/HandlerResult";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import { NotifyPusherOnBuild } from "../../../typings/types";
 import { buildNotification } from "../../../util/notifications";
 
@@ -28,7 +28,7 @@ export function notifyPusherOnBuild(): EventHandlerRegistration<NotifyPusherOnBu
         name: "NotifyPusherOnBuild",
         description: "Notify pushers of failing builds as DMs",
         tags: ["lifecycle", "build", "notification"],
-        subscription: GraphQL.subscription("notifyPusherOnBuild"),
+        subscription: subscription("notifyPusherOnBuild"),
         listener: async (e, ctx) => {
             const build = e.data.Build[0];
             if (build.status === "broken" || build.status === "failed") {

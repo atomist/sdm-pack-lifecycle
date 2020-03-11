@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import {
+    failure,
+    Success,
+} from "@atomist/automation-client/lib/HandlerResult";
+import { TokenCredentials } from "@atomist/automation-client/lib/operations/common/ProjectOperationCredentials";
 import {
     addressSlackChannels,
     buttonForCommand,
-    failure,
-    GraphQL,
-    logger,
     menuForCommand,
     MenuSpecification,
-    Success,
-    TokenCredentials,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+} from "@atomist/automation-client/lib/spi/message/MessageClient";
+import { logger } from "@atomist/automation-client/lib/util/logger";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as slack from "@atomist/slack-messages";
 import {
     OptionGroup,
@@ -59,7 +61,7 @@ export function botJoinedChannel(): EventHandlerRegistration<BotJoinedChannel.Su
         name: "BotJoinedChannel",
         description: "Display a helpful message when the bot joins a channel",
         tags: "enrollment",
-        subscription: GraphQL.subscription("botJoinedChannel"),
+        subscription: subscription("botJoinedChannel"),
         parameters: LifecycleParameters,
         listener: async (e, ctx, params) => {
 

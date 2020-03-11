@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,27 @@
  */
 
 import {
-    addressEvent,
-    AutomationContextAware,
-    HandlerContext,
-    HandlerResult,
+    CommandHandler,
     MappedParameter,
     MappedParameters,
     Parameter,
-    QueryNoCacheOptions,
-    Success,
     Tags,
     Value,
-} from "@atomist/automation-client";
-import { CommandHandler } from "@atomist/automation-client/lib/decorators";
+} from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
 import {
-    GoalSigningConfiguration,
-    slackErrorMessage,
-} from "@atomist/sdm";
-import { signGoal } from "@atomist/sdm-core/lib/internal/signing/goalSigning";
+    AutomationContextAware,
+    HandlerContext,
+} from "@atomist/automation-client/lib/HandlerContext";
+import {
+    HandlerResult,
+    Success,
+} from "@atomist/automation-client/lib/HandlerResult";
+import { QueryNoCacheOptions } from "@atomist/automation-client/lib/spi/graph/GraphClient";
+import { addressEvent } from "@atomist/automation-client/lib/spi/message/MessageClient";
+import { slackErrorMessage } from "@atomist/sdm/lib/api-helper/misc/slack/messages";
+import { GoalSigningConfiguration } from "@atomist/sdm/lib/api/machine/SigningKeys";
+import { signGoal } from "@atomist/sdm/lib/core/signing/goalSigning";
 import * as _ from "lodash";
 import {
     SdmGoalById,

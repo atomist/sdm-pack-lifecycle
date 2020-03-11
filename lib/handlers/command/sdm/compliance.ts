@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-import {
-    addressEvent,
-    HandlerContext,
-    QueryNoCacheOptions,
-} from "@atomist/automation-client";
-import { CommandHandlerRegistration } from "@atomist/sdm";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import { QueryNoCacheOptions } from "@atomist/automation-client/lib/spi/graph/GraphClient";
+import { addressEvent } from "@atomist/automation-client/lib/spi/message/MessageClient";
+import { CommandHandlerRegistration } from "@atomist/sdm/lib/api/registration/CommandHandlerRegistration";
 import * as _ from "lodash";
 import {
     ComplianceOnPush,

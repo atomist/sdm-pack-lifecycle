@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,44 +20,44 @@ export const LifecyclePreferences: any = {
 
     push: {
         id: "push",
-        name: "Push Lifecycle",
-        description: "Lifecycle messages for GitHub pushes, including builds, status etc",
+        name: "Push Notifications",
+        description: "Notifications for GitHub pushes, including builds, status etc",
         enabled: true,
     },
     simple_push: {
         id: "simple_push",
-        name: "Simple Push Lifecycle",
-        description: "Simple Lifecycle messages for GitHub pushes, including builds, status etc",
+        name: "Simple Push Notifications",
+        description: "Simple Notifications for GitHub pushes, including builds, status etc",
         enabled: false,
     },
     issue: {
         id: "issue",
-        name: "Issue Lifecycle",
-        description: "Lifecycle messages for GitHub issues",
+        name: "Issue Notifications",
+        description: "Notifications for GitHub issues",
         enabled: true,
     },
     branch: {
         id: "branch",
-        name: "Branch Lifecycle",
-        description: "Lifecycle messages for GitHub branches",
+        name: "Branch Notifications",
+        description: "Notifications for GitHub branches",
         enabled: false,
     },
     pull_request: {
         id: "pull_request",
-        name: "Pull Request Lifecycle",
-        description: "Lifecycle messages for GitHub pull requests",
+        name: "Pull Request Notifications",
+        description: "Notifications for GitHub pull requests",
         enabled: true,
     },
     comment: {
         id: "comment",
-        name: "Comment Lifecycle",
-        description: "Lifecycle messages for GitHub issues and pull request comments",
+        name: "Comment Notifications",
+        description: "Notifications for GitHub issues and pull request comments",
         enabled: true,
     },
     review: {
         id: "review",
-        name: "Review Lifecycle",
-        description: "Lifecycle messages for GitHub pull request reviews",
+        name: "Review Notifications",
+        description: "Notifications for GitHub pull request reviews",
         enabled: false,
     },
 
@@ -335,8 +335,8 @@ export const LifecycleRendererPreferences: any = {
         },
         expand: {
             id: "expand",
-            name: "Overwrite Compact Lifecycle Rendering Format",
-            description: "Always display the full Lifecycle Rendering despite the global configuration",
+            name: "Overwrite Compact Notifications Rendering Format",
+            description: "Always display the full Notifications Rendering despite the global configuration",
             enabled: false,
         },
     },

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import {
-    AutomationContextAware,
-    GraphQL,
-    QueryNoCacheOptions,
-    Success,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { AutomationContextAware } from "@atomist/automation-client/lib/HandlerContext";
+import { Success } from "@atomist/automation-client/lib/HandlerResult";
+import { QueryNoCacheOptions } from "@atomist/automation-client/lib/spi/graph/GraphClient";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import {
     lifecycle,
     LifecycleParameters,
@@ -40,7 +38,7 @@ export function pullRequestToBranchLifecycle(contributions: Contributions)
         description: "Send a branch lifecycle message on PullRequest events",
         tags: ["lifecycle", "branch", "pr"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("pullRequestToBranchLifecycle"),
+        subscription: subscription("pullRequestToBranchLifecycle"),
         listener: async (e, ctx, params) => {
 
             const pr = e.data.PullRequest[0];

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import {
-    EventFired,
-    logger,
-} from "@atomist/automation-client";
+import { EventFired } from "@atomist/automation-client/lib/HandleEvent";
+import { logger } from "@atomist/automation-client/lib/util/logger";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
 import {

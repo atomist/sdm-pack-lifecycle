@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,26 @@
  */
 
 import {
-    failure,
-    HandlerContext,
-    HandlerResult,
+    ConfigurableCommandHandler,
     MappedParameter,
     MappedParameters,
     Parameter,
-    Success,
+    SlackChannelType,
     Tags,
-} from "@atomist/automation-client";
-import { ConfigurableCommandHandler } from "@atomist/automation-client/lib/decorators";
+} from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import {
+    failure,
+    HandlerResult,
+    Success,
+} from "@atomist/automation-client/lib/HandlerResult";
 import * as slack from "@atomist/slack-messages";
 import { LinkSlackChannelToRepo } from "../../../typings/types";
 import {
     DefaultGitHubApiUrl,
     DefaultGitHubProviderId,
 } from "../../../util/gitHubApi";
-import {
-    isChannel,
-    isSlack,
-} from "../../../util/slack";
 import {
     checkRepo,
     noRepoMessage,
@@ -91,6 +90,9 @@ export class LinkRepo implements HandleCommand {
     @MappedParameter(MappedParameters.SlackChannelName)
     public channelName: string;
 
+    @MappedParameter(MappedParameters.SlackChannelType)
+    public channelType: string;
+
     @MappedParameter(MappedParameters.GitHubOwnerWithUser)
     public owner: string;
 
@@ -115,7 +117,7 @@ export class LinkRepo implements HandleCommand {
             return ctx.messageClient.respond(err)
                 .then(() => Success, failure);
         }
-        if (!isChannel(this.channelId)) {
+        if (this.channelType !== SlackChannelType.Channel) {
             const err = "The Atomist Bot can only link repositories to public or private channels. " +
                 "Please try again in a public or private channel.";
             return ctx.messageClient.addressChannels(err, this.channelName)

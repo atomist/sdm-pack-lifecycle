@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { GraphQL } from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as _ from "lodash";
 import {
     lifecycle,
@@ -37,7 +37,7 @@ export function deletedBranchToBranchLifecycle(contributions: Contributions)
         description: "Send a branch lifecycle message on DeletedBranch events",
         tags: ["lifecycle", "branch", "deleted branch"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("deletedBranchToBranchLifecycle"),
+        subscription: subscription("deletedBranchToBranchLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.DeletedBranchToBranchLifecycle.Subscription>(
                 e,

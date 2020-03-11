@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import {
-    addressEvent,
-    GraphQL,
-    HandlerContext,
-    Success,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import { Success } from "@atomist/automation-client/lib/HandlerResult";
+import { addressEvent } from "@atomist/automation-client/lib/spi/message/MessageClient";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import { IssueRelationshipOnCommit } from "../../../typings/types";
 import { extractLinkedIssues } from "../../../util/helpers";
 
@@ -29,7 +27,7 @@ export function issueRelationshipOnCommit(): EventHandlerRegistration<IssueRelat
         name: "IssueRelationshipOnCommit",
         description: "Create a relationship between a commit and issue/PR",
         tags: ["lifecylce", "issue"],
-        subscription: GraphQL.subscription("issueRelationshipOnCommit"),
+        subscription: subscription("issueRelationshipOnCommit"),
         listener: async (e, ctx) => {
             const commit = e.data.Commit[0];
 

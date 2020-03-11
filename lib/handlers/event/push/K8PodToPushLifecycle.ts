@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { GraphQL } from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as _ from "lodash";
 import {
     lifecycle,
@@ -40,7 +40,7 @@ export function k8PodToPushLifecycle(contributions: Contributions)
         description: "Send a push lifecycle message on K8Pod events",
         tags: ["lifecycle", "push", "k8pod"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("k8PodToPushLifecycle"),
+        subscription: subscription("k8PodToPushLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.K8PodToPushLifecycle.Subscription>(
                 e,
@@ -72,7 +72,7 @@ export function k8PodToPushCardLifecycle(contributions: Contributions): EventHan
         description: "Send a push lifecycle card on K8Pod events",
         tags: ["lifecycle", "push", "k8pod"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("k8PodToPushLifecycle"),
+        subscription: subscription("k8PodToPushLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.K8PodToPushLifecycle.Subscription>(
                 e,

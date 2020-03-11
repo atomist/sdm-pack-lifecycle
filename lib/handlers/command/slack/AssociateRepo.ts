@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,20 @@
  */
 
 import {
-    failure,
-    HandlerContext,
-    HandlerResult,
+    CommandHandler,
     MappedParameter,
     MappedParameters,
     Parameter,
-    Success,
+    SlackChannelType,
     Tags,
-} from "@atomist/automation-client";
-import { CommandHandler } from "@atomist/automation-client/lib/decorators";
+} from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
+import {
+    failure,
+    HandlerResult,
+    Success,
+} from "@atomist/automation-client/lib/HandlerResult";
 import {
     bold,
     channel,
@@ -41,7 +44,6 @@ import {
     DefaultGitHubProviderId,
 } from "../../../util/gitHubApi";
 import { warning } from "../../../util/messages";
-import { isChannel } from "../../../util/slack";
 import { extractScreenNameFromMapRepoMessageId } from "../../event/push/PushToUnmappedRepo";
 import { addBotToSlackChannel } from "./AddBotToChannel";
 import { linkSlackChannelToRepo } from "./LinkRepo";
@@ -129,6 +131,9 @@ export class AssociateRepo implements HandleCommand {
     @MappedParameter(MappedParameters.SlackChannelName)
     public channelName: string;
 
+    @MappedParameter(MappedParameters.SlackChannelType)
+    public channelType: string;
+
     @MappedParameter(MappedParameters.GitHubOwner)
     public owner: string;
 
@@ -160,7 +165,7 @@ export class AssociateRepo implements HandleCommand {
             return ctx.messageClient.respond(err)
                 .then(() => Success, failure);
         }
-        if (!isChannel(this.channelId)) {
+        if (this.channelType !== SlackChannelType.Channel) {
             const err = "The Atomist Bot can only link repositories to public channels. " +
                 "Please try again with a public channel.";
             return ctx.messageClient.respond(err, { dashboard: false })

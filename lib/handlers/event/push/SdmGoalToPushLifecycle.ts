@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { GraphQL } from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as _ from "lodash";
 import {
     lifecycle,
@@ -40,7 +40,7 @@ export function sdmGoalToPushLifecycle(contributions: Contributions)
         description: "Send a push lifecycle message on SdmGoal events",
         tags: ["lifecycle", "push", "sdm goal"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("sdmGoalToPushLifecycle"),
+        subscription: subscription("sdmGoalToPushLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.SdmGoalToPushLifecycle.Subscription>(
                 e,
@@ -67,7 +67,7 @@ export function sdmGoalToPushCardLifecycle(contributions: Contributions)
         description: "Send a push lifecycle card on SdmGoal events",
         tags: ["lifecycle", "push", "sdm goal"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("sdmGoalToPushLifecycle"),
+        subscription: subscription("sdmGoalToPushLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.SdmGoalToPushLifecycle.Subscription>(
                 e,

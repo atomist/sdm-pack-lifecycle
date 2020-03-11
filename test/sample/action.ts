@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import { MappedParameters } from "@atomist/automation-client";
-import {
-    actionableButton,
-    CommandHandlerRegistration,
-    DeclarationType,
-    slackSuccessMessage,
-} from "@atomist/sdm";
+import { MappedParameters } from "@atomist/automation-client/lib/decorators";
+import { slackSuccessMessage } from "@atomist/sdm/lib/api-helper/misc/slack/messages";
+import { actionableButton } from "@atomist/sdm/lib/api/command/support/buttons";
+import { CommandHandlerRegistration } from "@atomist/sdm/lib/api/registration/CommandHandlerRegistration";
+import { DeclarationType } from "@atomist/sdm/lib/api/registration/ParametersDefinition";
 import {
     Action,
     bold,

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
 import {
     failure,
-    GraphQL,
     Success,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+} from "@atomist/automation-client/lib/HandlerResult";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import { NotifyReviewerOnPush } from "../../../typings/types";
 import { reviewerNotification } from "../../../util/notifications";
 
@@ -37,7 +37,7 @@ export function notifyReviewerOnPush(): EventHandlerRegistration<NotifyReviewerO
         name: "NotifyReviewerOnPush",
         description: "Notify pull request reviewer about new commits",
         tags: ["lifecycle", "pr", "notification"],
-        subscription: GraphQL.subscription("notifyReviewerOnPush"),
+        subscription: subscription("notifyReviewerOnPush"),
         listener: async (e, ctx) => {
             const push = e.data.Push[0];
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
 import * as GraphQL from "@atomist/automation-client/lib/graph/graphQL";
-import { EventHandlerRegistration } from "@atomist/sdm";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as _ from "lodash";
 import {
     lifecycle,
@@ -40,7 +41,7 @@ export function releaseToPushLifecycle(contributions: Contributions)
         description: "Send a push lifecycle message on Release events",
         tags: ["lifecycle", "push", "release"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("releaseToPushLifecycle"),
+        subscription: subscription("releaseToPushLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.ReleaseToPushLifecycle.Subscription>(
                 e,
@@ -67,7 +68,7 @@ export function releaseToPushCardLifecycle(contributions: Contributions)
         description: "Send a push lifecycle card on Release events",
         tags: ["lifecycle", "push", "release"],
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("releaseToPushLifecycle"),
+        subscription: subscription("releaseToPushLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.ReleaseToPushLifecycle.Subscription>(
                 e,

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Atomist, Inc.
+ * Copyright © 2020 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
+import { subscription } from "@atomist/automation-client/lib/graph/graphQL";
+import { EventFired } from "@atomist/automation-client/lib/HandleEvent";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
 import {
-    EventFired,
     failure,
-    GraphQL,
-    HandlerContext,
     HandlerResult,
     success,
-} from "@atomist/automation-client";
-import { EventHandlerRegistration } from "@atomist/sdm";
+} from "@atomist/automation-client/lib/HandlerResult";
+import { EventHandlerRegistration } from "@atomist/sdm/lib/api/registration/EventHandlerRegistration";
 import * as _ from "lodash";
 import {
     LifecycleParameters,
@@ -45,7 +45,7 @@ export function repositoryOnboarded(options: LifecycleOptions)
         description: "Send a Push lifecycle card when a new repo has finished onboarding",
         tags: "enrollment",
         parameters: LifecycleParameters,
-        subscription: GraphQL.subscription("repoOnboarded"),
+        subscription: subscription("repoOnboarded"),
         listener: async (e, ctx, params) => {
             const repo = e.data.RepoOnboarded[0].repo;
             const promises: Array<Promise<HandlerResult>> = [];
