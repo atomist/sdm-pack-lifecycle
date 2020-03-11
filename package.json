@@ -50,7 +50,7 @@
     "@atomist/slack-messages": "^1.1.1"
   },
   "devDependencies": {
-    "@atomist/automation-client": "2.0.0-master.20200227093410",
+    "@atomist/automation-client": "^2.0.0-master.20200311165330",
     "@atomist/sdm": "2.0.0-master.20200303103640",
     "@atomist/slack-messages": "^1.1.1",
     "@types/mocha": "^5.2.7",
