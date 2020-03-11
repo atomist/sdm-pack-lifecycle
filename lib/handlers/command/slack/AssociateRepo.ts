@@ -19,6 +19,7 @@ import {
     MappedParameter,
     MappedParameters,
     Parameter,
+    SlackChannelType,
     Tags,
 } from "@atomist/automation-client/lib/decorators";
 import { HandleCommand } from "@atomist/automation-client/lib/HandleCommand";
@@ -43,7 +44,6 @@ import {
     DefaultGitHubProviderId,
 } from "../../../util/gitHubApi";
 import { warning } from "../../../util/messages";
-import { isChannel } from "../../../util/slack";
 import { extractScreenNameFromMapRepoMessageId } from "../../event/push/PushToUnmappedRepo";
 import { addBotToSlackChannel } from "./AddBotToChannel";
 import { linkSlackChannelToRepo } from "./LinkRepo";
@@ -131,6 +131,9 @@ export class AssociateRepo implements HandleCommand {
     @MappedParameter(MappedParameters.SlackChannelName)
     public channelName: string;
 
+    @MappedParameter(MappedParameters.SlackChannelType)
+    public channelType: string;
+
     @MappedParameter(MappedParameters.GitHubOwner)
     public owner: string;
 
@@ -162,7 +165,7 @@ export class AssociateRepo implements HandleCommand {
             return ctx.messageClient.respond(err)
                 .then(() => Success, failure);
         }
-        if (!isChannel(this.channelId)) {
+        if (this.channelType !== SlackChannelType.Channel) {
             const err = "The Atomist Bot can only link repositories to public channels. " +
                 "Please try again with a public channel.";
             return ctx.messageClient.respond(err, { dashboard: false })
