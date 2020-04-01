@@ -42,14 +42,15 @@ export function branchToBranchLifecycle(contributions: Contributions)
             return lifecycle<graphql.BranchToBranchLifecycle.Subscription>(
                 e,
                 params,
+                e.data?.Branch[0]?.repo,
                 ctx,
                 () => new BranchLifecycle(
-                    e => {
-                        const branch = _.get(e, "data.Branch[0]");
+                    ev => {
+                        const branch = _.get(ev, "data.Branch[0]");
                         return [[branch], branch.repo, false];
                     },
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.Branch[0].repo.org.team.chatTeams")),
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.Branch[0].repo.org.team.chatTeams")),
                     contributions,
                 ),
             );

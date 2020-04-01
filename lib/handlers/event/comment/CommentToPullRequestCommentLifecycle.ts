@@ -42,14 +42,15 @@ export function commentToPullRequestCommentLifecycle(contributions: Contribution
             return lifecycle<graphql.CommentToPullRequestCommentLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Comment[0]?.pullRequest?.repo,
                 ctx,
                 () => new CommentLifecycleHandler(
-                    e => {
-                        return [e.data.Comment, null, _.get(e, "data.Comment[0].pullRequest"),
-                            _.get(e, "data.Comment[0].pullRequest.repo"), false];
+                    ev => {
+                        return [ev.data.Comment, null, _.get(ev, "data.Comment[0].pullRequest"),
+                            _.get(ev, "data.Comment[0].pullRequest.repo"), false];
                     },
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.Comment[0].pullRequest.repo.org.team.chatTeams")),
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.Comment[0].pullRequest.repo.org.team.chatTeams")),
                     contributions,
                 ),
             );

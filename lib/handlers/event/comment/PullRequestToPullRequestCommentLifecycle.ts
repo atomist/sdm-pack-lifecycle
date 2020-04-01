@@ -42,19 +42,20 @@ export function pullRequestToPullRequestCommentLifecycle(contributions: Contribu
             return lifecycle<graphql.PullRequestToPullRequestCommentLifecycle.Subscription>(
                 e,
                 params,
+                e.data?.PullRequest[0]?.repo,
                 ctx,
                 () => new CommentLifecycleHandler(
-                    e => {
-                        const pr = e.data.PullRequest[0];
-                        if (pr) {
+                    ev => {
+                        const pr = ev.data.PullRequest[0];
+                        if (!!pr) {
                             return [pr.comments.sort((c1, c2) =>
                                 c1.timestamp.localeCompare(c2.timestamp)), null, pr, _.get(pr, "repo"), true];
                         } else {
                             return [null, null, null, null, true];
                         }
                     },
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.PullRequest[0].repo.org.team.chatTeams")),
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.PullRequest[0].repo.org.team.chatTeams")),
                     contributions,
                 ),
             );

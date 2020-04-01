@@ -45,6 +45,7 @@ export function k8PodToPushLifecycle(contributions: Contributions)
             return lifecycle<graphql.K8PodToPushLifecycle.Subscription>(
                 e,
                 params,
+                e.data.K8Pod[0]?.images[0]?.commits[0]?.pushes[0]?.repo,
                 ctx,
                 () => new PushLifecycleHandler(
                     ev => {
@@ -77,6 +78,7 @@ export function k8PodToPushCardLifecycle(contributions: Contributions): EventHan
             return lifecycle<graphql.K8PodToPushLifecycle.Subscription>(
                 e,
                 params,
+                e.data.K8Pod[0]?.images[0]?.commits[0]?.pushes[0]?.repo,
                 ctx,
                 () => new PushCardLifecycleHandler(
                     ev => {

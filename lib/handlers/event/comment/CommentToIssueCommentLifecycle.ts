@@ -42,14 +42,15 @@ export function commentToIssueCommentLifecycle(contributions: Contributions)
             return lifecycle<graphql.CommentToIssueCommentLifecycle.Subscription>(
                 e,
                 params,
+                e.data?.Comment[0]?.issue?.repo,
                 ctx,
                 () => new CommentLifecycleHandler(
-                    e => {
-                        const comment = _.get(e, "data.Comment[0]");
+                    ev => {
+                        const comment = _.get(ev, "data.Comment[0]");
                         return [[comment], _.get(comment, "issue"), null, _.get(comment, "issue.repo"), false];
                     },
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.Comment[0].issue.repo.org.team.chatTeams")),
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.Comment[0].issue.repo.org.team.chatTeams")),
                     contributions,
                 ),
             );

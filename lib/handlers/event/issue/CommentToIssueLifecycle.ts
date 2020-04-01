@@ -41,11 +41,12 @@ export function commentToIssueCardLifecycle(contributions: Contributions)
             return lifecycle<graphql.CommentToIssueLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Comment[0]?.issue?.repo,
                 ctx,
                 () => new IssueCardLifecycleHandler(
-                    e => {
-                        const issue = _.get(e.data, "Comment[0].issue");
-                        return [issue, _.get(e.data, "Comment[0].issue.repo"), _.get(e.data, "Comment[0]"),
+                    ev => {
+                        const issue = _.get(ev.data, "Comment[0].issue");
+                        return [issue, _.get(ev.data, "Comment[0].issue.repo"), _.get(ev.data, "Comment[0]"),
                             (issue ? Date.parse(issue.timestamp).toString() : Date.now().toString())];
                     },
                     contributions,

@@ -45,14 +45,15 @@ export function branchToPullRequestLifecycle(contributions: Contributions)
             return lifecycle<graphql.BranchToPullRequestLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Branch[0].pullRequests[0].repo,
                 ctx,
                 () => new PullRequestLifecycleHandler(
-                    e => {
-                        const pr = _.get(e, "data.Branch[0].pullRequests[0]");
+                    ev => {
+                        const pr = _.get(ev, "data.Branch[0].pullRequests[0]");
                         return [pr, _.get(pr, "repo"), Date.now().toString(), true];
                     },
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.Branch[0].pullRequests[0].repo.org.team.chatTeams")),
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.Branch[0].pullRequests[0].repo.org.team.chatTeams")),
                     contributions,
                 ),
             );
@@ -75,10 +76,11 @@ export function branchToPullRequestCardLifecycle(contributions: Contributions)
             return lifecycle<graphql.BranchToPullRequestLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Build[0]?.push?.repo,
                 ctx,
                 () => new PullRequestCardLifecycleHandler(
-                    e => {
-                        const pr = _.get(e, "data.Branch[0].pullRequests[0]");
+                    ev => {
+                        const pr = _.get(ev, "data.Branch[0].pullRequests[0]");
                         return [pr, _.get(pr, "repo"), Date.now().toString(), true];
                     },
                     contributions,

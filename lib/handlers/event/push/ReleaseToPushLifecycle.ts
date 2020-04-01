@@ -46,11 +46,12 @@ export function releaseToPushLifecycle(contributions: Contributions)
             return lifecycle<graphql.ReleaseToPushLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Release[0]?.tag?.commit?.pushes[0]?.repo,
                 ctx,
                 () => new PushLifecycleHandler(
-                    e => e.data.Release[0].tag.commit.pushes,
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.Release[0].tag.commit.pushes[0].repo.org.team.chatTeams")),
+                    ev => ev.data.Release[0].tag.commit.pushes,
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.Release[0].tag.commit.pushes[0].repo.org.team.chatTeams")),
                     contributions,
                 ),
             );
@@ -73,9 +74,10 @@ export function releaseToPushCardLifecycle(contributions: Contributions)
             return lifecycle<graphql.ReleaseToPushLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Release[0]?.tag?.commit?.pushes[0]?.repo,
                 ctx,
                 () => new PushCardLifecycleHandler(
-                    e => e.data.Release[0].tag.commit.pushes,
+                    ev => ev.data.Release[0].tag.commit.pushes,
                     contributions,
                 ),
             );

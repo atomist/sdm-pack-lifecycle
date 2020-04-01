@@ -45,14 +45,15 @@ export function deletedBranchToPullRequestLifecycle(contributions: Contributions
             return lifecycle<graphql.DeletedBranchToPullRequestLifecycle.Subscription>(
                 e,
                 params,
+                e.data.DeletedBranch[0].pullRequests[0].repo,
                 ctx,
                 () => new PullRequestLifecycleHandler(
-                    e => {
-                        const pr = _.get(e, "data.DeletedBranch[0].pullRequests[0]");
+                    ev => {
+                        const pr = _.get(ev, "data.DeletedBranch[0].pullRequests[0]");
                         return [pr, _.get(pr, "repo"), Date.now().toString(), true];
                     },
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.DeletedBranch[0].pullRequests[0].repo.org.team.chatTeams")),
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.DeletedBranch[0].pullRequests[0].repo.org.team.chatTeams")),
                     contributions,
                 ),
             );
@@ -75,10 +76,11 @@ export function deletedBranchToPullRequestCardLifecycle(contributions: Contribut
             return lifecycle<graphql.DeletedBranchToPullRequestLifecycle.Subscription>(
                 e,
                 params,
+                e.data.DeletedBranch[0].pullRequests[0].repo,
                 ctx,
                 () => new PullRequestCardLifecycleHandler(
-                    e => {
-                        const pr = _.get(e, "data.DeletedBranch[0].pullRequests[0]");
+                    ev => {
+                        const pr = _.get(ev, "data.DeletedBranch[0].pullRequests[0]");
                         return [pr, _.get(pr, "repo"), Date.now().toString(), true];
                     },
                     contributions,

@@ -42,6 +42,7 @@ export function policyComplianceToPushLifecycle(contributions: Contributions)
             return lifecycle<graphql.PolicyComplianceToPushLifecycle.Subscription>(
                 e,
                 params,
+                e.data.PolicyCompliance[0]?.push.repo,
                 ctx,
                 () => new PushLifecycleHandler(
                     ev => [ev.data.PolicyCompliance[0].push],

@@ -49,7 +49,9 @@ import {
     DeclarationType,
     ParametersDefinition,
 } from "@atomist/sdm/lib/api/registration/ParametersDefinition";
+import { DefaultRepoRefResolver } from "@atomist/sdm/lib/core/handlers/common/DefaultRepoRefResolver";
 import { CredentialsResolver } from "@atomist/sdm/lib/spi/credentials/CredentialsResolver";
+import { RepoRefResolver } from "@atomist/sdm/lib/spi/repo-ref/RepoRefResolver";
 import {
     Action,
     SlackMessage,
@@ -86,12 +88,13 @@ export const LifecycleParameters: ParametersDefinition<LifecycleParametersDefini
 
 export async function lifecycle<R>(e: EventFired<R>,
                                    params: LifecycleParametersDefinition,
+                                   repo: { owner?: string, name?: string, org?: { provider?: { providerType?: string, url?: string, apiUrl?: string } } },
                                    ctx: HandlerContext,
                                    maker: Maker<LifecycleHandler<R>>): Promise<HandlerResult> {
     const handler = toFactory(maker)();
     handler.orgToken = params.orgToken;
 
-    const creds = await resolveEventHandlerCredentials(e, params, ctx);
+    const creds = await resolveEventHandlerCredentials(e, params, repo, ctx);
     handler.credentials = creds;
 
     return handler.handle(e, ctx);
@@ -99,6 +102,7 @@ export async function lifecycle<R>(e: EventFired<R>,
 
 export async function resolveEventHandlerCredentials(e: EventFired<any>,
                                                      params: LifecycleParametersDefinition,
+                                                     repo: { owner?: string, name?: string, org?: { provider?: { providerType?: string, url?: string, apiUrl?: string } } },
                                                      ctx: HandlerContext): Promise<ProjectOperationCredentials> {
     const credsResolver = params.credentialsResolver || configurationValue<CredentialsResolver>(
         "sdm.credentialsResolver", {
@@ -108,7 +112,8 @@ export async function resolveEventHandlerCredentials(e: EventFired<any>,
             },
         });
 
-    return resolveCredentialsPromise(credsResolver.eventHandlerCredentials(ctx));
+    const repoRefResolver = configurationValue<RepoRefResolver>("sdm.repoRefResolver", new DefaultRepoRefResolver());
+    return resolveCredentialsPromise(credsResolver.eventHandlerCredentials(ctx, repoRefResolver.toRemoteRepoRef(repo as any, {})));
 }
 
 /**

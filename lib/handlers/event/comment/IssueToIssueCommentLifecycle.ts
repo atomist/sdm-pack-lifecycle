@@ -42,19 +42,20 @@ export function issueToIssueCommentLifecycle(contributions: Contributions)
             return lifecycle<graphql.IssueToIssueCommentLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Issue[0]?.repo,
                 ctx,
                 () => new CommentLifecycleHandler(
-                    e => {
-                        const issue = e.data.Issue[0];
-                        if (issue) {
+                    ev => {
+                        const issue = ev.data.Issue[0];
+                        if (!!issue) {
                             return [issue.comments.sort((c1, c2) =>
                                 c1.timestamp.localeCompare(c2.timestamp)), issue, null, _.get(issue, "repo"), true];
                         } else {
                             return [null, null, null, null, true];
                         }
                     },
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.Issue[0].repo.org.team.chatTeams")),
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.Issue[0].repo.org.team.chatTeams")),
                     contributions,
                 ),
             );

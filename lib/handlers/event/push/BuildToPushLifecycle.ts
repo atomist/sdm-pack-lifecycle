@@ -45,11 +45,12 @@ export function buildToPushLifecycle(contributions: Contributions)
             return lifecycle<graphql.BuildToPushLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Build[0]?.push?.repo,
                 ctx,
                 () => new PushLifecycleHandler(
-                    e => [e.data.Build[0].push],
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.Build[0].push.repo.org.team.chatTeams")),
+                    ev => [ev.data.Build[0].push],
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.Build[0].push.repo.org.team.chatTeams")),
                     contributions,
                 ),
             );
@@ -72,9 +73,10 @@ export function buildToPushCardLifecycle(contributions: Contributions)
             return lifecycle<graphql.BuildToPushLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Build[0]?.push?.repo,
                 ctx,
                 () => new PushCardLifecycleHandler(
-                    e => [e.data.Build[0].push],
+                    ev => [ev.data.Build[0].push],
                     contributions,
                 ),
             );

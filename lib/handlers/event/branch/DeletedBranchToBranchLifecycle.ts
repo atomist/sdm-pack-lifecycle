@@ -42,14 +42,15 @@ export function deletedBranchToBranchLifecycle(contributions: Contributions)
             return lifecycle<graphql.DeletedBranchToBranchLifecycle.Subscription>(
                 e,
                 params,
+                e.data?.DeletedBranch[0]?.repo,
                 ctx,
                 () => new BranchLifecycle(
-                    e => {
-                        const branch = _.get(e, "data.DeletedBranch[0]");
+                    ev => {
+                        const branch = _.get(ev, "data.DeletedBranch[0]");
                         return [[branch], branch.repo, true];
                     },
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.DeletedBranch[0].repo.org.team.chatTeams")),
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.DeletedBranch[0].repo.org.team.chatTeams")),
                     contributions,
                 ),
             );

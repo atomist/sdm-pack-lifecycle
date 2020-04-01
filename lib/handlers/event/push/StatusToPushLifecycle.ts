@@ -45,6 +45,7 @@ export function statusToPushLifecycle(contributions: Contributions)
             return lifecycle<graphql.StatusToPushLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Status[0]?.commit?.pushes[0]?.repo,
                 ctx,
                 () => new PushLifecycleHandler(
                     ev => ev.data.Status[0].commit.pushes,
@@ -72,6 +73,7 @@ export function statusToPushCardLifecycle(contributions: Contributions)
             return lifecycle<graphql.StatusToPushLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Status[0]?.commit?.pushes[0]?.repo,
                 ctx,
                 () => new PushCardLifecycleHandler(
                     ev => {// filter CI statuses as we don't want them to overwrite

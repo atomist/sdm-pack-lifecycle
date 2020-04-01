@@ -60,6 +60,7 @@ export function issueToIssueLifecycle(contributions: Contributions,
             return lifecycle<graphql.IssueToIssueLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Issue[0]?.repo,
                 ctx,
                 !!maker ? maker : defaultMaker,
             );
@@ -82,11 +83,12 @@ export function issueToIssueCardLifecycle(contributions: Contributions)
             return lifecycle<graphql.IssueToIssueLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Issue[0].repo,
                 ctx,
                 () => new IssueCardLifecycleHandler(
-                    e => {
-                        const issue = e.data.Issue[0];
-                        const repo = e.data.Issue[0].repo;
+                    ev => {
+                        const issue = ev.data.Issue[0];
+                        const repo = ev.data.Issue[0].repo;
                         return [issue, repo, null, Date.now().toString()];
                     },
                     contributions,

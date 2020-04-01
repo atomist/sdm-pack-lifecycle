@@ -45,6 +45,7 @@ export function issueToPushLifecycle(contributions: Contributions)
             return lifecycle<graphql.IssueToPushLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Issue[0]?.resolvingCommits[0]?.pushes[0]?.repo,
                 ctx,
                 () => new PushLifecycleHandler(
                     ev => {
@@ -76,6 +77,7 @@ export function issueToPushCardLifecycle(contributions: Contributions)
             return lifecycle<graphql.IssueToPushLifecycle.Subscription>(
                 e,
                 params,
+                e.data.Issue[0]?.resolvingCommits[0]?.pushes[0]?.repo,
                 ctx,
                 () => new PushCardLifecycleHandler(
                     ev => {

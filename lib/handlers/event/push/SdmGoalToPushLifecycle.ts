@@ -45,6 +45,7 @@ export function sdmGoalToPushLifecycle(contributions: Contributions)
             return lifecycle<graphql.SdmGoalToPushLifecycle.Subscription>(
                 e,
                 params,
+                e.data.SdmGoal[0]?.push?.repo,
                 ctx,
                 () => new PushLifecycleHandler(
                     ev => [ev.data.SdmGoal[0].push],
@@ -72,6 +73,7 @@ export function sdmGoalToPushCardLifecycle(contributions: Contributions)
             return lifecycle<graphql.SdmGoalToPushLifecycle.Subscription>(
                 e,
                 params,
+                e.data.SdmGoal[0]?.push?.repo,
                 ctx,
                 () => new PushCardLifecycleHandler(
                     ev => [ev.data.SdmGoal[0].push],

@@ -42,11 +42,12 @@ export function sdmGoalDisplayToPushLifecycle(contributions: Contributions)
             return lifecycle<graphql.SdmGoalDisplayToPushLifecycle.Subscription>(
                 e,
                 params,
+                e.data.SdmGoalDisplay[0]?.repo,
                 ctx,
                 () => new PushLifecycleHandler(
-                    e => [e.data.SdmGoalDisplay[0].push],
-                    e => chatTeamsToPreferences(
-                        _.get(e, "data.SdmGoalDisplay[0].push.repo.org.team.chatTeams")),
+                    ev => [ev.data.SdmGoalDisplay[0].push],
+                    ev => chatTeamsToPreferences(
+                        _.get(ev, "data.SdmGoalDisplay[0].push.repo.org.team.chatTeams")),
                     contributions,
                 ),
             );

@@ -42,6 +42,7 @@ export function pullRequestToReviewLifecycle(contributions: Contributions)
             return lifecycle<graphql.PullRequestToReviewLifecycle.Subscription>(
                 e,
                 params,
+                e.data.PullRequest[0]?.reviews[0]?.pullRequest?.repo,
                 ctx,
                 () => new ReviewLifecycleHandler(
                     ev => {

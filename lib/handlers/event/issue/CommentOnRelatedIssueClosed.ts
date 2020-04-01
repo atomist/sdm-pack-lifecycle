@@ -64,9 +64,8 @@ export function commentOnRelatedIssueClosed(): EventHandlerRegistration<CommentO
         parameters: LifecycleParameters,
         subscription: subscription("commentOnRelatedIssueClosed"),
         listener: async (e, ctx, params) => {
-            const creds = await resolveEventHandlerCredentials(e, params, ctx);
-
             const issue = e.data.Issue[0];
+            const creds = await resolveEventHandlerCredentials(e, params, e.data.Issue[0].repo, ctx);
 
             return ctx.graphClient.query<any, any>({
                 query: RelatedIssueQuery,

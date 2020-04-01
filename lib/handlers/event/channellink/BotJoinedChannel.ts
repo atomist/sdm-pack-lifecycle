@@ -65,7 +65,7 @@ export function botJoinedChannel(): EventHandlerRegistration<BotJoinedChannel.Su
         parameters: LifecycleParameters,
         listener: async (e, ctx, params) => {
 
-            const creds = await resolveEventHandlerCredentials(e, params, ctx);
+            const creds = await resolveEventHandlerCredentials(e, params, {}, ctx);
 
             return Promise.all(e.data.UserJoinedChannel.map(j => {
                 if (!j.user) {
