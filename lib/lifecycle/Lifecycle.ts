@@ -94,7 +94,7 @@ export async function lifecycle<R>(e: EventFired<R>,
     const handler = toFactory(maker)();
     handler.orgToken = params.orgToken;
 
-    const creds = await resolveEventHandlerCredentials(e, params, repo, ctx);
+    const creds = await resolveEventHandlerCredentials(e, params, repo || {}, ctx);
     handler.credentials = creds;
 
     return handler.handle(e, ctx);
