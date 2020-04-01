@@ -8,6 +8,7 @@ query chatChannelByChannelId($teamId: ID!, $channelName: String!) {
         org {
           provider {
             url
+            apiUrl
             providerId
             providerType
           }

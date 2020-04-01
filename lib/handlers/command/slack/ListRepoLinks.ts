@@ -84,6 +84,7 @@ export class ListRepoLinks implements HandleCommand {
                         handler.name = r.name;
                         handler.owner = r.owner;
                         handler.provider = r.org.provider.providerId;
+                        handler.apiUrl = r.org.provider.apiUrl;
 
                         const slug = `${r.owner}/${r.name}`;
                         const attachment: Attachment = {
