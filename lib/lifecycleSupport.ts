@@ -138,10 +138,6 @@ import {
     releaseToPushCardLifecycle,
     releaseToPushLifecycle,
 } from "./handlers/event/push/ReleaseToPushLifecycle";
-import {
-    ComplianceNodeRenderer,
-    ComplianceSummaryNodeRenderer,
-} from "./handlers/event/push/rendering/ComplianceNodeRenderer";
 import * as pc from "./handlers/event/push/rendering/PushCardNodeRenderers";
 import * as pr from "./handlers/event/push/rendering/PushNodeRenderers";
 import * as sr from "./handlers/event/push/rendering/StatusesNodeRenderer";
@@ -299,8 +295,6 @@ export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
             renderers: [() => [
                 new pr.PushNodeRenderer(),
                 new pr.CommitNodeRenderer(),
-                new ComplianceNodeRenderer(),
-                new ComplianceSummaryNodeRenderer(),
                 new sr.GoalSetNodeRenderer(),
                 new sr.StatusesNodeRenderer(),
                 new WorkflowNodeRenderer(),

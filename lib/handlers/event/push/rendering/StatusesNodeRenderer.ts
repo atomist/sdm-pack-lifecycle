@@ -50,7 +50,6 @@ import {
 } from "../../../../util/goals";
 import { LifecycleRendererPreferences } from "../../preferences";
 import { GoalSet } from "../PushLifecycle";
-import { isComplianceReview } from "./ComplianceNodeRenderer";
 import {
     EMOJI_SCHEME,
 } from "./PushNodeRenderers";
@@ -82,11 +81,6 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
                   actions: Action[],
                   msg: SlackMessage,
                   context: RendererContext): Promise<SlackMessage> {
-
-        if (isComplianceReview
-        (push)) {
-            return Promise.resolve(msg);
-        }
 
         // List all the statuses on the after commit
         const commit = push.after;
@@ -237,10 +231,6 @@ export class GoalSetNodeRenderer extends AbstractIdentifiableContribution
                         context: RendererContext): Promise<SlackMessage> {
 
         const push = context.lifecycle.extract("push") as PushToPushLifecycle.Push;
-
-        if (isComplianceReview(push)) {
-            return msg;
-        }
 
         let sortedGoals = [];
         const goalSets = context.lifecycle.extract("goalSets") as GoalSet[];

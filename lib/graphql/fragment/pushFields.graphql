@@ -29,15 +29,6 @@ fragment PushFields on Push {
   }
   before {
     sha
-    analysis {
-      type
-      name
-      sha
-      data
-      displayName
-      displayValue
-      displayType
-    }
   }
   after {
     sha
@@ -113,15 +104,6 @@ fragment PushFields on Push {
         }
       }
       timestamp
-    }
-    analysis {
-      type
-      name
-      sha
-      data
-      displayName
-      displayValue
-      displayType
     }
   }
   repo {
