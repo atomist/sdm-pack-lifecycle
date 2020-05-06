@@ -145,7 +145,7 @@ export function repoUrl(repo: any): string {
 }
 
 export function repoPageUrl(repo: any, workspaceId: string): string {
-    return `https://app.atomist.com/workspace/${workspaceId}/repository/${repo.owner}/${repo.name}`;
+    return repoUrl(repo);
 }
 
 export function repoSlackLink(repo: any): string {
