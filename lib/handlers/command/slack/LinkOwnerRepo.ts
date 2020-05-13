@@ -58,6 +58,9 @@ export class LinkOwnerRepo implements HandleCommand {
     @MappedParameter(MappedParameters.SlackChannelName)
     public channelName: string;
 
+    @MappedParameter(MappedParameters.SlackChannelType)
+    public channelType: string;
+
     @Secret(Secrets.userToken("repo"))
     public githubToken: string;
 
@@ -94,6 +97,7 @@ export class LinkOwnerRepo implements HandleCommand {
         linkRepo.teamId = this.teamId;
         linkRepo.channelId = this.channelId;
         linkRepo.channelName = this.channelName;
+        linkRepo.channelType = this.channelType;
         linkRepo.owner = repo.owner;
         linkRepo.apiUrl = apiUrl;
         linkRepo.provider = providerId;
