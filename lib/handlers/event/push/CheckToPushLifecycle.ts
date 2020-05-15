@@ -47,7 +47,7 @@ export function checkToPushLifecycle(contributions: Contributions)
                 () => new PushLifecycleHandler(
                     ev => ev.data.CheckRun[0].checkSuite?.commit.pushes,
                     ev => chatTeamsToPreferences(
-                        _.get(ev, "data.CheckRun[0].checkSuite.pushes[0].repo.org.team.chatTeams")),
+                        _.get(ev, "data.CheckRun[0].checkSuite.commit.pushes[0].repo.org.team.chatTeams")),
                     contributions,
                 ),
             );
