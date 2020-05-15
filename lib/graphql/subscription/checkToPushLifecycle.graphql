@@ -1,0 +1,11 @@
+subscription checkToPushLifecycle {
+    CheckRun {
+        checkSuite {
+            commit {
+                pushes {
+                    ...PushFields
+                }
+            }
+        }
+    }
+}

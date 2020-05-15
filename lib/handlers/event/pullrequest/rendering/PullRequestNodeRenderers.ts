@@ -32,6 +32,7 @@ import {
 } from "../../../../lifecycle/Lifecycle";
 import { normalizeTimestamp } from "../../../../lifecycle/util";
 import * as graphql from "../../../../typings/types";
+import { StatusState } from "../../../../typings/types";
 import {
     avatarUrl,
     branchUrl,
@@ -48,7 +49,10 @@ import {
     userUrl,
 } from "../../../../util/helpers";
 import { renderDecorator } from "../../push/rendering/PushNodeRenderers";
-import { summarizeStatusCounts } from "../../push/rendering/StatusesNodeRenderer";
+import {
+    aggregateStatusesAndChecks,
+    summarizeStatusCounts,
+} from "../../push/rendering/StatusesNodeRenderer";
 
 export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.PullRequestToPullRequestLifecycle.PullRequest> {
@@ -230,11 +234,11 @@ export class StatusNodeRenderer extends AbstractIdentifiableContribution
         const commits = pr.commits.sort((c1, c2) => (c2.timestamp || "").localeCompare(c1.timestamp || ""))
             .filter(c => !!c.statuses && c.statuses.length > 0);
 
-        if (commits.length > 0 && !!commits[0].statuses) {
+        if (!!commits[0]?.statuses || !!commits[0]?.checkSuites) {
             const commit = commits[0];
-
-            const pending = commit.statuses.filter(s => s.state === "pending").length;
-            const success = commit.statuses.filter(s => s.state === "success").length;
+            const checks = aggregateStatusesAndChecks(commit);
+            const pending = checks.filter(s => s.state === StatusState.pending).length;
+            const success = checks.filter(s => s.state === StatusState.success).length;
             const error = commit.statuses.length - pending - success;
 
             const summary = summarizeStatusCounts(pending, success, error);

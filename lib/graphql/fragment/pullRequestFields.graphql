@@ -112,6 +112,19 @@ fragment PullRequestFields on PullRequest {
       targetUrl
       timestamp
     }
+    checkSuites {
+      appSlug
+      checkRuns {
+        name
+        conclusion
+        status
+        detailsUrl
+        startedAt
+        completedAt
+        htmlUrl
+        outputTitle
+      }
+    }
     author {
       login
       name

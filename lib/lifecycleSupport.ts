@@ -80,6 +80,7 @@ import {
     branchToPullRequestCardLifecycle,
     branchToPullRequestLifecycle,
 } from "./handlers/event/pullrequest/BranchToPullRequestLifecycle";
+import { checkToPullRequestLifecycle } from "./handlers/event/pullrequest/CheckToPullRequestLifecycle";
 import {
     commentToPullRequestCardLifecycle,
     commentToPullRequestLifecycle,
@@ -115,6 +116,7 @@ import {
     buildToPushCardLifecycle,
     buildToPushLifecycle,
 } from "./handlers/event/push/BuildToPushLifecycle";
+import { checkToPushLifecycle } from "./handlers/event/push/CheckToPushLifecycle";
 import {
     issueToPushCardLifecycle,
     issueToPushLifecycle,
@@ -393,6 +395,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(notifyMentionedOnPullRequest());
 
             sdm.addEvent(branchToPullRequestLifecycle(optsToUse.pullRequest.chat));
+            sdm.addEvent(checkToPullRequestLifecycle(optsToUse.pullRequest.chat));
             sdm.addEvent(commentToPullRequestLifecycle(optsToUse.pullRequest.chat));
             sdm.addEvent(commitToPullRequestLifecycle(optsToUse.pullRequest.chat));
             sdm.addEvent(deletedBranchToPullRequestLifecycle(optsToUse.pullRequest.chat));
@@ -414,6 +417,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
 
             sdm.addEvent(applicationToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(buildToPushLifecycle(optsToUse.push.chat));
+            sdm.addEvent(checkToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(issueToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(k8PodToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(policyComplianceToPushLifecycle(optsToUse.push.chat));

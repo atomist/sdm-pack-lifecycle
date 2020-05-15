@@ -38,11 +38,14 @@ import {
     SlackNodeRenderer,
 } from "../../../../lifecycle/Lifecycle";
 import {
+    CheckRunConclusion,
+    CheckRunStatus,
     PushToPushLifecycle,
     SdmGoalDisplayFormat,
     SdmGoalDisplayState,
     SdmGoalsByCommit,
     SdmGoalState,
+    StatusState,
 } from "../../../../typings/types";
 import {
     lastGoalSet,
@@ -50,9 +53,14 @@ import {
 } from "../../../../util/goals";
 import { LifecycleRendererPreferences } from "../../preferences";
 import { GoalSet } from "../PushLifecycle";
-import {
-    EMOJI_SCHEME,
-} from "./PushNodeRenderers";
+import { EMOJI_SCHEME } from "./PushNodeRenderers";
+
+export interface Check {
+    name: string;
+    description: string;
+    state: StatusState;
+    url: string;
+}
 
 export class StatusesNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<PushToPushLifecycle.Push> {
@@ -69,37 +77,36 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
         this.emojiStyle = configuration.configuration["emoji-style"] || "default";
     }
 
-    public supports(node: any): boolean {
+    public supports(node: PushToPushLifecycle.Push): boolean {
         if (node.after) {
-            return this.showOnPush && node.after.statuses && node.after.statuses.length > 0;
+            return this.showOnPush && (node.after?.statuses?.length > 0 || node.after?.checkSuites?.length > 0);
         } else {
             return false;
         }
     }
 
-    public render(push: PushToPushLifecycle.Push,
-                  actions: Action[],
-                  msg: SlackMessage,
-                  context: RendererContext): Promise<SlackMessage> {
+    public async render(push: PushToPushLifecycle.Push,
+                        actions: Action[],
+                        msg: SlackMessage,
+                        context: RendererContext): Promise<SlackMessage> {
 
         // List all the statuses on the after commit
         const commit = push.after;
-        // exclude build statuses already displayed
-        const statuses = commit.statuses.filter(status => notAlreadyDisplayed(push, status));
-        if (statuses.length === 0) {
-            return Promise.resolve(msg);
+        const checks = aggregateStatusesAndChecks(commit).filter(check => notAlreadyDisplayed(push, check));
+        if (checks.length === 0) {
+            return msg;
         }
 
-        const pending = statuses.filter(s => s.state === "pending").length;
-        const success = statuses.filter(s => s.state === "success").length;
-        const error = statuses.length - pending - success;
+        const pending = checks.filter(s => s.state === StatusState.pending).length;
+        const success = checks.filter(s => s.state === StatusState.success).length;
+        const error = checks.length - pending - success;
 
         // Now each one
-        const lines = statuses.sort((s1, s2) => s1.context.localeCompare(s2.context)).map(s => {
-            if (!!s.targetUrl && s.targetUrl.length > 0) {
-                return `${this.emoji(s.state)} ${s.description} \u00B7 ${url(s.targetUrl, s.context)}`;
+        const lines = checks.sort((s1, s2) => s1.name.localeCompare(s2.name)).map(s => {
+            if (!!s.url && s.url.length > 0) {
+                return `${this.emoji(s.state)} ${s.description} \u00B7 ${url(s.url, s.name)}`;
             } else {
-                return `${this.emoji(s.state)} ${s.description} \u00B7 ${s.context}`;
+                return `${this.emoji(s.state)} ${s.description} \u00B7 ${s.name}`;
             }
         });
 
@@ -120,7 +127,7 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
         };
         msg.attachments.push(attachment);
 
-        return Promise.resolve(msg);
+        return msg;
     }
 
     private emoji(state: string): string {
@@ -158,7 +165,7 @@ export class StatusesCardNodeRenderer extends AbstractIdentifiableContribution
         // List all the statuses on the after commit
         const commit = push.after;
         // exclude build statuses already displayed
-        const statuses = commit.statuses.filter(status => notAlreadyDisplayed(push, status));
+        const statuses = commit.statuses;
         if (statuses.length === 0) {
             return Promise.resolve(msg);
         }
@@ -648,24 +655,70 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
     }
 }
 
-function notAlreadyDisplayed(push: any, status: any): boolean {
-    if (status.context.includes("travis-ci") && !!push.builds &&
+export function aggregateStatusesAndChecks(commit: PushToPushLifecycle.Push["after"]): Check[] {
+    const allChecks: Check[] = [];
+
+    // First statuses
+    commit.statuses?.forEach(s => {
+        allChecks.push({
+            name: s.context,
+            description: s.description,
+            url: s.targetUrl,
+            state: s.state,
+        });
+    });
+    // Second checks
+    commit.checkSuites?.forEach(c => {
+        const app = c.appSlug;
+        c.checkRuns?.forEach(r => {
+            let state;
+            switch (r.status) {
+                case CheckRunStatus.in_progress:
+                case CheckRunStatus.queued:
+                    state = StatusState.pending;
+                    break;
+                case CheckRunStatus.completed:
+                    switch (r.conclusion) {
+                        case CheckRunConclusion.success:
+                        case CheckRunConclusion.neutral:
+                        case CheckRunConclusion.skipped:
+                            state = StatusState.success;
+                            break;
+                        default:
+                            state = StatusState.failure;
+                            break;
+                    }
+                    break;
+            }
+            allChecks.push({
+                name: `${app}/${r.name}`,
+                description: r.outputTitle,
+                url: r.htmlUrl,
+                state,
+            });
+        });
+    });
+    return allChecks;
+}
+
+function notAlreadyDisplayed(push: any, status: Check): boolean {
+    if (status.name.includes("travis-ci") && !!push.builds &&
         push.builds.some((b: any) => b.provider === "travis")) {
         return false;
     }
-    if (status.context.includes("circleci") && !!push.builds &&
+    if (status.name.includes("circleci") && !!push.builds &&
         push.builds.some((b: any) => b.provider === "circle")) {
         return false;
     }
-    if (status.context.includes("jenkins") && !!push.builds &&
+    if (status.name.includes("jenkins") && !!push.builds &&
         push.builds.some((b: any) => b.provider === "jenkins")) {
         return false;
     }
-    if (status.context.includes("codeship") && !!push.builds &&
+    if (status.name.includes("codeship") && !!push.builds &&
         push.builds.some((b: any) => b.provider.includes("codeship"))) {
         return false;
     }
-    if (status.context.includes("sdm/")) {
+    if (status.name.includes("sdm/")) {
         return false;
     }
     return true;

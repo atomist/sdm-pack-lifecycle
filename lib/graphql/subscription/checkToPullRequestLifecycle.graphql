@@ -1,0 +1,9 @@
+subscription checkToPullRequestLifecycle {
+    CheckRun {
+        checkSuite {
+            pullRequests {
+                ...PullRequestFields
+            }
+        }
+    }
+}
