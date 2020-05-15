@@ -232,7 +232,7 @@ export class StatusNodeRenderer extends AbstractIdentifiableContribution
 
         const repo = context.lifecycle.extract("repo");
         const commits = pr.commits.sort((c1, c2) => (c2.timestamp || "").localeCompare(c1.timestamp || ""))
-            .filter(c => !!c.statuses && c.statuses.length > 0);
+            .filter(c => c.statuses?.length > 0 || c.checkSuites?.length > 0);
 
         if (!!commits[0]?.statuses || !!commits[0]?.checkSuites) {
             const commit = commits[0];
