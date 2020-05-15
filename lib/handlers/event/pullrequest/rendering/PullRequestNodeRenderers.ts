@@ -239,7 +239,7 @@ export class StatusNodeRenderer extends AbstractIdentifiableContribution
             const checks = aggregateStatusesAndChecks(commit);
             const pending = checks.filter(s => s.state === StatusState.pending).length;
             const success = checks.filter(s => s.state === StatusState.success).length;
-            const error = commit.statuses.length - pending - success;
+            const error = checks.length - pending - success;
 
             const summary = summarizeStatusCounts(pending, success, error);
 
