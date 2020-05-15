@@ -60,6 +60,7 @@ export interface Check {
     description: string;
     state: StatusState;
     url: string;
+    detailsUrl: string;
 }
 
 export class StatusesNodeRenderer extends AbstractIdentifiableContribution
@@ -102,13 +103,8 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
         const error = checks.length - pending - success;
 
         // Now each one
-        const lines = checks.sort((s1, s2) => s1.name.localeCompare(s2.name)).map(s => {
-            if (!!s.url && s.url.length > 0) {
-                return `${this.emoji(s.state)} ${s.description} \u00B7 ${url(s.url, s.name)}`;
-            } else {
-                return `${this.emoji(s.state)} ${s.description} \u00B7 ${s.name}`;
-            }
-        });
+        const lines = checks.sort((s1, s2) => s1.name.localeCompare(s2.name))
+            .map(s => `${this.emoji(s.state)} ${s.detailsUrl?.length > 0 ? url(s.detailsUrl, s.description) : s.description} \u00B7 ${s.url?.length > 0 ? url(s.url, s.name) : s.name}`);
 
         const color =
             pending > 0 ? "#2A7D7D" :
@@ -665,6 +661,7 @@ export function aggregateStatusesAndChecks(commit: PushToPushLifecycle.Push["aft
             description: s.description,
             url: s.targetUrl,
             state: s.state,
+            detailsUrl: undefined,
         });
     });
     // Second checks
@@ -699,6 +696,7 @@ export function aggregateStatusesAndChecks(commit: PushToPushLifecycle.Push["aft
                 description: r.outputTitle,
                 url: r.htmlUrl,
                 state,
+                detailsUrl: r.detailsUrl,
             });
         });
     });
