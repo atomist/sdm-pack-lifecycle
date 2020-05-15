@@ -687,7 +687,7 @@ export function aggregateStatusesAndChecks(commit: PushToPushLifecycle.Push["aft
                         case undefined:
                         case null:
                             state = StatusState.success;
-                            break
+                            break;
                         default:
                             state = StatusState.failure;
                             break;
