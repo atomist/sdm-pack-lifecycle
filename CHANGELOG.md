@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   Provide data in card for rendering in web-app dialogs. [#10](https://github.com/atomist/sdm-pack-lifecycle/issues/10)
 -   Render compliance data as part of push. [#22](https://github.com/atomist/sdm-pack-lifecycle/issues/22)
 -   Accept All button should close Aspects view. [#24](https://github.com/atomist/sdm-pack-lifecycle/issues/24)
+-   Add support for checks in push and pr lifecycle. [dcbd046](https://github.com/atomist/sdm-pack-lifecycle/commit/dcbd04600a3fcb1729769231a93f4afdae306aa2)
 
 ### Changed
 
