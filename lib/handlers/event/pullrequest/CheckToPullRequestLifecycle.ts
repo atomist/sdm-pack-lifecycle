@@ -42,7 +42,7 @@ export function checkToPullRequestLifecycle(contributions: Contributions)
             return lifecycle<graphql.CheckToPullRequestLifecycle.Subscription>(
                 e,
                 params,
-                e.data.CheckRun[0]?.checkSuite.pullRequests[0].repo,
+                e.data.CheckRun[0]?.checkSuite?.pullRequests[0]?.repo,
                 ctx,
                 () => new PullRequestLifecycleHandler(
                     ev => {

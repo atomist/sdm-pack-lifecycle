@@ -45,7 +45,7 @@ export function branchToPullRequestLifecycle(contributions: Contributions)
             return lifecycle<graphql.BranchToPullRequestLifecycle.Subscription>(
                 e,
                 params,
-                e.data.Branch[0].pullRequests[0].repo,
+                e.data.Branch[0]?.pullRequests[0]?.repo,
                 ctx,
                 () => new PullRequestLifecycleHandler(
                     ev => {

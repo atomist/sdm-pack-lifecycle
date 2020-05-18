@@ -45,7 +45,7 @@ export function statusToPullRequestLifecycle(contributions: Contributions)
             return lifecycle<graphql.StatusToPullRequestLifecycle.Subscription>(
                 e,
                 params,
-                e.data.Status[0]?.commit.pullRequests[0].repo,
+                e.data.Status[0]?.commit?.pullRequests[0]?.repo,
                 ctx,
                 () => new PullRequestLifecycleHandler(
                     ev => {
@@ -76,7 +76,7 @@ export function statusToPullRequestCardLifecycle(contributions: Contributions)
             return lifecycle<graphql.StatusToPullRequestLifecycle.Subscription>(
                 e,
                 params,
-                e.data.Status[0]?.commit.pullRequests[0].repo,
+                e.data.Status[0]?.commit?.pullRequests[0]?.repo,
                 ctx,
                 () => new PullRequestCardLifecycleHandler(
                     ev => {

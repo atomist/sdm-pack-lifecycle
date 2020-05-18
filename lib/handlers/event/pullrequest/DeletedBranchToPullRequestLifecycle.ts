@@ -45,7 +45,7 @@ export function deletedBranchToPullRequestLifecycle(contributions: Contributions
             return lifecycle<graphql.DeletedBranchToPullRequestLifecycle.Subscription>(
                 e,
                 params,
-                e.data.DeletedBranch[0].pullRequests[0].repo,
+                e.data.DeletedBranch[0]?.pullRequests[0]?.repo,
                 ctx,
                 () => new PullRequestLifecycleHandler(
                     ev => {
@@ -76,7 +76,7 @@ export function deletedBranchToPullRequestCardLifecycle(contributions: Contribut
             return lifecycle<graphql.DeletedBranchToPullRequestLifecycle.Subscription>(
                 e,
                 params,
-                e.data.DeletedBranch[0].pullRequests[0].repo,
+                e.data.DeletedBranch[0]?.pullRequests[0]?.repo,
                 ctx,
                 () => new PullRequestCardLifecycleHandler(
                     ev => {

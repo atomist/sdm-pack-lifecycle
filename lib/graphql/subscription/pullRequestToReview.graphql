@@ -32,6 +32,7 @@ subscription pullRequestToReviewLifecycle {
               providerId
               providerType
               private
+              apiUrl
             }
             team {
               id

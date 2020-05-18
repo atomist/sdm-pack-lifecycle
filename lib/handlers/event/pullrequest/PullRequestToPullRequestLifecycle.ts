@@ -56,7 +56,7 @@ export function pullRequestToPullRequestLifecycle(contributions: Contributions,
             return lifecycle<graphql.PullRequestToPullRequestLifecycle.Subscription>(
                 e,
                 params,
-                e.data.PullRequest[0].repo,
+                e.data.PullRequest[0]?.repo,
                 ctx,
                 !!maker ? maker : defaultMaker,
             );
@@ -79,7 +79,7 @@ export function pullRequestToPullRequestCardLifecycle(contributions: Contributio
             return lifecycle<graphql.PullRequestToPullRequestLifecycle.Subscription>(
                 e,
                 params,
-                e.data.PullRequest[0].repo,
+                e.data.PullRequest[0]?.repo,
                 ctx,
                 () => new PullRequestCardLifecycleHandler(
                     ev => [ev.data.PullRequest[0], ev.data.PullRequest[0].repo, Date.now().toString(), false],
