@@ -71,7 +71,7 @@ export function commentToPullRequestCardLifecycle(contributions: Contributions)
         description: "Send a pr lifecycle card on Branch events",
         tags: ["lifecycle", "pr", "comment"],
         parameters: LifecycleParameters,
-        subscription: subscription("branchToPullRequestLifecycle"),
+        subscription: subscription("commentToPullRequestLifecycle"),
         listener: async (e, ctx, params) => {
             return lifecycle<graphql.CommentToPullRequestLifecycle.Subscription>(
                 e,
