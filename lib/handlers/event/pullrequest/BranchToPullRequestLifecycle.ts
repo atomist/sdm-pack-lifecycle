@@ -65,7 +65,7 @@ export function branchToPullRequestLifecycle(contributions: Contributions)
  * Send a lifecycle message on Branch events.
  */
 export function branchToPullRequestCardLifecycle(contributions: Contributions)
-    : EventHandlerRegistration<graphql.BuildToPushLifecycle.Subscription, LifecycleParametersDefinition> {
+    : EventHandlerRegistration<graphql.BranchToPullRequestLifecycle.Subscription, LifecycleParametersDefinition> {
     return {
         name: "BranchToPullRequestCardLifecycle",
         description: "Send a pr lifecycle card on Branch events",
@@ -76,7 +76,7 @@ export function branchToPullRequestCardLifecycle(contributions: Contributions)
             return lifecycle<graphql.BranchToPullRequestLifecycle.Subscription>(
                 e,
                 params,
-                e.data.Build[0]?.push?.repo,
+                e.data.Branch[0]?.pullRequests[0]?.repo,
                 ctx,
                 () => new PullRequestCardLifecycleHandler(
                     ev => {
