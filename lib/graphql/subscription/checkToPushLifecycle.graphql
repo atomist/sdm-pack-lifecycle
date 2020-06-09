@@ -1,8 +1,8 @@
 subscription checkToPushLifecycle {
     CheckRun {
-        checkSuite {
-            commit {
-                pushes {
+        checkSuite @required {
+            commit @required {
+                pushes @required {
                     ...PushFields
                 }
             }

@@ -1,7 +1,7 @@
 subscription checkToPullRequestLifecycle {
     CheckRun {
-        checkSuite {
-            pullRequests {
+        checkSuite @required {
+            pullRequests @required {
                 ...PullRequestFields
             }
         }
