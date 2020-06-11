@@ -104,7 +104,15 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
 
         // Now each one
         const lines = checks.sort((s1, s2) => s1.name.localeCompare(s2.name))
-            .map(s => `${this.emoji(s.state)} ${s.detailsUrl?.length > 0 ? url(s.detailsUrl, s.description) : s.description} \u00B7 ${s.url?.length > 0 ? url(s.url, s.name) : s.name}`);
+            .map(s => {
+                if (s.detailsUrl?.length > 0 && s.description?.length > 0) {
+                    return `${this.emoji(s.state)} ${url(s.detailsUrl, s.description)} \u00B7 ${s.url?.length > 0 ? url(s.url, s.name) : s.name}`;
+                } else if (s.description?.length > 0) {
+                    return `${this.emoji(s.state)} ${s.description} \u00B7 ${s.url?.length > 0 ? url(s.url, s.name) : s.name}`;
+                } else {
+                    return `${this.emoji(s.state)} ${s.url?.length > 0 ? url(s.url, s.name) : s.name}`;
+                }
+            });
 
         const color =
             pending > 0 ? "#2A7D7D" :
