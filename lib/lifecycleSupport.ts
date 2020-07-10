@@ -273,6 +273,7 @@ export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
         chat: {
             renderers: [() => [
                 new prr.PullRequestNodeRenderer(),
+                new prr.BranchNodeRenderer(),
                 new prr.CommitNodeRenderer(),
                 new prr.BuildNodeRenderer(),
                 new prr.StatusNodeRenderer(),

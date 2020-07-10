@@ -18,6 +18,7 @@ import { guid } from "@atomist/automation-client/lib/internal/util/string";
 import {
     Action,
     Attachment,
+    bold,
     escape,
     githubToSlack,
     SlackMessage,
@@ -119,6 +120,38 @@ export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
     }
 }
 
+export class BranchNodeRenderer extends AbstractIdentifiableContribution
+    implements SlackNodeRenderer<graphql.PullRequestToPullRequestLifecycle.PullRequest> {
+
+    constructor() {
+        super("branch");
+    }
+
+    public supports(node: any): boolean {
+        if (node.baseBranchName) {
+            const pr = node as graphql.PullRequestToPullRequestLifecycle.PullRequest;
+            return pr.state === "closed" && !pr.branch;
+        } else {
+            return false;
+        }
+    }
+
+    public async render(pr: graphql.PullRequestToPullRequestLifecycle.PullRequest, actions: Action[], msg: SlackMessage,
+                        context: RendererContext): Promise<SlackMessage> {
+        const text = `Branch ${bold(pr.branchName)} deleted`;
+        const fallback = `Branch ${pr.branchName} deleted`;
+        const attachment: Attachment = {
+            fallback,
+            text,
+            mrkdwn_in: ["text"],
+            actions,
+        };
+        msg.attachments.push(attachment);
+        return msg;
+    }
+
+}
+
 export class CommitNodeRenderer extends AbstractIdentifiableContribution
     implements SlackNodeRenderer<graphql.PullRequestToPullRequestLifecycle.PullRequest> {
 
@@ -187,7 +220,7 @@ export class CommitNodeRenderer extends AbstractIdentifiableContribution
                     mrkdwn_in: ["text"],
                     color,
                     fallback: `${cgba.commits.length} ${(cgba.commits.length > 1 ? "commits" : "commit")}` +
-                    ` to ${url(repoUrl(repo), repoSlug)} by ${a}`,
+                        ` to ${url(repoUrl(repo), repoSlug)} by ${a}`,
                     actions,
                 };
                 msg.attachments.push(attachment);
