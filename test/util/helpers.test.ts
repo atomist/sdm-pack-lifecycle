@@ -25,6 +25,7 @@ import {
     isDmDisabled,
     linkGitHubUsers,
     linkIssues,
+    removeAnchorLinks,
     removeMarkers,
     replaceChatIdWithGitHubId,
     repoSlackLink,
@@ -1220,5 +1221,127 @@ Project *sdm-org/sdm-pack-changelog/master* is currently configured to use versi
         });
     });
     */
+
+    describe("removeAnchorLinks", () => {
+
+        it("should remove anchors in pr bodys", () => {
+
+            const body = `This pull request fixes [1 high and 23 low security vulnerabilities](#user-content-fixed-vul) but [1 low vulnerability](#user-content-open-vul) remains open and needs manual review.
+                
+\`npm audit fix\` updated the following npm packages: 
+
+ * \`firebase\` -> _7.16.0_
+ * \`http-proxy\` -> _1.18.1_
+ * \`karma\` -> _5.1.0_
+ * \`lodash\` -> _4.17.19_
+ * \`minimist\` -> _1.2.5_
+ * \`mkdirp\` -> _0.5.5_
+ * \`node-sass\` -> _4.14.1_
+
+---
+
+## <a id="fixed-vul">Fixed vulnerabilities</a>
+
+Following security vulnerabilities are fixed:
+
+### http-proxy
+
+[Denial of Service](https://npmjs.com/advisories/1486) _Upgrade to version 1.18.1 or later_
+_high_ - \`<1.18.1\` - _automatic fix available_ 
+  - \`http-proxy:1.18.0\`: 
+    - \`karma>http-proxy\`
+---
+
+### lodash
+
+[Prototype Pollution](https://npmjs.com/advisories/1523) _Upgrade to version 4.17.19 or later._
+_low_ - \`<4.17.19\` - [CVE-2019-10744](https://nvd.nist.gov/vuln/detail/CVE-2019-10744) - _automatic fix available_ 
+  - \`lodash:4.17.15\`: 
+    - \`formik>lodash\`
+    - \`karma>lodash\`
+    - \`karma>log4js>streamroller>async>lodash\`
+    - \`karma>log4js>streamroller>lodash\`
+    - \`lodash\`
+    - \`node-sass>gaze>globule>lodash\`
+    - \`node-sass>lodash\`
+    - \`node-sass>sass-graph>lodash\`
+    - \`react-select>@emotion/core>@emotion/css>babel-plugin-emotion>@babel/helper-module-imports>@babel/types>lodash\`
+    - \`react-select>@emotion/css>babel-plugin-emotion>@babel/helper-module-imports>@babel/types>lodash\`
+    - \`yup>lodash\`
+---
+
+### yargs-parser
+
+[Prototype Pollution](https://npmjs.com/advisories/1500) _Upgrade to versions 13.1.2, 15.0.1, 18.1.1 or later._
+_low_ - \`<13.1.2 || >=14.0.0 <15.0.1 || >=16.0.0 <18.1.2\` - _automatic fix available_ 
+  - \`yargs-parser:9.0.2\`: 
+    - \`gravatar>yargs>yargs-parser\`
+  - \`yargs-parser:5.0.0\`: 
+    - \`node-sass>sass-graph>yargs>yargs-parser\`
+---
+
+### minimist
+
+[Prototype Pollution](https://npmjs.com/advisories/1179) _Upgrade to versions 0.2.1, 1.2.3 or later._
+_low_ - \`<0.2.1 || >=1.0.0 <1.2.3\` - _automatic fix available_ 
+  - \`minimist:0.0.8\`: 
+    - \`firebase>@firebase/firestore>grpc>node-pre-gyp>mkdirp>minimist\`
+    - \`firebase>@firebase/firestore>grpc>node-pre-gyp>tar>mkdirp>minimist\`
+  - \`minimist:1.2.0\`: 
+    - \`firebase>@firebase/firestore>grpc>node-pre-gyp>rc>minimist\`
+  - \`minimist:0.0.8\`: 
+    - \`karma>optimist>minimist\`
+    - \`node-sass>mkdirp>minimist\`
+    - \`node-sass>node-gyp>fstream>mkdirp>minimist\`
+    - \`node-sass>node-gyp>mkdirp>minimist\`
+    - \`node-sass>node-gyp>tar>fstream>mkdirp>minimist\`
+    - \`shadow-cljs>mkdirp>minimist\`
+  - \`minimist:1.2.0\`: 
+    - \`node-sass>meow>minimist\`
+---
+
+### node-sass
+
+[Denial of Service](https://npmjs.com/advisories/961) _Upgrade to version 4.13.1 or later_
+_low_ - \`>=3.3.0 <4.13.1\` - _automatic fix available_ 
+  - \`node-sass:4.13.0\`: 
+    - \`node-sass\`
+--- 
+
+## <a id="open-vul">Open vulnerabilities</a>
+
+Following security vulnerability is open and need manual review:
+
+### yargs-parser
+
+[Prototype Pollution](https://npmjs.com/advisories/1500) _Upgrade to versions 13.1.2, 15.0.1, 18.1.1 or later._
+_low_ - \`<13.1.2 || >=14.0.0 <15.0.1 || >=16.0.0 <18.1.2\` - _automatic fix available_ 
+  - \`yargs-parser:9.0.2\`: 
+    - \`gravatar>yargs>yargs-parser\`
+
+---
+
+ * \`package-lock.json\`
+ * \`package.json\`
+
+---
+
+<details>
+  <summary>Tags</summary>
+  <br/>
+  <code>[atomist:generated]</code>
+  <br/>
+  <code>[atomist-skill:atomist/npm-audit-skill]</code>
+  <br/>
+  <code><a href="https://go.atomist.com/log/T095SFFBK/88f8d3a6-b4d4-4015-b50c-fa70acf9954e.HlhA3A3z887NNbf3JnFBv">[atomist-correlation-id:88f8d3a6-b4d4-4015-b50c-fa70acf9954e.HlhA3A3z887NNbf3JnFBv]</a></code>
+  
+</details>
+
+`
+            const result = removeAnchorLinks(body);
+            assert.deepStrictEqual(result.includes("open-vul"), false);
+        })
+
+    });
 
 });

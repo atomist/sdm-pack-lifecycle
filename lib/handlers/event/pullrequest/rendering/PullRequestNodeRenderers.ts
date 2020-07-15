@@ -43,6 +43,7 @@ import {
     linkGitHubUsers,
     linkIssues,
     prUrl,
+    removeAnchorLinks,
     removeMarkers,
     repoAndlabelsAndAssigneesFooter,
     repoUrl,
@@ -97,7 +98,7 @@ export class PullRequestNodeRenderer extends AbstractIdentifiableContribution
             ts = pr.mergedAt;
         }
 
-        return linkGitHubUsers(githubToSlack(pr.body), context.context)
+        return linkGitHubUsers(githubToSlack(removeAnchorLinks(pr.body)), context.context)
             .then(body => {
                 const attachment: Attachment = {
                     author_name: repoSlug,

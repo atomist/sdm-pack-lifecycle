@@ -662,6 +662,13 @@ export function removeMarkers(body: string): string {
     }
 }
 
+export function removeAnchorLinks(body: string): string {
+    if (!body || body.length === 0) {
+        return body;
+    }
+    return body.replace(/\[([^\]]*)\]\(#[a-z-]*\)/g, "$1").replace(/<a id="[^"]*">([^<]*)<\/a>/g, "$1");
+}
+
 export function linkGitHubUsers(b: string = "", context: HandlerContext): Promise<string> {
     let body = b;
     if (!body || body.length === 0) {
