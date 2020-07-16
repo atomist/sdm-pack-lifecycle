@@ -652,7 +652,7 @@ export function getGitHubUsers(msg: string = ""): string[] {
 }
 
 const MarkerExp = /(\[[a-zA-Z-]*:[a-zA-Z_\-:#()\/]*\])/gi;
-const TagSnippetExp = /---[\s]*<details>[\s\S]*<\/details>/gm;
+const TagSnippetExp = /(?:---[\s]*|[\s])?<details>[\s\S]*?<\/details>/gm;
 const CommentExp = /<!--[\s\S]*-->/gm;
 
 export function removeMarkers(body: string): string {
