@@ -653,20 +653,23 @@ export function getGitHubUsers(msg: string = ""): string[] {
 
 const MarkerExp = /(\[[a-zA-Z-]*:[a-zA-Z_\-:#()\/]*\])/gi;
 const TagSnippetExp = /---[\s]*<details>[\s\S]*<\/details>/gm;
+const CommentExp = /<!--[\s\S]*-->/gm;
 
 export function removeMarkers(body: string): string {
-    if (body) {
-        return body.replace(TagSnippetExp, "").replace(MarkerExp, "").trim();
-    } else {
-        return null;
+    if (!body || body.length === 0) {
+        return body;
     }
+    return body.replace(TagSnippetExp, "")
+        .replace(MarkerExp, "")
+        .replace(CommentExp, "").trim();
 }
 
 export function removeAnchorLinks(body: string): string {
     if (!body || body.length === 0) {
         return body;
     }
-    return body.replace(/\[([^\]]*)\]\(#[a-z-]*\)/g, "$1").replace(/<a id="[^"]*">([^<]*)<\/a>/g, "$1");
+    return body.replace(/\[([^\]]*)\]\(#[a-z-]*\)/g, "$1")
+        .replace(/<a id="[^"]*">([^<]*)<\/a>/g, "$1");
 }
 
 export function linkGitHubUsers(b: string = "", context: HandlerContext): Promise<string> {
