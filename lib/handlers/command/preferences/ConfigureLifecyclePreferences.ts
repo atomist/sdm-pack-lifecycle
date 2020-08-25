@@ -218,7 +218,7 @@ export class ConfigureLifecyclePreferences implements HandleCommand {
             title: "GitHub Notifications Emojis",
             fallback: "Configure GitHub Notifications Emojis",
             // tslint:disable-next-line:max-line-length
-            text: `GitHub Notifications can be used with custom emojis. Examples can be seen ${url("https://the-composition.com/automation-story-graphql-schema-deployment-7893eb55ed18", "here")}.`,
+            text: `GitHub Notifications can be used with custom emojis.`,
             actions: [
                 buttonForCommand(
                     {
