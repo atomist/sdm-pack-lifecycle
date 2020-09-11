@@ -45,13 +45,13 @@
     "toposort": "^2.0.2"
   },
   "peerDependencies": {
-    "@atomist/automation-client": "2.0.0-master.20200311165330",
-    "@atomist/sdm": "2.0.0-master.20200323171527",
+    "@atomist/automation-client": "^2.0.0",
+    "@atomist/sdm": "^2.0.0",
     "@atomist/slack-messages": "^1.1.1"
   },
   "devDependencies": {
-    "@atomist/automation-client": "2.0.0-master.20200311165330",
-    "@atomist/sdm": "2.0.0-master.20200323171527",
+    "@atomist/automation-client": "^2.0.0",
+    "@atomist/sdm": "^2.0.0",
     "@atomist/slack-messages": "^1.1.1",
     "@types/mocha": "^5.2.7",
     "@types/power-assert": "^1.5.0",
