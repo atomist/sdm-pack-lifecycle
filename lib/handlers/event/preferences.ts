@@ -284,7 +284,7 @@ export const LifecycleActionPreferences: any = {
     review: {
         comment: {
             id: "comment",
-            name: "Add Comemnt",
+            name: "Add Comment",
             description: "Add comment on GitHub review",
             enabled: true,
         },
