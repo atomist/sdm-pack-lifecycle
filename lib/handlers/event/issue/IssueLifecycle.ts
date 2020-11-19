@@ -136,7 +136,7 @@ export class IssueLifecycleHandler<R> extends LifecycleHandler<R> {
             return null;
         }
 
-        const users = ignoredUsers(event);
+        const users = ignoredUsers(ctx);
         if (users.includes(issue.openedBy.login)) {
             logger.debug(`Lifecycle event from ignored user`);
             return null;

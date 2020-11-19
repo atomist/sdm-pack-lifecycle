@@ -124,7 +124,7 @@ export class PullRequestLifecycleHandler<R> extends LifecycleHandler<R> {
         });
     }
 
-    protected async prepareLifecycle(event: EventFired<R>): Promise<Lifecycle[]> {
+    protected async prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Promise<Lifecycle[]> {
         const nodes = [];
         const [pullrequest, repo, timestamp, updateOnly] = this.extractNodes(event);
 
@@ -146,7 +146,7 @@ export class PullRequestLifecycleHandler<R> extends LifecycleHandler<R> {
             return null;
         }
 
-        const users = ignoredUsers(event);
+        const users = ignoredUsers(ctx);
         if (users.includes(pullrequest.author.login)) {
             logger.debug(`Lifecycle event from ignored user`);
             return null;

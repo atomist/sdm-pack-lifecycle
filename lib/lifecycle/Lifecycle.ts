@@ -130,7 +130,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
 
     public async handle(event: EventFired<R>, ctx: HandlerContext): Promise<HandlerResult> {
         // Let the concrete handler configure the lifecycle message
-        const lifecycles = this.addDefaultChannels(await this.prepareLifecycle(event, ctx), event);
+        const lifecycles = this.addDefaultChannels(await this.prepareLifecycle(event, ctx), ctx);
         const preferences = this.extractPreferences(event);
 
         // Bail out if something isn't correctly linked up
@@ -199,9 +199,9 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
      */
     protected abstract prepareMessage(lifecycle: Lifecycle, ctx: HandlerContext): Promise<any>;
 
-    private addDefaultChannels(lifecycles: Lifecycle[], event: EventFired<R>): Lifecycle[] {
+    private addDefaultChannels(lifecycles: Lifecycle[], ctx: HandlerContext): Lifecycle[] {
         const defaultChannels: Channel[] =
-            (event as any).skill?.configuration?.parameters?.find((p: any) => p.name === "channels")?.value?.map((c: any) => ({ name: c.channelName, teamId: c.chatTeamId }));
+            (ctx as any).trigger?.skill?.configuration?.parameters?.find((p: any) => p.name === "channels")?.value?.map((c: any) => ({ name: c.channelName, teamId: c.chatTeamId }));
         if (defaultChannels?.length > 0) {
             lifecycles.filter(l => !l.channels || l.channels.length === 0).forEach(l => l.channels = defaultChannels);
         }

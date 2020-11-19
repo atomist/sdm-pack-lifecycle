@@ -50,7 +50,7 @@ export class CommentLifecycleHandler<R> extends LifecycleHandler<R> {
 
     protected async prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Promise<Lifecycle[]> {
         const [comments, issue, pullRequest, repo, updateOnly] = this.extractNodes(event);
-        const users = ignoredUsers(event);
+        const users = ignoredUsers(ctx);
         
         if (!!comments) {
             return comments.filter(c => !users.includes(c.by.login)).map(comment => {

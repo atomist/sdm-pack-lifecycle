@@ -15,6 +15,7 @@
  */
 
 import { EventFired } from "@atomist/automation-client/lib/HandleEvent";
+import { HandlerContext } from "@atomist/automation-client/lib/HandlerContext";
 import { logger } from "@atomist/automation-client/lib/util/logger";
 import { SlackMessage } from "@atomist/slack-messages";
 import * as _ from "lodash";
@@ -43,9 +44,9 @@ export class ReviewLifecycleHandler<R> extends LifecycleHandler<R> {
         });
     }
 
-    protected async prepareLifecycle(event: EventFired<R>): Promise<Lifecycle[]> {
+    protected async prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Promise<Lifecycle[]> {
         const [reviews, timestamp] = this.extractNodes(event);
-        const users = ignoredUsers(event);
+        const users = ignoredUsers(ctx);
 
         if (reviews) {
             return reviews.filter(r => r.by.some(b => !users.includes(b.login))).map(review => {
