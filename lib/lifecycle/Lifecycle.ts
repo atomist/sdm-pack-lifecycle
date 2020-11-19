@@ -203,7 +203,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
         const defaultChannels: Channel[] =
             (ctx as any).trigger?.skill?.configuration?.parameters?.find((p: any) => p.name === "channels")?.value?.map((c: any) => ({ name: c.channelName, teamId: c.chatTeamId }));
         if (defaultChannels?.length > 0) {
-            lifecycles.filter(l => !l.channels || l.channels.length === 0).forEach(l => l.channels = defaultChannels);
+            lifecycles?.filter(l => !l.channels || l.channels.length === 0).forEach(l => l.channels = defaultChannels);
         }
         return lifecycles;
     }
