@@ -201,7 +201,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
 
     private addDefaultChannels(lifecycles: Lifecycle[], event: EventFired<R>): Lifecycle[] {
         const defaultChannels: Channel[] =
-            (event as any).skill?.configuration?.parameters?.channels?.map(c => ({ name: c.channelName, teamId: c.chatTeamId }));
+            (event as any).skill?.configuration?.parameters?.channels?.map((c: any) => ({ name: c.channelName, teamId: c.chatTeamId }));
         if (defaultChannels?.length > 0) {
             lifecycles.filter(l => !l.channels || l.channels.length === 0).forEach(l => l.channels = defaultChannels);
         }
