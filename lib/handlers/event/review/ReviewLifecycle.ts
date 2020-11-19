@@ -23,6 +23,7 @@ import {
     LifecycleHandler,
     Preferences,
 } from "../../../lifecycle/Lifecycle";
+import { ignoredUsers } from "../../../lifecycle/util";
 import { Contributions } from "../../../lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { LifecyclePreferences } from "../preferences";
@@ -44,9 +45,10 @@ export class ReviewLifecycleHandler<R> extends LifecycleHandler<R> {
 
     protected async prepareLifecycle(event: EventFired<R>): Promise<Lifecycle[]> {
         const [reviews, timestamp] = this.extractNodes(event);
+        const users = ignoredUsers(event);
 
         if (reviews) {
-            return reviews.map(review => {
+            return reviews.filter(r => r.by.some(b => !users.includes(b.login))).map(review => {
                 const nodes = [];
                 let repo: any;
                 if (review && review.pullRequest && review.pullRequest.repo) {

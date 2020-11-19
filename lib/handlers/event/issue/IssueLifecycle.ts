@@ -28,6 +28,7 @@ import {
     LifecycleHandler,
     Preferences,
 } from "../../../lifecycle/Lifecycle";
+import { ignoredUsers } from "../../../lifecycle/util";
 import { Contributions } from "../../../lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { LifecyclePreferences } from "../preferences";
@@ -132,6 +133,12 @@ export class IssueLifecycleHandler<R> extends LifecycleHandler<R> {
         // Verify that there is at least a issue and repo node
         if (!issue) {
             logger.debug(`Lifecycle event is missing issue and/or repo node`);
+            return null;
+        }
+
+        const users = ignoredUsers(event);
+        if (users.includes(issue.openedBy.login)) {
+            logger.debug(`Lifecycle event from ignored user`);
             return null;
         }
 

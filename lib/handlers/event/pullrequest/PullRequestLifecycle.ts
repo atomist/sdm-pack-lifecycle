@@ -28,6 +28,7 @@ import {
     LifecycleHandler,
     Preferences,
 } from "../../../lifecycle/Lifecycle";
+import { ignoredUsers } from "../../../lifecycle/util";
 import { Contributions } from "../../../lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { LifecyclePreferences } from "../preferences";
@@ -142,6 +143,12 @@ export class PullRequestLifecycleHandler<R> extends LifecycleHandler<R> {
             return null;
         } else if (pullrequest.merged && !pullrequest.merger) {
             logger.debug(`Lifecycle event is missing merger for merged pullrequest`);
+            return null;
+        }
+
+        const users = ignoredUsers(event);
+        if (users.includes(pullrequest.author.login)) {
+            logger.debug(`Lifecycle event from ignored user`);
             return null;
         }
 

@@ -32,6 +32,7 @@ import {
     LifecycleHandler,
     Preferences,
 } from "../../../lifecycle/Lifecycle";
+import { ignoredUsers } from "../../../lifecycle/util";
 import { Contributions } from "../../../lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
@@ -130,9 +131,10 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
     protected async prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Promise<Lifecycle[]> {
         const pushes = this.extractNodes(event);
         const preferences = this.extractPreferences(event);
+        const users = ignoredUsers(event);
 
         const lifecycles: Lifecycle[] = [];
-        for (const push of  pushes.filter(p => p && p.after)) {
+        for (const push of  pushes.filter(p => p && p.after).filter(p => p.commits.some(c => !users.includes(c.author.login)))) {
             const channels = this.filterChannels(push, preferences);
 
             const logins: string[] = [];

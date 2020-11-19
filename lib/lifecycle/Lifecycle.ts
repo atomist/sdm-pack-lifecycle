@@ -175,7 +175,7 @@ export abstract class LifecycleHandler<R> implements HandleEvent<R> {
                         msg = await r.render(n, actions, msg, context);
                     }
                 }
-                this.createAndSendMessage(msg, nlc, channels, ctx);
+                await this.createAndSendMessage(msg, nlc, channels, ctx);
             }
         }
         return Success;

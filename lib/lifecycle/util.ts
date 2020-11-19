@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { EventFired } from "@atomist/automation-client/lib/HandleEvent";
 import {
     ChatTeam,
     Preferences,
@@ -38,4 +39,8 @@ export function normalizeTimestamp(timestamp: string): number {
         // Ignore
     }
     return Math.floor(pd / 1000);
+}
+
+export function ignoredUsers(event: EventFired<any>): string[] {
+    return (event as any).skill?.configuration?.parameters?.find((p: any) => p.name === "ignores")?.value || [];
 }

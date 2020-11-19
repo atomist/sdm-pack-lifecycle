@@ -24,6 +24,7 @@ import {
     LifecycleHandler,
     Preferences,
 } from "../../../lifecycle/Lifecycle";
+import { ignoredUsers } from "../../../lifecycle/util";
 import { Contributions } from "../../../lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import { LifecyclePreferences } from "../preferences";
@@ -49,9 +50,10 @@ export class CommentLifecycleHandler<R> extends LifecycleHandler<R> {
 
     protected async prepareLifecycle(event: EventFired<R>, ctx: HandlerContext): Promise<Lifecycle[]> {
         const [comments, issue, pullRequest, repo, updateOnly] = this.extractNodes(event);
-
+        const users = ignoredUsers(event);
+        
         if (!!comments) {
-            return comments.map(comment => {
+            return comments.filter(c => !users.includes(c.by.login)).map(comment => {
                 const nodes = [];
 
                 if (!!repo) {
