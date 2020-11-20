@@ -160,17 +160,17 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
     private emoji(state: CheckRunConclusion): string {
         switch (state) {
             case CheckRunConclusion.action_required:
-                return EMOJI_SCHEME[this.emojiStyle].build.approval;
+                return EMOJI_SCHEME[this.emojiStyle].build.action_required;
             case CheckRunConclusion.timed_out:
                 return EMOJI_SCHEME[this.emojiStyle].build.failed;
             case CheckRunConclusion.stale:
                 return EMOJI_SCHEME[this.emojiStyle].build.requested;
             case CheckRunConclusion.neutral:
-            case CheckRunConclusion.skipped:
                 return EMOJI_SCHEME[this.emojiStyle].build.skipped;
             case CheckRunConclusion.failure:
                 return EMOJI_SCHEME[this.emojiStyle].build.failed;
             case CheckRunConclusion.cancelled:
+            case CheckRunConclusion.skipped:
                 return EMOJI_SCHEME[this.emojiStyle].build.canceled;
             case CheckRunConclusion.success:
                 return EMOJI_SCHEME[this.emojiStyle].build.passed;

@@ -81,6 +81,7 @@ export const EMOJI_SCHEME: any = {
             skipped: "⏭",
             canceled: "🔼",
             stopped: "⏹",
+            action_required: "⭕",
         },
     },
 
@@ -101,6 +102,7 @@ export const EMOJI_SCHEME: any = {
             skipped: slackEmoji("atomist_sdm_skipped"),
             canceled: slackEmoji("atomist_sdm_canceled"),
             stopped: slackEmoji("atomist_sdm_stopped"),
+            action_required: slackEmoji("atomist_sdm_action_required"),
         },
     },
 };
