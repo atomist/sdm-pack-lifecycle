@@ -58,7 +58,8 @@ import { EMOJI_SCHEME } from "./PushNodeRenderers";
 export interface Check {
     name: string;
     description: string;
-    state: StatusState;
+    state: Omit<StatusState, "failure">;
+    conclusion: CheckRunConclusion;
     url: string;
     detailsUrl: string;
 }
@@ -91,6 +92,10 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
                         msg: SlackMessage,
                         context: RendererContext): Promise<SlackMessage> {
 
+        const shouldChannelExpand = context.lifecycle.renderers.some(
+            r => r.id() === LifecycleRendererPreferences.push.expand.id) === true ? SdmGoalDisplayFormat.full : undefined;
+        const displayFormat = shouldChannelExpand || _.get(push, "goalsDisplayState[0].format");
+
         // List all the statuses on the after commit
         const commit = push.after;
         const checks = aggregateStatusesAndChecks(commit).filter(check => notAlreadyDisplayed(push, check));
@@ -103,14 +108,21 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
         const error = checks.length - pending - success;
 
         // Now each one
-        const lines = checks.sort((s1, s2) => s1.name.localeCompare(s2.name))
+        const lines = checks.filter(c => {
+            if (displayFormat === SdmGoalDisplayFormat.compact) {
+                if (c.state === StatusState.pending || c.state === StatusState.failure || c.state === StatusState.error) {
+                    return false;
+                }
+            }
+            return true;
+        }).sort((s1, s2) => s1.name.localeCompare(s2.name))
             .map(s => {
                 if (s.detailsUrl?.length > 0 && s.description?.length > 0) {
-                    return `${this.emoji(s.state)} ${url(s.detailsUrl, s.description)} \u00B7 ${s.url?.length > 0 ? url(s.url, s.name) : s.name}`;
+                    return `${this.emoji(s.conclusion)} ${url(s.detailsUrl, s.description)} \u00B7 ${s.url?.length > 0 ? url(s.url, s.name) : s.name}`;
                 } else if (s.description?.length > 0) {
-                    return `${this.emoji(s.state)} ${s.description} \u00B7 ${s.url?.length > 0 ? url(s.url, s.name) : s.name}`;
+                    return `${this.emoji(s.conclusion)} ${s.description} \u00B7 ${s.url?.length > 0 ? url(s.url, s.name) : s.name}`;
                 } else {
-                    return `${this.emoji(s.state)} ${s.url?.length > 0 ? url(s.url, s.name) : s.name}`;
+                    return `${this.emoji(s.conclusion)} ${s.url?.length > 0 ? url(s.url, s.name) : s.name}`;
                 }
             });
 
@@ -128,20 +140,40 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
             fallback: summary,
             actions,
             text: lines.join("\n"),
+            footer: summary,
         };
         msg.attachments.push(attachment);
+
+        if (!push.goals || push.goals.length === 0) {
+            let present = 0;
+            if (context.has("attachment_count")) {
+                present = context.get("attachment_count");
+            }
+            context.set("attachment_count", present + 1);
+        }
 
         return msg;
     }
 
-    private emoji(state: string): string {
+    private emoji(state: CheckRunConclusion): string {
         switch (state) {
-            case "pending":
-                return EMOJI_SCHEME[this.emojiStyle].build.started;
-            case "success":
+            case CheckRunConclusion.action_required:
+                return EMOJI_SCHEME[this.emojiStyle].build.approval;
+            case CheckRunConclusion.timed_out:
+                return EMOJI_SCHEME[this.emojiStyle].build.failed;
+            case CheckRunConclusion.stale:
+                return EMOJI_SCHEME[this.emojiStyle].build.requested;
+            case CheckRunConclusion.neutral:
+            case CheckRunConclusion.skipped:
+                return EMOJI_SCHEME[this.emojiStyle].build.skipped;
+            case CheckRunConclusion.failure:
+                return EMOJI_SCHEME[this.emojiStyle].build.failed;
+            case CheckRunConclusion.cancelled:
+                return EMOJI_SCHEME[this.emojiStyle].build.canceled;
+            case CheckRunConclusion.success:
                 return EMOJI_SCHEME[this.emojiStyle].build.passed;
             default:
-                return EMOJI_SCHEME[this.emojiStyle].build.failed;
+                return EMOJI_SCHEME[this.emojiStyle].build.started;
         }
     }
 }
@@ -664,11 +696,32 @@ export function aggregateStatusesAndChecks(commit: PushToPushLifecycle.Push["aft
 
     // First statuses
     commit.statuses?.forEach(s => {
+        let state;
+        let conclusion;
+        switch (s.state) {
+            case StatusState.success:
+                state = StatusState.success;
+                conclusion = CheckRunConclusion.success;
+                break;
+            case StatusState.error:
+                state = StatusState.error;
+                conclusion = CheckRunConclusion.action_required;
+                break;
+            case StatusState.failure:
+                state = StatusState.error;
+                conclusion = CheckRunConclusion.failure;
+                break;
+            case StatusState.pending:
+                state = StatusState.pending;
+                break;
+        }
+
         allChecks.push({
             name: s.context,
             description: s.description,
             url: s.targetUrl,
-            state: s.state,
+            state,
+            conclusion,
             detailsUrl: undefined,
         });
     });
@@ -684,17 +737,17 @@ export function aggregateStatusesAndChecks(commit: PushToPushLifecycle.Push["aft
                     break;
                 case CheckRunStatus.completed:
                     switch (r.conclusion) {
-                        case CheckRunConclusion.success:
+                        case CheckRunConclusion.action_required:
+                        case CheckRunConclusion.cancelled:
+                        case CheckRunConclusion.stale:
+                        case CheckRunConclusion.failure:
+                        case CheckRunConclusion.timed_out:
+                            state = StatusState.error;
+                            break;
                         case CheckRunConclusion.neutral:
                         case CheckRunConclusion.skipped:
+                        case CheckRunConclusion.success:
                             state = StatusState.success;
-                            break;
-                        case undefined:
-                        case null:
-                            state = StatusState.success;
-                            break;
-                        default:
-                            state = StatusState.failure;
                             break;
                     }
                     break;
@@ -703,7 +756,8 @@ export function aggregateStatusesAndChecks(commit: PushToPushLifecycle.Push["aft
                 name: `${app}/${r.name}`,
                 description: r.outputTitle,
                 url: r.htmlUrl,
-                state,
+                state: r.status,
+                conclusion: r.conclusion,
                 detailsUrl: r.detailsUrl,
             });
         });
