@@ -135,23 +135,25 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
 
         const summary = summarizeStatusCounts(pending, success, error);
 
-        const attachment: Attachment = {
-            // author_name: lines.length > 1 ? "Checks" : "Check",
-            // author_icon: `https://images.atomist.com/rug/status.png?random=${guid()}`,
-            color,
-            fallback: summary,
-            actions,
-            text: lines.join("\n"),
-            footer: summary,
-        };
-        msg.attachments.push(attachment);
+        if (lines.length > 0) {
+            const attachment: Attachment = {
+                // author_name: lines.length > 1 ? "Checks" : "Check",
+                // author_icon: `https://images.atomist.com/rug/status.png?random=${guid()}`,
+                color,
+                fallback: summary,
+                actions,
+                text: lines.join("\n"),
+                footer: summary,
+            };
+            msg.attachments.push(attachment);
 
-        if (!push.goals || push.goals.length === 0) {
-            let present = 0;
-            if (context.has("attachment_count")) {
-                present = context.get("attachment_count");
+            if (!push.goals || push.goals.length === 0) {
+                let present = 0;
+                if (context.has("attachment_count")) {
+                    present = context.get("attachment_count");
+                }
+                context.set("attachment_count", present + 1);
             }
-            context.set("attachment_count", present + 1);
         }
 
         return msg;
