@@ -120,6 +120,7 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
                 if (c.state === StatusState.pending || c.state === StatusState.failure || c.state === StatusState.error) {
                     return true;
                 } else {
+                    context.set("show_more", true);
                     return false;
                 }
             }
