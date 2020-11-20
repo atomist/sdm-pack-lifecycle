@@ -111,6 +111,8 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
         const lines = checks.filter(c => {
             if (displayFormat === SdmGoalDisplayFormat.compact) {
                 if (c.state === StatusState.pending || c.state === StatusState.failure || c.state === StatusState.error) {
+                    return true;
+                } else {
                     return false;
                 }
             }
