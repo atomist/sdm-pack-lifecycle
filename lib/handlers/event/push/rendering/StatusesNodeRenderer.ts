@@ -756,7 +756,7 @@ export function aggregateStatusesAndChecks(commit: PushToPushLifecycle.Push["aft
                 name: `${app}/${r.name}`,
                 description: r.outputTitle,
                 url: r.htmlUrl,
-                state: r.status,
+                state,
                 conclusion: r.conclusion,
                 detailsUrl: r.detailsUrl,
             });
