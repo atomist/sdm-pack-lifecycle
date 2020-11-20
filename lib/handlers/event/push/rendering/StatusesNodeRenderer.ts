@@ -69,6 +69,7 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
 
     public showOnPush: boolean;
     public emojiStyle: "default" | "atomist";
+    public renderingStyle: SdmGoalDisplayFormat;
 
     constructor() {
         super("statuses");
@@ -77,6 +78,7 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
     public configure(configuration: LifecycleConfiguration): void {
         this.showOnPush = configuration.configuration["show-statuses-on-push"] || true;
         this.emojiStyle = configuration.configuration["emoji-style"] || "default";
+        this.renderingStyle = configuration.configuration["rendering-style"] || SdmGoalDisplayFormat.full;
     }
 
     public supports(node: PushToPushLifecycle.Push): boolean {
@@ -94,7 +96,12 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
 
         const shouldChannelExpand = context.lifecycle.renderers.some(
             r => r.id() === LifecycleRendererPreferences.push.expand.id) === true ? SdmGoalDisplayFormat.full : undefined;
-        const displayFormat = shouldChannelExpand || _.get(push, "goalsDisplayState[0].format");
+        let displayFormat = shouldChannelExpand || _.get(push, "goalsDisplayState[0].format");
+        if (this.renderingStyle === SdmGoalDisplayFormat.full) {
+            displayFormat = SdmGoalDisplayFormat.full;
+        } else if (!displayFormat) {
+            displayFormat = this.renderingStyle;
+        }
 
         // List all the statuses on the after commit
         const commit = push.after;
