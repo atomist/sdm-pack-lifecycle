@@ -710,8 +710,19 @@ export class GoalCardNodeRenderer extends AbstractIdentifiableContribution
     }
 }
 
+enum ConclusionOrder {
+    action_required = 0,
+    timed_out = 1,
+    failure = 2,
+    cancelled = 3,
+    // in progress = 4,
+    neutral = 5,
+    skipped = 6,
+    success = 7,
+}
+
 export function aggregateStatusesAndChecks(commit: PushToPushLifecycle.Push["after"]): Check[] {
-    const allChecks: Check[] = [];
+    const allChecks: Array<Check & { order: number }> = [];
 
     // First statuses
     commit.statuses?.forEach(s => {
@@ -742,6 +753,7 @@ export function aggregateStatusesAndChecks(commit: PushToPushLifecycle.Push["aft
             state,
             conclusion,
             detailsUrl: undefined,
+            order: conclusion ? +ConclusionOrder[conclusion as any] : 4,
         });
     });
     // Second checks
@@ -778,10 +790,11 @@ export function aggregateStatusesAndChecks(commit: PushToPushLifecycle.Push["aft
                 state,
                 conclusion: r.conclusion,
                 detailsUrl: r.detailsUrl,
+                order: r.conclusion ? +ConclusionOrder[r.conclusion as any] : 4,
             });
         });
     });
-    return _.sortBy(allChecks, "url").reverse();
+    return _.orderBy(allChecks, ["order", "name"], ["asc", "asc"]);
 }
 
 function notAlreadyDisplayed(push: any, status: Check): boolean {
