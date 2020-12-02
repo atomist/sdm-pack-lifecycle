@@ -125,8 +125,7 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
                 }
             }
             return true;
-        }).sort((s1, s2) => s1.name.localeCompare(s2.name))
-            .map(s => {
+        }).map(s => {
                 if (s.detailsUrl?.length > 0 && s.description?.length > 0) {
                     return `${this.emoji(s.conclusion)} ${url(s.detailsUrl, s.description)} \u00B7 ${s.url?.length > 0 ? url(s.url, s.name) : s.name}`;
                 } else if (s.description?.length > 0) {
@@ -141,8 +140,7 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
                 error > 0 ? "#BC3D33" :
                     "#37A745";
 
-        const checkUrl = _.sortBy(checks, "url").reverse()[0].url;
-        const summary = url(checkUrl, summarizeStatusCounts(pending, success, error));
+        const summary = url(checks[0].url, summarizeStatusCounts(pending, success, error));
 
         if (lines.length > 0) {
             const attachment: Attachment = {
@@ -783,7 +781,7 @@ export function aggregateStatusesAndChecks(commit: PushToPushLifecycle.Push["aft
             });
         });
     });
-    return allChecks;
+    return _.sortBy(allChecks, "url").reverse();
 }
 
 function notAlreadyDisplayed(push: any, status: Check): boolean {
