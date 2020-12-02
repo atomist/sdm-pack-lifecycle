@@ -163,6 +163,7 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
                 context.set("attachment_count", present + 1);
             }
         } else {
+            // Add the check summary to the commit footer for better readability
             const lastAttachment = msg.attachments[msg.attachments.length - 1];
             if (!!lastAttachment.footer) {
                 lastAttachment.footer = `${lastAttachment.footer} \u00B7 ${summary}`;
