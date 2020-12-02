@@ -140,7 +140,8 @@ export class StatusesNodeRenderer extends AbstractIdentifiableContribution
             pending > 0 ? "#2A7D7D" :
                 error > 0 ? "#BC3D33" :
                     "#37A745";
-        const checkUrl = _.sortBy(checks, "url")[0].url;
+
+        const checkUrl = _.sortBy(checks, "url").reverse()[0].url;
         const summary = url(checkUrl, summarizeStatusCounts(pending, success, error));
 
         if (lines.length > 0) {
