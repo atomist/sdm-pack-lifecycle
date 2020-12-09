@@ -771,7 +771,9 @@ export class LifecycleAttachmentsNodeRenderer extends AbstractIdentifiableContri
                     cra.command.name = "routeAttachmentAction";
                     cra.command.parameters = {
                         ...(cra.command.parameters || {}),
-                        atmCommandName: cmd,
+                        _atmCommand: cmd,
+                        _atmSkill: attachment.skill,
+                        _atmConfiguration: attachment.configuration,
                     };
                     return cra;
                 });

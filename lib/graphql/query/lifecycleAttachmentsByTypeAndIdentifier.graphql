@@ -4,6 +4,7 @@ query lifecycleAttachmentsByTypeAndIdentifier($type: LifecycleAttachmentType!, $
         body
         name
         skill
+        configuration
         ts
     }
 }
