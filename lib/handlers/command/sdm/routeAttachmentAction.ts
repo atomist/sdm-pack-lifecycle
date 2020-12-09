@@ -37,6 +37,8 @@ export function routeAttachmentAction(): CommandHandlerRegistration<{ _atmComman
             trigger.parameters = trigger.parameters.filter(p => !p.name.startsWith("_atm"));
             delete (trigger as any).skill;
             delete trigger.secrets;
+            delete (trigger as any).handler;
+            delete (trigger as any).configurations;
             
             await ci.context.graphClient.mutate<CreateActionJob.Mutation, CreateActionJob.Variables>(
                 {
