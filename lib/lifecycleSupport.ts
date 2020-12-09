@@ -300,6 +300,7 @@ export const DefaultLifecycleRenderingOptions: LifecycleOptions = {
                 new pr.CommitNodeRenderer(),
                 new sr.GoalSetNodeRenderer(),
                 new sr.StatusesNodeRenderer(),
+                new pr.LifecycleAttachmentsNodeRenderer(),
                 new WorkflowNodeRenderer(),
                 new pr.IssueNodeRenderer(),
                 new pr.PullRequestNodeRenderer(),

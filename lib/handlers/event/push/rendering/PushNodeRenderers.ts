@@ -15,6 +15,7 @@
  */
 
 import { QueryNoCacheOptions } from "@atomist/automation-client/lib/spi/graph/GraphClient";
+import { CommandReferencingAction } from "@atomist/automation-client/lib/spi/message/MessageClient";
 import { logger } from "@atomist/automation-client/lib/util/logger";
 import {
     Action,
@@ -37,6 +38,7 @@ import { ReferencedIssuesNodeRenderer } from "../../../../lifecycle/rendering/Re
 import * as graphql from "../../../../typings/types";
 import {
     CommitIssueRelationshipBySha,
+    LifecycleAttachmentType,
     PushToPushLifecycle,
     SdmGoalDisplayFormat,
     SdmVersionByCommit,
@@ -741,6 +743,42 @@ export class PushReferencedIssuesNodeRenderer extends ReferencedIssuesNodeRender
 
     public async render(node: any, actions: Action[], msg: SlackMessage, context: RendererContext): Promise<SlackMessage> {
         return super.render(node, actions, msg, context);
+    }
+}
+
+export class LifecycleAttachmentsNodeRenderer extends AbstractIdentifiableContribution
+    implements SlackNodeRenderer<graphql.PushToPushLifecycle.Push> {
+
+    constructor() {
+        super("lifecycle_attachments");
+    }
+
+    public supports(node: any): boolean {
+        return !!node.after;
+    }
+
+    public async render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
+                        ctx: RendererContext): Promise<SlackMessage> {
+        const identifier = JSON.stringify({ sha: push.after.sha, branch: push.branch});
+        const attachments = await ctx.context.graphClient.query<graphql.LifecycleAttachmentByTypeAndIdentifierQuery, graphql.LifecycleAttachmentByTypeAndIdentifierQueryVariables>(
+            { name: "lifecycleAttachmentToPushLifecycle", variables: { type: LifecycleAttachmentType.push, identifier }, options: QueryNoCacheOptions });
+        if (attachments?.LifecycleAttachment?.length > 0) {
+            for (const attachment of _.orderBy(attachments.LifecycleAttachment, ["ts"], ["desc"])) {
+                const body: Attachment = JSON.parse(attachment.body);
+                body.actions = (body.actions || []).map(a => {
+                    const cra = (a as any) as CommandReferencingAction;
+                    const cmd = cra.command.name;
+                    cra.command.name = "routeAttachmentAction";
+                    cra.command.parameters = {
+                        ...(cra.command.parameters || {}),
+                        atmCommandName: cmd,
+                    };
+                    return cra;
+                });
+                msg.attachments.push(body);
+            }
+        }
+        return msg;
     }
 }
 

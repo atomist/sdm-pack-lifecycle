@@ -1,0 +1,6 @@
+subscription LifecycleAttachmentToPushLifecycle {
+    LifecycleAttachment(type: [push]) {
+        id
+        identifier
+    }
+}
