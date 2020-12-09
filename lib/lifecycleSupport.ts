@@ -34,6 +34,7 @@ import {
     discardComplianceReview,
     openComplianceReview,
 } from "./handlers/command/sdm/compliance";
+import { routeAttachmentAction } from "./handlers/command/sdm/routeAttachmentAction";
 import { setTargetCommand } from "./handlers/command/sdm/setTarget";
 import { toggleGoalSetsSubscription } from "./handlers/command/sdm/SubscribeToGoalSets";
 import { UpdateSdmGoalDisplayState } from "./handlers/command/sdm/UpdateSdmGoalDisplayState";
@@ -466,6 +467,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addCommand(toggleGoalSetsSubscription(sdm, false));
             sdm.addCommand(openComplianceReview());
             sdm.addCommand(discardComplianceReview());
+            sdm.addCommand(routeAttachmentAction());
             sdm.addCommand(applyTargetCommand());
             sdm.addCommand(applyAllTargetsCommand());
             sdm.addCommand(setTargetCommand());

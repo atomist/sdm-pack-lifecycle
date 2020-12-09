@@ -1,0 +1,5 @@
+mutation createActionJob($job: AtmJobInput!) {
+    createAtmJob(jobInput: $job) {
+        id
+    }
+}
