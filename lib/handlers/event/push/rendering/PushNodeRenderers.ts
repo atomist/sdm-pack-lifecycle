@@ -759,9 +759,9 @@ export class LifecycleAttachmentsNodeRenderer extends AbstractIdentifiableContri
 
     public async render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
                         ctx: RendererContext): Promise<SlackMessage> {
-        const identifier = JSON.stringify({ sha: push.after.sha, branch: push.branch});
+        const identifier = `${push.after.sha}#${push.branch}`;
         const attachments = await ctx.context.graphClient.query<graphql.LifecycleAttachmentsByTypeAndIdentifierQuery, graphql.LifecycleAttachmentsByTypeAndIdentifierQueryVariables>(
-            { name: "lifecycleAttachmentsByTypeAndIdentifier", variables: { type: LifecycleAttachmentType.push, identifier }, options: QueryNoCacheOptions });
+            { name: "lifecycleAttachmentsByTypeAndIdentifier", variables: { identifier }, options: QueryNoCacheOptions });
         if (attachments?.LifecycleAttachment?.length > 0) {
             for (const attachment of _.orderBy(attachments.LifecycleAttachment, ["ts"], ["desc"])) {
                 const body: Attachment = JSON.parse(attachment.body);

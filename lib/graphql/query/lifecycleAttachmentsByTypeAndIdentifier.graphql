@@ -1,5 +1,5 @@
-query lifecycleAttachmentsByTypeAndIdentifier($type: LifecycleAttachmentType!, $identifier: String!) {
-    LifecycleAttachment(type: [$type], identifier: [$identifier]) {
+query lifecycleAttachmentsByTypeAndIdentifier($identifier: String!) {
+    LifecycleAttachment(identifier: [$identifier]) {
         id
         body
         name
