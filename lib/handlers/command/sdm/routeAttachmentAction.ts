@@ -20,6 +20,7 @@ import { CommandHandlerRegistration } from "@atomist/sdm/lib/api/registration/Co
 import {
     AtmInitialJobState,
     CreateActionJob,
+    ResumeActionJob,
 } from "../../../typings/types";
 
 export function routeAttachmentAction(): CommandHandlerRegistration<{ _atmCommand: string, _atmConfiguration: string, _atmSkill: string }> {
@@ -39,15 +40,15 @@ export function routeAttachmentAction(): CommandHandlerRegistration<{ _atmComman
             delete trigger.secrets;
             delete (trigger as any).handler;
             delete (trigger as any).configurations;
-            
-            await ci.context.graphClient.mutate<CreateActionJob.Mutation, CreateActionJob.Variables>(
+
+            const id = (await ci.context.graphClient.mutate<CreateActionJob.Mutation, CreateActionJob.Variables>(
                 {
                     name: "createActionJob",
                     variables: {
                         job: {
                             owner: ci.parameters._atmSkill,
                             name: `${ci.parameters._atmSkill}/${ci.parameters._atmCommand}/${ci.parameters._atmConfiguration}`,
-                            initialState: AtmInitialJobState.running,
+                            initialState: AtmInitialJobState.preparing,
                             maxRunningTasks: 1,
                             jobTasks: [{
                                 data: JSON.stringify({
@@ -60,7 +61,14 @@ export function routeAttachmentAction(): CommandHandlerRegistration<{ _atmComman
                             }],
                         },
                     },
-                });
+                })).createAtmJob.id;
+
+            await ci.context.graphClient.mutate<ResumeActionJob.Mutation, ResumeActionJob.Variables>({
+                name: "resumeActionJob",
+                variables: {
+                    id,
+                },
+            });
         },
     };
 }

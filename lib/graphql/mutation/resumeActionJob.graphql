@@ -1,0 +1,5 @@
+mutation resumeActionJob($id: String!) {
+    resumeAtmJob(jobId: $id) {
+        id
+    }
+}
