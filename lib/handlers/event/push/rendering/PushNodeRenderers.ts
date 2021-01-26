@@ -760,10 +760,13 @@ export class LifecycleAttachmentsNodeRenderer extends AbstractIdentifiableContri
     public async render(push: graphql.PushToPushLifecycle.Push, actions: Action[], msg: SlackMessage,
                         ctx: RendererContext): Promise<SlackMessage> {
         const identifier = `${push.after.sha}#${push.branch}`;
-        const attachments = await ctx.context.graphClient.query<graphql.LifecycleAttachmentsByTypeAndIdentifierQuery, graphql.LifecycleAttachmentsByTypeAndIdentifierQueryVariables>(
-            { name: "lifecycleAttachmentsByTypeAndIdentifier", variables: { type: LifecycleAttachmentType.push, identifier }, options: QueryNoCacheOptions });
-        if (attachments?.LifecycleAttachment?.length > 0) {
-            for (const attachment of _.orderBy(attachments.LifecycleAttachment, ["ts"], ["desc"])) {
+        const attachments = [
+            ...(await ctx.context.graphClient.query<graphql.LifecycleAttachmentsByTypeAndIdentifierQuery, graphql.LifecycleAttachmentsByTypeAndIdentifierQueryVariables>(
+            { name: "lifecycleAttachmentsByTypeAndIdentifier", variables: { type: LifecycleAttachmentType.push, identifier }, options: QueryNoCacheOptions })).LifecycleAttachment || [],
+            ...(await ctx.context.graphClient.query<graphql.LifecycleAttachmentsByTypeAndIdentifierQuery, graphql.LifecycleAttachmentsByTypeAndIdentifierQueryVariables>(
+            { name: "lifecycleAttachmentsByTypeAndIdentifier", variables: { type: "commit" as any, identifier: push.after.sha }, options: QueryNoCacheOptions })).LifecycleAttachment || []];
+        if (attachments?.length > 0) {
+            for (const attachment of _.orderBy(attachments, ["ts"], ["desc"])) {
                 const body: Attachment = JSON.parse(attachment.body);
                 body.actions = (body.actions || []).map(a => {
                     const cra = (a as any) as CommandReferencingAction;
