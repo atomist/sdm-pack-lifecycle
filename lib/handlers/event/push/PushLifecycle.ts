@@ -32,7 +32,10 @@ import {
     LifecycleHandler,
     Preferences,
 } from "../../../lifecycle/Lifecycle";
-import { ignoredUsers } from "../../../lifecycle/util";
+import {
+    ignoredCommits,
+    ignoredUsers,
+} from "../../../lifecycle/util";
 import { Contributions } from "../../../lifecycleSupport";
 import * as graphql from "../../../typings/types";
 import {
@@ -132,9 +135,24 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
         const pushes = this.extractNodes(event);
         const preferences = this.extractPreferences(event);
         const users = ignoredUsers(ctx);
+        const commits = ignoredCommits(ctx);
 
         const lifecycles: Lifecycle[] = [];
-        for (const push of  pushes.filter(p => p && p.after).filter(p => p.commits.some(c => !users.includes(c.author.login)))) {
+        for (const push of  pushes.filter(p => p && p.after)
+                .filter(p => p.commits.some(c => !users.includes(c.author.login)))
+                .filter(p => (p.commits || []).filter(c => {
+                    try {
+                        for (const commit of commits) {
+                            const regexp = new RegExp(commit);
+                            if (regexp.test(c.message)) {
+                                return false;
+                            }
+                        }
+                    } catch (e) {
+                        logger.warn(`Failed to match commit with regexp: ${e.message}`);
+                    }
+                    return true;
+                }).length > 0)) {
             const channels = this.filterChannels(push, preferences);
 
             const logins: string[] = [];

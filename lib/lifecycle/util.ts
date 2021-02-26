@@ -46,3 +46,7 @@ export function normalizeTimestamp(timestamp: string): number {
 export function ignoredUsers(ctx: HandlerContext): string[] {
     return (ctx as any).trigger?.skill?.configuration?.parameters?.find((p: any) => p.name === "ignores")?.value || [];
 }
+
+export function ignoredCommits(ctx: HandlerContext): string[] {
+    return (ctx as any).trigger?.skill?.configuration?.parameters?.find((p: any) => p.name === "ignoreCommits")?.value || [];
+}
