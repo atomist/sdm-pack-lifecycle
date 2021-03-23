@@ -115,6 +115,7 @@ fragment PullRequestFields on PullRequest {
     checkSuites {
       appSlug
       checkRuns {
+        checkRunId
         name
         conclusion
         status

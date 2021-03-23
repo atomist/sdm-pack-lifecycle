@@ -56,6 +56,7 @@ import { GoalSet } from "../PushLifecycle";
 import { EMOJI_SCHEME } from "./PushNodeRenderers";
 
 export interface Check {
+    id: number;
     name: string;
     description: string;
     state: Omit<StatusState, "failure">;
@@ -747,6 +748,7 @@ export function aggregateStatusesAndChecks(commit: PushToPushLifecycle.Push["aft
         }
 
         allChecks.push({
+            id: -1,
             name: s.context,
             description: s.description,
             url: s.targetUrl,
@@ -783,15 +785,20 @@ export function aggregateStatusesAndChecks(commit: PushToPushLifecycle.Push["aft
                     }
                     break;
             }
-            allChecks.push({
-                name: `${app}/${r.name}`,
-                description: r.outputTitle,
-                url: r.htmlUrl,
-                state,
-                conclusion: r.conclusion,
-                detailsUrl: r.detailsUrl,
-                order: r.conclusion ? +ConclusionOrder[r.conclusion as any] : 4,
-            });
+            const name = `${app}/${r.name}`;
+            const highestId = _.maxBy(allChecks.filter(ac => ac.name === name), "id")?.id || -1;
+            if (highestId < +r.checkRunId) {
+                allChecks.push({
+                    id: +r.checkRunId,
+                    name,
+                    description: r.outputTitle,
+                    url: r.htmlUrl,
+                    state,
+                    conclusion: r.conclusion,
+                    detailsUrl: r.detailsUrl,
+                    order: r.conclusion ? +ConclusionOrder[r.conclusion as any] : 4,
+                });
+            }
         });
     });
     return _.orderBy(allChecks, ["order", "name"], ["asc", "asc"]);

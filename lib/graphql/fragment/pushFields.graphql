@@ -57,6 +57,7 @@ fragment PushFields on Push {
     checkSuites {
       appSlug
       checkRuns {
+        checkRunId
         name
         conclusion
         status
