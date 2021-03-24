@@ -651,7 +651,7 @@ export function getGitHubUsers(msg: string = ""): string[] {
     return _.uniq(allMentions);
 }
 
-const AtomistHideExp = /<!-- atomist:hide -->[\s\S]*<!-- atomist:show -->\s*/gm;
+const AtomistHideExp = /<!-- atomist:hide -->[\s\S]*?<!-- atomist:show -->\s*/gm;
 const MarkerExp = /(\[[a-zA-Z-]*:[a-zA-Z_\-:#()\/]*\])/gi;
 const TagSnippetExp = /(?:---[\s]*|[\s])?<details>[\s\S]*?<\/details>/gm;
 const CommentExp = /<!--[\s\S]*-->/gm;
