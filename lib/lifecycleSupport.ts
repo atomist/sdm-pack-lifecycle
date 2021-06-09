@@ -146,6 +146,10 @@ import * as pr from "./handlers/event/push/rendering/PushNodeRenderers";
 import * as sr from "./handlers/event/push/rendering/StatusesNodeRenderer";
 import { sdmGoalDisplayToPushLifecycle } from "./handlers/event/push/SdmGoalDisplayToPushLifecycle";
 import {
+    sdmGoalSetToPushCardLifecycle,
+    sdmGoalSetToPushLifecycle,
+} from "./handlers/event/push/SdmGoalSetToPushLifecycle";
+import {
     sdmGoalToPushCardLifecycle,
     sdmGoalToPushLifecycle,
 } from "./handlers/event/push/SdmGoalToPushLifecycle";
@@ -428,6 +432,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(releaseToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(sdmGoalDisplayToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(sdmGoalToPushLifecycle(optsToUse.push.chat));
+            sdm.addEvent(sdmGoalSetToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(statusToPushLifecycle(optsToUse.push.chat));
             sdm.addEvent(tagToPushLifecycle(optsToUse.push.chat));
 
@@ -438,6 +443,7 @@ export function lifecycleSupport(options: LifecycleOptions = {}): ExtensionPack 
             sdm.addEvent(pushToPushCardLifecycle(optsToUse.push.web));
             sdm.addEvent(releaseToPushCardLifecycle(optsToUse.push.web));
             sdm.addEvent(sdmGoalToPushCardLifecycle(optsToUse.push.web));
+            sdm.addEvent(sdmGoalSetToPushCardLifecycle(optsToUse.push.web));
             sdm.addEvent(statusToPushCardLifecycle(optsToUse.push.web));
             sdm.addEvent(tagToPushCardLifecycle(optsToUse.push.web));
 
