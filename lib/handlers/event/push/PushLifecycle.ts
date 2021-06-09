@@ -139,7 +139,7 @@ export class PushLifecycleHandler<R> extends LifecycleHandler<R> {
 
         const lifecycles: Lifecycle[] = [];
         for (const push of  pushes.filter(p => p && p.after)
-                .filter(p => p.commits.some(c => !users.includes(c.author.login)))
+                .filter(p => p.commits.some(c => !users.includes((c.author?.login || ""))))
                 .filter(p => (p.commits || []).filter(c => {
                     try {
                         for (const commit of commits) {
